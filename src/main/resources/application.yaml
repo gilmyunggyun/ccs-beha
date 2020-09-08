@@ -1,0 +1,123 @@
+server:
+  tomcat:
+    max-threads: 500000
+
+---
+#default config
+spring:
+  application:
+    name: ccsp20-behavioralpatternanalysis
+  http:
+    encoding:
+      enabled: true
+      force: true
+      charset: UTF-8
+  async:
+    core-pool-size: 200
+    max-pool-size: 3200
+    queue-capacity-size: 1
+    keep-allive-secound: 15
+
+---
+#spring actuator config
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+feign:
+  httpclient:
+    enabled: true    
+    max-connections: 200000
+    max-connections-per-route: 150000
+  client:
+    config:
+      default:
+        connectTimeout: 2000
+        readTimeout: 122000
+        loggerLevel: headers
+
+---
+#local config properties
+common-message:
+  hello: word
+example:
+ name: hello
+ 
+---
+#logback config
+logging:
+  level:
+    root: INFO
+    com.hkmc: DEBUG
+
+---
+#Kafka consumer group
+template:
+  topic: ccsp20.vehicleinfo.sample.topic
+templateservice:
+  consumer:
+    group: templateservice_consumer
+
+#Kafka config
+spring:
+  kafka:
+    bootstrap-servers: 10.11.52.11:9092,10.11.52.12:9092,10.11.52.13:9092,10.11.52.14:9092,10.11.52.15:9092,10.11.52.16:9092
+    consumer:      
+      auto-offset-reset: latest
+      enable: 
+        auto:
+          commit: false
+  feign:
+    server:
+      url: http://localhost:8085
+      name: customfeignClient
+#    producer:
+      
+---
+#local DB config 
+spring:
+  profiles: local
+  data:
+    mongodb:
+      uri: mongodb://ccs_toRM:!1234ccs_toRM@10.11.52.246:27017,10.11.52.247:27017,10.11.52.248:27017/ccs?authSource=admin&replicaSet=testReplSet&readPreference=primary&appname=MongoDB%20Compass&ssl=false
+      database: ccs
+  redis:    
+    host: "10.11.39.67"    
+    port: 34959    
+    password: "fd05a9dc-2cfb-4307-a3df-2d8622fd5f80"
+  zipkin:
+    base-url: http://10.11.53.1:9411
+  datasource:
+    url: jdbc:postgresql://10.20.213.192:5432/megazone
+    password: megazone
+    username: megazone
+    hikari:
+      maximum-pool-size: 5
+  
+---
+#dev DB config
+spring:
+  profiles: dev
+  data:
+    mongodb:
+      uri: mongodb://ccs_toRM:!1234ccs_toRM@10.11.52.246:27017,10.11.52.247:27017,10.11.52.248:27017/ccs?authSource=admin&replicaSet=testReplSet&readPreference=primary&appname=MongoDB%20Compass&ssl=false
+      database: ccs
+  redis:    
+    host: "10.11.39.67"    
+    port: 34959    
+    password: "fd05a9dc-2cfb-4307-a3df-2d8622fd5f80"
+
+---
+#prd DB config
+spring:
+  profiles: prd
+  data:
+    mongodb:
+      uri: mongodb://ccs_toRM:!1234ccs_toRM@10.11.52.246:27017,10.11.52.247:27017,10.11.52.248:27017/ccs?authSource=admin&replicaSet=testReplSet&readPreference=primary&appname=MongoDB%20Compass&ssl=false
+      database: ccs
+  redis:    
+    host: "10.11.39.67"    
+    port: 34959    
+    password: "fd05a9dc-2cfb-4307-a3df-2d8622fd5f80"
