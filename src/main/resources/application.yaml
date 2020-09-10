@@ -1,17 +1,18 @@
 server:
   tomcat:
-    max-threads: 500000
+    threads:
+      max: 500000
+  servlet:
+    encoding:
+      enabled: true
+      force: true
+      charset: UTF-8
 
 ---
 #default config
 spring:
   application:
     name: ccsp20-behavioralpatternanalysis
-  http:
-    encoding:
-      enabled: true
-      force: true
-      charset: UTF-8
   async:
     core-pool-size: 200
     max-pool-size: 3200
@@ -51,6 +52,7 @@ logging:
   level:
     root: INFO
     com.hkmc: DEBUG
+    org.springframework.data.r2dbc: DEBUG
 
 ---
 #Kafka consumer group
@@ -89,35 +91,7 @@ spring:
     password: "fd05a9dc-2cfb-4307-a3df-2d8622fd5f80"
   zipkin:
     base-url: http://10.11.53.1:9411
-  datasource:
-    url: jdbc:postgresql://10.20.213.192:5432/megazone
-    password: megazone
+  r2dbc: 
+    url: r2dbc:pool:postgresql://10.20.213.192:5432/megazone
     username: megazone
-    hikari:
-      maximum-pool-size: 5
-  
----
-#dev DB config
-spring:
-  profiles: dev
-  data:
-    mongodb:
-      uri: mongodb://ccs_toRM:!1234ccs_toRM@10.11.52.246:27017,10.11.52.247:27017,10.11.52.248:27017/ccs?authSource=admin&replicaSet=testReplSet&readPreference=primary&appname=MongoDB%20Compass&ssl=false
-      database: ccs
-  redis:    
-    host: "10.11.39.67"    
-    port: 34959    
-    password: "fd05a9dc-2cfb-4307-a3df-2d8622fd5f80"
-
----
-#prd DB config
-spring:
-  profiles: prd
-  data:
-    mongodb:
-      uri: mongodb://ccs_toRM:!1234ccs_toRM@10.11.52.246:27017,10.11.52.247:27017,10.11.52.248:27017/ccs?authSource=admin&replicaSet=testReplSet&readPreference=primary&appname=MongoDB%20Compass&ssl=false
-      database: ccs
-  redis:    
-    host: "10.11.39.67"    
-    port: 34959    
-    password: "fd05a9dc-2cfb-4307-a3df-2d8622fd5f80"
+    password: megazone
