@@ -24,8 +24,8 @@ import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.ValidationDepth;
 
-@Configuration
-@EnableR2dbcRepositories
+//@Configuration
+//@EnableR2dbcRepositories
 public class PostgresqlDatabaseConfig extends AbstractR2dbcConfiguration {
 
 	private static final String POSTGRESQL = "postgresql";
