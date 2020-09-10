@@ -11,7 +11,7 @@ public class CCSFeignException extends FeignException{
 	private Map<String, String> header;
 	
 	public CCSFeignException(FeignException e, Map<String, String> header) {
-		super(e.status(), e.getMessage(), e.request(), e, e.content());
+		super(e.status(), e.getMessage(), e.request(), (e.responseBody().isPresent())?e.responseBody().get().array():null);
 		this.header = header;
 	}
 

@@ -4,7 +4,7 @@ applications:
   path: target/ccsp20-behavioralpatternanalysis-0.0.1-SNAPSHOT.jar
   memory: 1G
   instances: 1
-  buildpack: java_buildpack_offline_v200728dev
+  buildpack: java_buildpack_offline_v200907prd
   services:
     - csryu-redis-sample
     - mongodb_dev
@@ -12,6 +12,6 @@ applications:
 #    - test-config
   env:
     TZ: Asia/Seoul
-    SPRING_PROFILES_ACTIVE: prod,redis,jpa
+    SPRING_PROFILES_ACTIVE: prod,redis,postgresql
     JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 13.0.+ } }'
     SPRING_CLOUD_CONFIG_NAME: ccsp20-common,ccsp20-behavioralpatternanalysis
