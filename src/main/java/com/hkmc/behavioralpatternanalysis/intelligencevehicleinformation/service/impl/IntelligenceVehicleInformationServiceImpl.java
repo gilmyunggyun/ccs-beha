@@ -34,6 +34,13 @@ public class IntelligenceVehicleInformationServiceImpl implements SafetyScoreMan
 		int status = 200;
 		String resultMessage = "";
 		
+		// 전송일자 가져오기
+		String sendDate = kafkaConsumerMap.get("sendDate").toString();
+		long totalCount = Long.parseLong(kafkaConsumerMap.get("totalCount").toString());
+		long currentPage = Long.parseLong(kafkaConsumerMap.get("currentPage").toString());
+		long totalPage = Long.parseLong(kafkaConsumerMap.get("totalPage").toString());
+		long currentCount = Long.parseLong(kafkaConsumerMap.get("currentCount").toString());
+		
 		List<Map<String, Object>> listData = null;
 
 		try {
@@ -59,8 +66,8 @@ public class IntelligenceVehicleInformationServiceImpl implements SafetyScoreMan
 		} catch (Exception e) {
 			log.error("[IntelligenceVehicleInformationServiceImpl.saveIntelligenceVehicleInformation] Ex : ", e);
 			status = 500; 
-			resultMessage = "An error has occurred.";
-			//throw new GlobalCCSException(status, resultMessage);
+			resultMessage = "[[Error]] sendDate({}), totalCount({}), currentPage({}), ";
+			throw new GlobalCCSException(status, resultMessage);
 		} 
 		
 		log.debug("[IntelligenceVehicleInformationServiceImpl.saveIntelligenceVehicleInformation End]");
