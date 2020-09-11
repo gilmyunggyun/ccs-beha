@@ -81,17 +81,34 @@ spring:
 #local DB config 
 spring:
   profiles: local
+  postgres:
+    uri: "10.20.214.194"
+    port: 5432
+    database: "postgres"
+    username: "postgres"
+    password: "aprkwhs1!"
+    pool:
+      name: "customPool"
+      maxidletime: 100
+      maxlifetime: 100
+      initalsize: 10
+      max-size: 100
+      maxcreateconnectiontime: 10000   
   data:
     mongodb:
       uri: mongodb://ccs_toRM:!1234ccs_toRM@10.11.52.246:27017,10.11.52.247:27017,10.11.52.248:27017/ccs?authSource=admin&replicaSet=testReplSet&readPreference=primary&appname=MongoDB%20Compass&ssl=false
       database: ccs
   redis:    
     host: "10.11.39.67"    
-    port: 34959    
-    password: "fd05a9dc-2cfb-4307-a3df-2d8622fd5f80"
+#    port: 34959
+#    password: "fd05a9dc-2cfb-4307-a3df-2d8622fd5f80"
+    port : "38913"
+    password: "a206339c-2eef-4bb1-bdfb-019a7df9c443"    
+    
   zipkin:
     base-url: http://10.11.53.1:9411
-  r2dbc: 
-    url: r2dbc:pool:postgresql://10.20.213.192:5432/megazone
-    username: megazone
-    password: megazone
+#  r2dbc: 
+#    url: r2dbc:pool:postgresql://10.20.213.192:5432/megazone
+#    username: megazone
+#    password: megazone
+   

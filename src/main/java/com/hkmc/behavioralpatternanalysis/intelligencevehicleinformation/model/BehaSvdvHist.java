@@ -55,4 +55,6 @@ public class BehaSvdvHist implements Serializable {
 	@Column(name="SEVERE_DRIV_PLUS_CNT")
 	private Integer cntSeverePlus;	//	가혹 운행 플러스 건수
 
+	@Column(name="CAR_OID")
+	private Integer carOid;	//	가혹 운행 플러스 건수
 }
