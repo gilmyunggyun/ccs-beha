@@ -62,7 +62,7 @@ template:
 templateservice:
   consumer:
 #    group: templateservice_consumer
-    group_intelligencevehicleinformation: ccsp20.behavioralpatternanalysis.intelligencevehicleinformation.group
+    group-intelligencevehicleinformation: ccsp20.behavioralpatternanalysis.intelligencevehicleinformation.group
 #Kafka config
 spring:
   kafka:
@@ -92,7 +92,17 @@ spring:
     password: "fd05a9dc-2cfb-4307-a3df-2d8622fd5f80"
   zipkin:
     base-url: http://10.11.53.1:9411
-  r2dbc: 
-    url: r2dbc:pool:postgresql://10.20.213.192:5432/megazone
-    username: megazone
-    password: megazone
+  postgres:
+    uri: "10.20.213.192"
+    port: 5432
+    database: "megazone"
+    username: "megazone"
+    password: "megazone"
+    pool:
+      name: "customPool"
+      maxidletime: 100
+      maxlifetime: 100
+      initalsize: 10
+      max-size: 100
+      maxcreateconnectiontime: 10000
+
