@@ -57,15 +57,16 @@ logging:
 ---
 #Kafka consumer group
 template:
-  topic: ccsp20.vehicleinfo.sample.topic
+#  topic: ccsp20.vehicleinfo.sample.topic
+  topic_intelligencevehicleinformation: ccsp20.behavioralpatternanalysis.intelligencevehicleinformation.topic
 templateservice:
   consumer:
-    group: templateservice_consumer
-
+#    group: templateservice_consumer
+    group-intelligencevehicleinformation: ccsp20.behavioralpatternanalysis.intelligencevehicleinformation.group
 #Kafka config
 spring:
   kafka:
-    bootstrap-servers: 10.11.52.11:9092,10.11.52.12:9092,10.11.52.13:9092,10.11.52.14:9092,10.11.52.15:9092,10.11.52.16:9092
+    bootstrap-servers: 10.20.214.28:9092 #10.11.52.11:9092,10.11.52.12:9092,10.11.52.13:9092,10.11.52.14:9092,10.11.52.15:9092,10.11.52.16:9092
     consumer:      
       auto-offset-reset: latest
       enable: 
@@ -91,7 +92,17 @@ spring:
     password: "fd05a9dc-2cfb-4307-a3df-2d8622fd5f80"
   zipkin:
     base-url: http://10.11.53.1:9411
-  r2dbc: 
-    url: r2dbc:pool:postgresql://10.20.213.192:5432/megazone
-    username: megazone
-    password: megazone
+  postgres:
+    uri: "10.20.213.192"
+    port: 5432
+    database: "megazone"
+    username: "megazone"
+    password: "megazone"
+    pool:
+      name: "customPool"
+      maxidletime: 100
+      maxlifetime: 100
+      initalsize: 10
+      max-size: 100
+      maxcreateconnectiontime: 10000
+
