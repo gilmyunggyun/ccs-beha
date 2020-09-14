@@ -32,7 +32,7 @@ public class SwaggerConfig {
 	
 	@Bean
 	public Docket serviceApi() {
-		return this.basicConfig("TEMPLATE service", Const.Hello.VERSION_V1);
+		return this.basicConfig("TEMPLATE service", Const.BehavioralPatternAnalysis.VERSION_V1);
 	}
 
 	public Docket basicConfig(final String groupName, final String paths) {
