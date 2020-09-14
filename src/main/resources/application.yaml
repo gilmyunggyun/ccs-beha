@@ -82,11 +82,11 @@ spring:
 spring:
   profiles: local
   postgres:
-    uri: "10.20.214.194"
+    uri: "10.20.213.192"
     port: 5432
-    database: "postgres"
-    username: "postgres"
-    password: "aprkwhs1!"
+    database: "megazone"
+    username: "megazone"
+    password: "megazone"
     pool:
       name: "customPool"
       maxidletime: 100
