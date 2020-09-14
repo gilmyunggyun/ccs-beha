@@ -102,8 +102,9 @@ spring:
     host: "10.11.39.67"    
 #    port: 34959
 #    password: "fd05a9dc-2cfb-4307-a3df-2d8622fd5f80"
-    port : "38913"
-    password: "a206339c-2eef-4bb1-bdfb-019a7df9c443"    
+    port : 38913
+    password: "a206339c-2eef-4bb1-bdfb-019a7df9c443"
+    database : 0    
     
   zipkin:
     base-url: http://10.11.53.1:9411

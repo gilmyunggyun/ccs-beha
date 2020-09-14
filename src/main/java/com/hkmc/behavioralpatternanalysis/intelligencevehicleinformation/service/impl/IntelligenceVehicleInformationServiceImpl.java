@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.r2dbc.convert.R2dbcConverter;
+import org.springframework.data.r2dbc.core.DatabaseClient;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
 import org.springframework.data.r2dbc.repository.support.R2dbcRepositoryFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -27,14 +28,15 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class IntelligenceVehicleInformationServiceImpl implements IntelligenceVehicleInformationService {
 
-	@Autowired
-	RedisTemplate<String, String> redisTemplate;
+	private final RedisTemplate<byte[], byte[]> redisTemplate;
 	
 //	private final GenericRedisRepository<RedisVin, String> redisVinRepo;
 	
-	private final R2dbcEntityOperations postgresqlEntityOperations;
-	private final R2dbcRepositoryFactory postgresqlRepositoryFactory;
-	private final R2dbcConverter r2dbcConverter; 
+//	private final R2dbcEntityOperations postgresqlEntityOperations;
+//	
+//	private final R2dbcRepositoryFactory postgresqlRepositoryFactory;
+//	
+//	private final R2dbcConverter r2dbcConverter; 
 	
 //	@Autowired
 //	R2dbcRepositoryFactory postgresqlRepositoryFactory;	
@@ -44,6 +46,20 @@ public class IntelligenceVehicleInformationServiceImpl implements IntelligenceVe
 //
 //	@Autowired
 //	R2dbcConverter r2dbcConverter;
+	
+//	private final DatabaseClient databaseClient;
+	
+//	private final R2dbcEntityOperations entityOperations;
+	
+//	private final RelationalEntityInformation<BehaSvdvHist, Integer> entity;
+	
+//	private final R2dbcConverter converter;	
+	
+//	private final R2dbcRepositoryFactory postgresqlRepositoryFactory;
+	
+	private final R2dbcEntityOperations postgresqlEntityOperations;
+	private final R2dbcRepositoryFactory postgresqlRepositoryFactory;
+	private final R2dbcConverter r2dbcConverter; 
 	
 	@Override
 	public Map<String, Object> itlCarBreakpadDrvScore(Map<String, Object> reqBody) throws GlobalCCSException {
@@ -63,13 +79,33 @@ public class IntelligenceVehicleInformationServiceImpl implements IntelligenceVe
 			log.info("redis : {}", receiveRedisVinData.get(0).getCarOid());
 			
 //			GenericJpaRepository<BehaSvdvHist, Integer> jpaRepository = new GenericJpaRepository<>(BehaSvdvHist.class, entityManager);
-			
+//			Class<BehaSvdvHist> repositoryEntity;
+
+//			private Class<T> repositoryEntity;
+//			private RelationalEntityInformation<T, ID> entityInformation;
+//			
+//			
+//			
+//			public GenericPostgreRepository(final Class<T> domainClass, final RelationalEntityInformation<T, ID> entityInformation, final R2dbcEntityOperations entityOperations, final R2dbcConverter converter){
+//				super(entityInformation, entityOperations, converter);
+//				
+////				this.entityOperations = entityOperations; 
+//				this.databaseClient = entityOperations.getDatabaseClient();
+//				this.repositoryEntity = domainClass;
+//				this.entityInformation = entityInformation;
+//			}
 			
 //			RelationalEntityInformation<BehaSvdvHist, Integer> entity = postgresqlRepositoryFactory.getEntityInformation(BehaSvdvHist.class);
-//			GenericPostgreRepository<BehaSvdvHist, Integer> repository = new GenericPostgreRepository<>(BehaSvdvHist.class, entity, postgresqlEntityOperations, r2dbcConverter);			
-//			
-//			reqDto.setCarOid(Integer.parseInt(receiveRedisVinData.get(0).getCarOid()));
-//			repository.findAll(reqDto);
+
+//			GenericPostgreRepository<BehaSvdvHist, Integer> repository = new GenericPostgreRepository<>(BehaSvdvHist.class, entity, entityOperations, converter);			
+			
+			RelationalEntityInformation<BehaSvdvHist, Integer> entity = postgresqlRepositoryFactory.getEntityInformation(BehaSvdvHist.class);
+			GenericPostgreRepository<BehaSvdvHist, Integer> repository = new GenericPostgreRepository<>(BehaSvdvHist.class, entity, postgresqlEntityOperations, r2dbcConverter);			
+			
+
+			
+			reqDto.setCarOid(Integer.parseInt(receiveRedisVinData.get(0).getCarOid()));
+//			repository
 //			repository.findById(reqDto.getCarOid());
 			
 			
