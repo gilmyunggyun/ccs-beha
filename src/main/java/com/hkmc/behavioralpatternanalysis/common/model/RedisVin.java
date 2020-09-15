@@ -5,22 +5,11 @@ import java.io.Serializable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-//@SuppressWarnings("serial")
-//@Getter
-//@Setter
-////@RequiredArgsConstructor
-//@JsonInclude(Include.NON_NULL)
-//@RedisHash("nadidVinAuth")
 
 @SuppressWarnings("serial")
 @RedisHash("nadidVinAuth")
