@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//import javax.transaction.Transactional;
-
 import org.springframework.data.r2dbc.convert.R2dbcConverter;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
 import org.springframework.data.r2dbc.repository.support.R2dbcRepositoryFactory;
@@ -13,6 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.relational.core.query.Criteria;
 import org.springframework.data.relational.repository.query.RelationalEntityInformation;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalCCSException;
 import com.hkmc.behavioralpatternanalysis.common.model.RedisVin;
@@ -97,11 +96,18 @@ public class UbiSafetyDrivingScoreServiceImpl implements UbiSafetyDrivingScoreSe
 			
 			List<UbiSafetyDrivingScore> resDto = repository.findByAllCriteria(Criteria.where("carOid").is(reqData.getCarOid()));
 			
-			repository.deleteAsObject(resDto.get(0));
-			
-	        resultData.put("resultStatus", "S");
-	        resultData.put("status", status);
-	        resultData.put("message", resultMessage);	        
+			if(!(ObjectUtils.isEmpty(resDto))) {
+				repository.deleteAsObject(resDto.get(0));
+				
+		        resultData.put("resultStatus", "S");
+		        resultData.put("status", status);
+		        resultData.put("message", resultMessage);
+			}else {
+				resultData.put("resultStatus", "F");
+				resultData.put("status", 500);
+				resultData.put("message", "데이터 없음");				
+			}
+	        
 		} catch (GlobalCCSException e) {
 			resultData.put("resultStatus", "F");
 			resultData.put("status", e.getStatus());
