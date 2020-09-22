@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalCCSException;
 import com.hkmc.behavioralpatternanalysis.common.model.RedisVin;
 import com.hkmc.behavioralpatternanalysis.itlCar.model.ItlCarBreakpadDrivingScore;
-import com.hkmc.behavioralpatternanalysis.itlCar.service.imple.ItlCarBreakpadDrivingScoreServiceImpl;
+import com.hkmc.behavioralpatternanalysis.itlCar.service.impl.ItlCarBreakpadDrivingScoreServiceImpl;
 
 import ccs.core.db.repository.postgre.GenericPostgreRepository;
 import ccs.core.db.repository.redis.GenericRedisRepository;
