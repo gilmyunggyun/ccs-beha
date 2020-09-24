@@ -1,4 +1,4 @@
-package com.hkmc.behavioralpatternanalysis.itlCar.service;
+package com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.service;
 
 import static org.mockito.BDDMockito.given;
 
@@ -22,8 +22,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalCCSException;
 import com.hkmc.behavioralpatternanalysis.common.model.RedisVin;
-import com.hkmc.behavioralpatternanalysis.itlCar.model.ItlCarBreakpadDrivingScore;
-import com.hkmc.behavioralpatternanalysis.itlCar.service.impl.ItlCarBreakpadDrivingScoreServiceImpl;
+import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.model.BehaSvdvHist;
+import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.service.impl.IntelligenceVehicleInformationServiceImpl;
 
 import ccs.core.db.repository.postgre.GenericPostgreRepository;
 import ccs.core.db.repository.redis.GenericRedisRepository;
@@ -33,17 +33,17 @@ import lombok.extern.slf4j.Slf4j;
 @ExtendWith(MockitoExtension.class)
 public class ItlCarBreakpadDrivingScoreServiceTest {
 	
-	ItlCarBreakpadDrivingScore reqData;
+	BehaSvdvHist reqData;
 	
-	ItlCarBreakpadDrivingScore resData;
+	BehaSvdvHist resData;
 	
-	List<ItlCarBreakpadDrivingScore> resDataList;
+	List<BehaSvdvHist> resDataList;
 	
 	List<RedisVin> redisVinList;
 	
 	RedisVin redisVin;
 	
-	ItlCarBreakpadDrivingScoreService itlCarBreakpadDrivingScoreService;
+	IntelligenceVehicleInformationService intelligenceVehicleInformationService;
 	
 	Map<String, Object> body;
 	
@@ -63,15 +63,15 @@ public class ItlCarBreakpadDrivingScoreServiceTest {
 	private GenericRedisRepository<RedisVin, String> redisVinRepo;
 	
 	@Mock
-	GenericPostgreRepository<ItlCarBreakpadDrivingScore, Integer> repository;
+	GenericPostgreRepository<BehaSvdvHist, Integer> repository;
 
 	@BeforeEach
 	public void setup() throws JsonMappingException, JsonProcessingException {
 										
-		reqData = new ItlCarBreakpadDrivingScore();
+		reqData = new BehaSvdvHist();
 		reqData.setCarOid(992006581);
 		
-		resData = new ItlCarBreakpadDrivingScore();
+		resData = new BehaSvdvHist();
 		resData.setIfDate("20200917");
 		resData.setNnidVin("KMHF241DBLA_TEST3b20d1b5994");
 		resData.setPrjVehlCd("HI");
@@ -82,7 +82,7 @@ public class ItlCarBreakpadDrivingScoreServiceTest {
 		resData.setCntSeverePlus(0);
 		resData.setCarOid(992006581);
 		
-		resDataList = new ArrayList<ItlCarBreakpadDrivingScore>();
+		resDataList = new ArrayList<BehaSvdvHist>();
 		resDataList.add(0, resData);
 		
 		redisVinList = new ArrayList<RedisVin>();
@@ -94,7 +94,7 @@ public class ItlCarBreakpadDrivingScoreServiceTest {
 		body.put("vin", "KMHF241DBLA285994");
 		
 		redisVinRepo = new GenericRedisRepository<>(RedisVin.class, redisTemplate);
-		itlCarBreakpadDrivingScoreService = new ItlCarBreakpadDrivingScoreServiceImpl(redisTemplate, postgresqlEntityOperations, postgresqlRepositoryFactory, r2dbcConverter);
+		intelligenceVehicleInformationService = new IntelligenceVehicleInformationServiceImpl(redisTemplate, postgresqlEntityOperations, postgresqlRepositoryFactory, r2dbcConverter);
 	}
 	
 	@Test
@@ -103,7 +103,7 @@ public class ItlCarBreakpadDrivingScoreServiceTest {
 		
 		String srchPatt = "*_" + body.get("vin").toString();
 		given(redisVinRepo.findByAllHash(srchPatt)).willReturn(redisVinList); //	Redis Vin 데이터 조회
-		Map<String, Object> retResp = itlCarBreakpadDrivingScoreService.itlCarBreakpadDrvScoreSearch(body);
+		Map<String, Object> retResp = intelligenceVehicleInformationService.itlCarBreakpadDrvScoreSearch(body);
 		
 		log.info("testUBIItlCarBreakpadDrvScoreApiSuccess end");
 
@@ -114,7 +114,7 @@ public class ItlCarBreakpadDrivingScoreServiceTest {
 		log.info("testUBIItlCarBreakpadDrvScoreApiException start");
 
 		Assertions.assertThrows(GlobalCCSException.class, () -> { 
-			Map<String, Object> retResp = itlCarBreakpadDrivingScoreService.itlCarBreakpadDrvScoreSearch(body);
+			Map<String, Object> retResp = intelligenceVehicleInformationService.itlCarBreakpadDrvScoreSearch(body);
 		});
 		
 		

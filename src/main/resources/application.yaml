@@ -57,15 +57,17 @@ logging:
 ---
 #Kafka consumer group
 template:
-  topic: ccsp20.vehicleinfo.sample.topic
+  topic-behavioralpatternanalysis-safetyscoremanagement: ccsp20.behavioralpatternanalysis.safetyscoremanagement.topic
+  topic-behavioralpatternanalysis-intelligencevehicleinformation: ccsp20.behavioralpatternanalysis.intelligencevehicleinformation.topic
 templateservice:
   consumer:
-    group: templateservice_consumer
+    group-behavioralpatternanalysis: ccsp20.behavioralpatternanalysis.group
 
 #Kafka config
 spring:
   kafka:
-    bootstrap-servers: 10.11.52.11:9092,10.11.52.12:9092,10.11.52.13:9092,10.11.52.14:9092,10.11.52.15:9092,10.11.52.16:9092
+#    bootstrap-servers: 10.11.52.11:9092,10.11.52.12:9092,10.11.52.13:9092,10.11.52.14:9092,10.11.52.15:9092,10.11.52.16:9092
+    bootstrap-servers: 10.20.214.28:9092
     consumer:      
       auto-offset-reset: latest
       enable: 

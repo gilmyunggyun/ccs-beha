@@ -1,9 +1,8 @@
-package com.hkmc.behavioralpatternanalysis.ubi.service;
+package com.hkmc.behavioralpatternanalysis.safetyscoremanagement.service;
 
 import static org.mockito.BDDMockito.given;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,20 +14,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.r2dbc.convert.R2dbcConverter;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
 import org.springframework.data.r2dbc.repository.support.R2dbcRepositoryFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.relational.core.mapping.Column;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalCCSException;
 import com.hkmc.behavioralpatternanalysis.common.model.RedisVin;
-import com.hkmc.behavioralpatternanalysis.itlCar.model.ItlCarBreakpadDrivingScore;
-import com.hkmc.behavioralpatternanalysis.ubi.model.UbiSafetyDrivingScore;
-import com.hkmc.behavioralpatternanalysis.ubi.service.impl.UbiSafetyDrivingScoreServiceImpl;
+import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.BehaUbiSdhbInfo;
+import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.service.impl.SafetyScoreManagementServiceImpl;
 
 import ccs.core.db.repository.redis.GenericRedisRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -37,11 +33,11 @@ import lombok.extern.slf4j.Slf4j;
 @ExtendWith(MockitoExtension.class)
 public class UbiSafetyDrivingScoreServiceTest {
 
-	UbiSafetyDrivingScore resData;
+	BehaUbiSdhbInfo resData;
 	
 	Map<String, Object> body;
 	
-	UbiSafetyDrivingScoreService  ubiSafetyDrivingScoreService;
+	SafetyScoreManagementService  safetyScoreManagementService;
 	
 	List<RedisVin> redisVinList;
 	
@@ -69,7 +65,7 @@ public class UbiSafetyDrivingScoreServiceTest {
 		body.put("vin", "KMHF241DBLA285994");		
 		
 		//UBI 안전운전점수 조회 테스트 정보.
-		resData = new UbiSafetyDrivingScore();
+		resData = new BehaUbiSdhbInfo();
 		resData.setNnidVin("KMHF241DBLA_TEST3b20d1b5994");
 		resData.setScoreDate("20191004");
 		resData.setSafetyDrvScore(57);
@@ -78,7 +74,7 @@ public class UbiSafetyDrivingScoreServiceTest {
 		resData.setBrstDecGrade("NORMAL");
 		resData.setNightDrvGrade("EXCELLENCE");
 		resData.setRangeDrvDist(788);
-		resData.setIfDate(LocalDate.parse("2020-09-18 14:00:52", DateTimeFormatter.ISO_DATE));
+		resData.setIfDate(LocalDateTime.now());
 		resData.setCarOid(992006581);
 		
 		redisVinList = new ArrayList<RedisVin>();
@@ -89,7 +85,7 @@ public class UbiSafetyDrivingScoreServiceTest {
 		body = new HashMap<>();
 		body.put("vin", "KMHF241DBLA285994");
 		
-		ubiSafetyDrivingScoreService = new UbiSafetyDrivingScoreServiceImpl(redisTemplate, postgresqlEntityOperations, postgresqlRepositoryFactory, r2dbcConverter);
+		safetyScoreManagementService = new SafetyScoreManagementServiceImpl(redisTemplate, postgresqlEntityOperations, postgresqlRepositoryFactory, r2dbcConverter);
 	}
 	
 	
@@ -100,7 +96,7 @@ public class UbiSafetyDrivingScoreServiceTest {
 		String srchPatt = "*_" + body.get("vin");
 		
 		given(redisVinRepo.findByAllHash(srchPatt)).willReturn(redisVinList); //	Redis Vin 데이터 조회
-		Map<String, Object> retResp = ubiSafetyDrivingScoreService.ubiSafetyDrivingScoreSearch(body);
+		Map<String, Object> retResp = safetyScoreManagementService.ubiSafetyDrivingScoreSearch(body);
 
 		log.info("testUbiSafetyDrivingScoreSearch end");
 	}
@@ -111,7 +107,7 @@ public class UbiSafetyDrivingScoreServiceTest {
 		log.info("testUbiSafetyDrivingScoreSearchFaile start");
 		
 		Assertions.assertThrows(GlobalCCSException.class, () -> {
-			ubiSafetyDrivingScoreService.ubiSafetyDrivingScoreSearch(body);			
+			safetyScoreManagementService.ubiSafetyDrivingScoreSearch(body);			
 		});
 		
 		log.info("testUbiSafetyDrivingScoreSearchFaile end");
@@ -122,7 +118,7 @@ public class UbiSafetyDrivingScoreServiceTest {
 	public void testUbiSafetyDrivingScoreDelete() {
 		log.info("testUbiSafetyDrivingScoreDelete start");
 
-		Map<String, Object> retResp = ubiSafetyDrivingScoreService.ubiSafetyDrivingScoreDelete(body);
+		Map<String, Object> retResp = safetyScoreManagementService.ubiSafetyDrivingScoreDelete(body);
 		log.debug("[Result] = {}", retResp.toString());
 
 		log.info("testUbiSafetyDrivingScoreDelete end");
@@ -134,7 +130,7 @@ public class UbiSafetyDrivingScoreServiceTest {
 		log.info("testUbiSafetyDrivingScoreDeleteFaile start");
 		
 		Assertions.assertThrows(GlobalCCSException.class, () -> {
-			ubiSafetyDrivingScoreService.ubiSafetyDrivingScoreDelete(body);
+			safetyScoreManagementService.ubiSafetyDrivingScoreDelete(body);
 		});
 		
 		log.info("testUbiSafetyDrivingScoreDeleteFaile end");

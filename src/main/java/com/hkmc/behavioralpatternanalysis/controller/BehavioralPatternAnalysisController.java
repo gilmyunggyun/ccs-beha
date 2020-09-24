@@ -18,9 +18,7 @@ import com.hkmc.behavioralpatternanalysis.common.Const;
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalCCSException;
 import com.hkmc.behavioralpatternanalysis.common.model.ResponseDTO;
 import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.service.IntelligenceVehicleInformationService;
-import com.hkmc.behavioralpatternanalysis.itlCar.service.ItlCarBreakpadDrivingScoreService;
 import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.service.SafetyScoreManagementService;
-import com.hkmc.behavioralpatternanalysis.ubi.service.UbiSafetyDrivingScoreService;
 
 import io.swagger.annotations.Api;
 
@@ -31,12 +29,13 @@ public class BehavioralPatternAnalysisController {
 
 	/*	차량 브레이크 패드 자료에 대한 조회 요청	*/
 	@Autowired
-	private ItlCarBreakpadDrivingScoreService itlCarBreakpadDrivingScoreService;
+	private IntelligenceVehicleInformationService intelligenceVehicleInformationService;
 	
 	/*	UBI 안전운전점수 수신,제공,처리	*/
 	@Autowired
-	private UbiSafetyDrivingScoreService ubiSafetyDrivingScoreService;
-	
+	private SafetyScoreManagementService safetyScoreManagementService;
+
+
 	/**
 	 * itlCarBreakpadDrvScore 차량 브레이크 패드 자료에 대한 조회 요청을 처리
 	 * @param 	HttpHeaders header, Map<String, Object> body, HttpServletRequest req
@@ -44,16 +43,16 @@ public class BehavioralPatternAnalysisController {
 	 * @throws 	GlobalCCSException
 	 */
 	@PostMapping(value="/itlCarBreakpadDrvScoreSearch")
-	public ResponseEntity<ResponseDTO<Map<String, Object>>> itlCarBreakpadDrvScoreSearch(
-			@RequestHeader HttpHeaders header
-			, @RequestBody Map<String, Object> body
-			, HttpServletRequest req) throws GlobalCCSException {
-		Map<String, Object> resultData = itlCarBreakpadDrivingScoreService.itlCarBreakpadDrvScoreSearch(body);
+	public ResponseEntity<ResponseDTO<Map<String, Object>>> itlCarBreakpadDrvScoreSearch(@RequestHeader HttpHeaders header, @RequestBody Map<String, Object> body, HttpServletRequest req) throws GlobalCCSException {
+		
+		Map<String, Object> resultData = intelligenceVehicleInformationService.itlCarBreakpadDrvScoreSearch(body);
     	
    		return new ResponseEntity<>(
    				ResponseDTO.<Map<String, Object>>builder().code(Integer.parseInt(resultData.get("status").toString())).data(resultData).resultMessage(resultData.get("message").toString()).build(), 
-   				HttpStatus.resolve(Integer.parseInt(resultData.get("status").toString())) == null ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.resolve(Integer.parseInt(resultData.get("status").toString())));    	
+   				HttpStatus.resolve(Integer.parseInt(resultData.get("status").toString())) == null ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.resolve(Integer.parseInt(resultData.get("status").toString())));
+
     }
+
 	
 	/**
 	 * ubiSafetyDrivingScoreSearch UBI 안전 운전 점수 조회
@@ -62,15 +61,14 @@ public class BehavioralPatternAnalysisController {
 	 * @throws 	GlobalCCSException
 	 */
 	@PostMapping(value="/ubiSafetyDrivingScoreSearch")
-	public ResponseEntity<ResponseDTO<Map<String, Object>>> ubiSafetyDrivingScoreSearch(
-			@RequestHeader HttpHeaders header
-			, @RequestBody Map<String, Object> body
-			, HttpServletRequest req) throws GlobalCCSException {
-		Map<String, Object> resultData = ubiSafetyDrivingScoreService.ubiSafetyDrivingScoreSearch(body);
+	public ResponseEntity<ResponseDTO<Map<String, Object>>> ubiSafetyDrivingScoreSearch(@RequestHeader HttpHeaders header, @RequestBody Map<String, Object> body, HttpServletRequest req) throws GlobalCCSException {
+
+		Map<String, Object> resultData = safetyScoreManagementService.ubiSafetyDrivingScoreSearch(body);
 		
    		return new ResponseEntity<>(
    				ResponseDTO.<Map<String, Object>>builder().code(Integer.parseInt(resultData.get("status").toString())).data(resultData).resultMessage(resultData.get("message").toString()).build(), 
-   				HttpStatus.resolve(Integer.parseInt(resultData.get("status").toString())) == null ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.resolve(Integer.parseInt(resultData.get("status").toString()))); 
+   				HttpStatus.resolve(Integer.parseInt(resultData.get("status").toString())) == null ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.resolve(Integer.parseInt(resultData.get("status").toString())));
+
     }
     
 	
@@ -82,9 +80,13 @@ public class BehavioralPatternAnalysisController {
      */
     @PostMapping(value="/ubiSafetyDrivingScoreDelete")
 	public ResponseEntity<ResponseDTO<Map<String, Object>>> ubiSafetyDrivingScoreDelete(@RequestHeader HttpHeaders header, HttpServletRequest req, @RequestBody Map<String, Object> body) throws GlobalCCSException {
-    	Map<String, Object> resultData = ubiSafetyDrivingScoreService.ubiSafetyDrivingScoreDelete(body);
+    	
+    	Map<String, Object> resultData = safetyScoreManagementService.ubiSafetyDrivingScoreDelete(body);
+    	
    		return new ResponseEntity<>(
    				ResponseDTO.<Map<String, Object>>builder().code(Integer.parseInt(resultData.get("status").toString())).data(resultData).resultMessage(resultData.get("message").toString()).build(), 
-   				HttpStatus.resolve(Integer.parseInt(resultData.get("status").toString())) == null ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.resolve(Integer.parseInt(resultData.get("status").toString())));    	
-    }  
+   				HttpStatus.resolve(Integer.parseInt(resultData.get("status").toString())) == null ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.resolve(Integer.parseInt(resultData.get("status").toString())));
+
+    }
+
 }
