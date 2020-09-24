@@ -238,7 +238,7 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
 	
 	// UBI 안전 운전 점수 조회
 	@Override
-	public Map<String, Object> ubiSafetyDrivingScoreSearch (Map<String, Object> reqBody) {
+	public Map<String, Object> ubiSafetyDrivingScoreSearch(Map<String, Object> reqBody) {
 
 		RelationalEntityInformation<BehaUbiSdhbInfo, Integer> entity = postgresqlRepositoryFactory.getEntityInformation(BehaUbiSdhbInfo.class);
 		GenericPostgreRepository<BehaUbiSdhbInfo, Integer> repository = new GenericPostgreRepository<>(BehaUbiSdhbInfo.class, entity, postgresqlEntityOperations, r2dbcConverter);
@@ -247,20 +247,21 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
 		
 		Map<String, Object> resultData = new HashMap<String, Object>();
 
-    	BehaUbiSdhbInfo reqData = new BehaUbiSdhbInfo();
-
+		BehaUbiSdhbInfo reqData = new BehaUbiSdhbInfo();
+		
+		
 		int status = 200;
 		String resultMessage = "Success";
 		
         try {
-        	
+
 			String srchPatt = "*_" + reqBody.get("vin").toString();
 			List<RedisVin> receiveRedisVinData = redisVinRepo.findByAllHash(srchPatt);
-        	
+
 			reqData.setCarOid(Integer.parseInt(receiveRedisVinData.get(0).getCarOid()));
 			
 			List<BehaUbiSdhbInfo> resDto = repository.findByAllCriteria(Criteria.where("carOid").is(reqData.getCarOid()));
-	        
+			
 	        resultData.put("body", resDto);
 	        resultData.put("resultStatus", "S");
 	        resultData.put("status", status);
@@ -288,25 +289,25 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
 
 	// UBI 안전 운전 점수 삭제
 	@Override
-	public Map<String, Object> ubiSafetyDrivingScoreDelete (Map<String, Object> reqBody) {
+	public Map<String, Object> ubiSafetyDrivingScoreDelete(Map<String, Object> reqBody) {
 
 		RelationalEntityInformation<BehaUbiSdhbInfo, Integer> entity = postgresqlRepositoryFactory.getEntityInformation(BehaUbiSdhbInfo.class);
 		GenericPostgreRepository<BehaUbiSdhbInfo, Integer> repository = new GenericPostgreRepository<>(BehaUbiSdhbInfo.class, entity, postgresqlEntityOperations, r2dbcConverter);
-		
+
 		GenericRedisRepository<RedisVin, String> redisVinRepo = new GenericRedisRepository<>(RedisVin.class, redisTemplate);
-		
-		int status = 200;
-		String resultMessage = "Success";
 		
 		Map<String, Object> resultData = new HashMap<String, Object>();
 
     	BehaUbiSdhbInfo reqData = new BehaUbiSdhbInfo();
-		
+
+		int status = 200;
+		String resultMessage = "Success";
+    	
 		try {
 
 			String srchPatt = "*_" + reqBody.get("vin").toString();
 			List<RedisVin> receiveRedisVinData = redisVinRepo.findByAllHash(srchPatt);
-
+			
 			reqData.setCarOid(Integer.parseInt(receiveRedisVinData.get(0).getCarOid()));
 			
 			List<BehaUbiSdhbInfo> resDto = repository.findByAllCriteria(Criteria.where("carOid").is(reqData.getCarOid()));
