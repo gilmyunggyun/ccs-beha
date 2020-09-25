@@ -12,3 +12,7 @@ target/
 .settings/
 .project
 .factorypath
+
+### intellj ###
+.idea/
+*.iml
