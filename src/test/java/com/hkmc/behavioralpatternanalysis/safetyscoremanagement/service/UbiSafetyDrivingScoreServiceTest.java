@@ -89,6 +89,7 @@ public class UbiSafetyDrivingScoreServiceTest {
 	}
 	
 	
+	@SuppressWarnings("unused")
 	@Test
 	public void testUbiSafetyDrivingScoreSearch() {
 		log.info("testUbiSafetyDrivingScoreSearch start");

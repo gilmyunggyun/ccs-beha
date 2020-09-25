@@ -95,7 +95,7 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
 		
 		try {
 
-			rpositoryTemp.reactiveDeleteAsAll();
+			rpositoryTemp.reactiveDeleteAsAll().block();
 
 		}
 		catch(Exception e) {
@@ -149,7 +149,7 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
 
 	    	}
 
-	    	repositoryTemp.reactiveSaveAsList(behaUbiSdhbInfoTempList);
+	    	repositoryTemp.reactiveSaveAsList(behaUbiSdhbInfoTempList).block();
 	    	
 		}
 		catch (Exception e) {
@@ -175,7 +175,7 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
 
 		try {
 
-			repository.reactiveDeleteAsAll();
+			repository.reactiveDeleteAsAll().block();
 		}
 		catch (Exception e) {
 
@@ -207,7 +207,7 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
 			Collections.copy(behaUbiSdhbInfoList, behaUbiSdhbInfoTempList);
 			
 			// BEHA_UBI_SDHB_INFO에 저장
-			repository.reactiveSaveAsList(behaUbiSdhbInfoList);
+			repository.reactiveSaveAsList(behaUbiSdhbInfoList).block();
 
 		}
 		catch (Exception e) {
@@ -246,7 +246,6 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
 		Map<String, Object> resultData = new HashMap<String, Object>();
 
 		BehaUbiSdhbInfo reqData = new BehaUbiSdhbInfo();
-		
 		
 		int status = 200;
 		String resultMessage = "Success";
@@ -312,7 +311,7 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
 			
 			if(!(ObjectUtils.isEmpty(resDto))) {
 
-				repository.reactiveDeleteAsObject(resDto.get(0));
+				repository.reactiveDeleteAsObject(resDto.get(0)).block();
 				
 		        resultData.put("resultStatus", "S");
 		        resultData.put("status", status);

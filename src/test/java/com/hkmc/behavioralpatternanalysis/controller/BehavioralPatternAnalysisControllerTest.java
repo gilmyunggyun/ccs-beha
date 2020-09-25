@@ -17,6 +17,8 @@ class BehavioralPatternAnalysisControllerTest {
 
 	@Test
 	void test() {
+		log.info("test");
+		
 		fail("Not yet implemented");
 	}
 
