@@ -116,7 +116,7 @@ public class IntelligenceVehicleInformationServiceTest {
 		long sendTotalCount = (long) kafkaListData.get(0).get("sendTotalCount");
 		
 //		when(intelligenceVehicleInformationService.selectBehaSvdvHistCount(toDay)).thenReturn((long) kafkaConsumerMap.get("sendTotalCount"));
-		given(jpaRepository.countByCriteria(Criteria.where("ifDate").is(toDay))).willReturn(sendTotalCount);
+		given(jpaRepository.reactiveCountByCriteria(Criteria.where("ifDate").is(toDay)).block()).willReturn(sendTotalCount);
 
 	}
 

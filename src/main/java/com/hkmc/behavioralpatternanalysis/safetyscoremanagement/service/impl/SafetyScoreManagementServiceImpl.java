@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.data.r2dbc.convert.R2dbcConverter;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
 import org.springframework.data.r2dbc.repository.support.R2dbcRepositoryFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -37,7 +36,6 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
 	private final RedisTemplate<byte[], byte[]> redisTemplate;
 	private final R2dbcEntityOperations postgresqlEntityOperations;
 	private final R2dbcRepositoryFactory postgresqlRepositoryFactory;
-	private final R2dbcConverter r2dbcConverter;
 
 	public void saveSafetyScoreManagement(Map<String, Object> kafkaConsumerMap) throws GlobalCCSException {
 
@@ -93,11 +91,11 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
 	public void deleteBehaUbiSdhbInfoTemp() throws GlobalCCSException {
 
 		RelationalEntityInformation<BehaUbiSdhbInfoTemp, Integer> entityTemp = postgresqlRepositoryFactory.getEntityInformation(BehaUbiSdhbInfoTemp.class);
-		GenericPostgreRepository<BehaUbiSdhbInfoTemp, Integer> jpaRepositoryTemp = new GenericPostgreRepository<>(BehaUbiSdhbInfoTemp.class, entityTemp, postgresqlEntityOperations, r2dbcConverter);
-
+		GenericPostgreRepository<BehaUbiSdhbInfoTemp, Integer> rpositoryTemp = new GenericPostgreRepository<>(BehaUbiSdhbInfoTemp.class, entityTemp, postgresqlEntityOperations);
+		
 		try {
 
-			jpaRepositoryTemp.deleteAsAll();
+			rpositoryTemp.reactiveDeleteAsAll();
 
 		}
 		catch(Exception e) {
@@ -114,7 +112,7 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
 	public void insertBehaUbiSdhbInfoTemp(Map<String, Object> kafkaConsumerMap) throws GlobalCCSException {
 
 		RelationalEntityInformation<BehaUbiSdhbInfoTemp, Integer> entityTemp = postgresqlRepositoryFactory.getEntityInformation(BehaUbiSdhbInfoTemp.class);
-		GenericPostgreRepository<BehaUbiSdhbInfoTemp, Integer> jpaRepositoryTemp = new GenericPostgreRepository<>(BehaUbiSdhbInfoTemp.class, entityTemp, postgresqlEntityOperations, r2dbcConverter);
+		GenericPostgreRepository<BehaUbiSdhbInfoTemp, Integer> repositoryTemp = new GenericPostgreRepository<>(BehaUbiSdhbInfoTemp.class, entityTemp, postgresqlEntityOperations);
 
 		List<Map<String, Object>> kafkaListData = (List<Map<String, Object>>) kafkaConsumerMap.get("listData");
 
@@ -151,7 +149,7 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
 
 	    	}
 
-	    	jpaRepositoryTemp.saveAsList(behaUbiSdhbInfoTempList);
+	    	repositoryTemp.reactiveSaveAsList(behaUbiSdhbInfoTempList);
 	    	
 		}
 		catch (Exception e) {
@@ -173,11 +171,11 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
 	public void deleteBehaUbiSdhbInfo() throws GlobalCCSException {
 
 		RelationalEntityInformation<BehaUbiSdhbInfo, Integer> entity = postgresqlRepositoryFactory.getEntityInformation(BehaUbiSdhbInfo.class);
-		GenericPostgreRepository<BehaUbiSdhbInfo, Integer> jpaRepository = new GenericPostgreRepository<>(BehaUbiSdhbInfo.class, entity, postgresqlEntityOperations, r2dbcConverter);
+		GenericPostgreRepository<BehaUbiSdhbInfo, Integer> repository = new GenericPostgreRepository<>(BehaUbiSdhbInfo.class, entity, postgresqlEntityOperations);
 
 		try {
 
-			jpaRepository.deleteAsAll();
+			repository.reactiveDeleteAsAll();
 		}
 		catch (Exception e) {
 
@@ -193,23 +191,23 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
 	public void insertBehaUbiSdhbInfo() throws GlobalCCSException {
 
 		RelationalEntityInformation<BehaUbiSdhbInfoTemp, Integer> entityTemp = postgresqlRepositoryFactory.getEntityInformation(BehaUbiSdhbInfoTemp.class);
-		GenericPostgreRepository<BehaUbiSdhbInfoTemp, Integer> jpaRepositoryTemp = new GenericPostgreRepository<>(BehaUbiSdhbInfoTemp.class, entityTemp, postgresqlEntityOperations, r2dbcConverter);
+		GenericPostgreRepository<BehaUbiSdhbInfoTemp, Integer> repositoryTemp = new GenericPostgreRepository<>(BehaUbiSdhbInfoTemp.class, entityTemp,  postgresqlEntityOperations);
 		
 		RelationalEntityInformation<BehaUbiSdhbInfo, Integer> entity = postgresqlRepositoryFactory.getEntityInformation(BehaUbiSdhbInfo.class);
-		GenericPostgreRepository<BehaUbiSdhbInfo, Integer> jpaRepository = new GenericPostgreRepository<>(BehaUbiSdhbInfo.class, entity, postgresqlEntityOperations, r2dbcConverter);
+		GenericPostgreRepository<BehaUbiSdhbInfo, Integer> repository = new GenericPostgreRepository<>(BehaUbiSdhbInfo.class, entity, postgresqlEntityOperations);
 
 		try {
 			
 			// BEHA_UBI_SDHB_INFO_TEMP 정보 가져오기
 			List behaUbiSdhbInfoTempList = new ArrayList();
-			behaUbiSdhbInfoTempList = jpaRepositoryTemp.findByAll();
+			behaUbiSdhbInfoTempList = repositoryTemp.reactiveFindByAll().block();
 
 			// behaUbiSdhbInfoList에 복사하기
 			List behaUbiSdhbInfoList = new ArrayList(behaUbiSdhbInfoTempList);
 			Collections.copy(behaUbiSdhbInfoList, behaUbiSdhbInfoTempList);
 			
 			// BEHA_UBI_SDHB_INFO에 저장
-			jpaRepository.saveAsList(behaUbiSdhbInfoList);
+			repository.reactiveSaveAsList(behaUbiSdhbInfoList);
 
 		}
 		catch (Exception e) {
@@ -225,11 +223,11 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
 	public long selectBehaUbiSdhbInfoTempCount() throws GlobalCCSException {
 
 		RelationalEntityInformation<BehaUbiSdhbInfoTemp, Integer> entityTemp = postgresqlRepositoryFactory.getEntityInformation(BehaUbiSdhbInfoTemp.class);
-		GenericPostgreRepository<BehaUbiSdhbInfoTemp, Integer> jpaRepositoryTemp = new GenericPostgreRepository<>(BehaUbiSdhbInfoTemp.class, entityTemp, postgresqlEntityOperations, r2dbcConverter);
+		GenericPostgreRepository<BehaUbiSdhbInfoTemp, Integer> jpaRepositoryTemp = new GenericPostgreRepository<>(BehaUbiSdhbInfoTemp.class, entityTemp, postgresqlEntityOperations);
 
 		long behaUbiSdhbInfoTempCount = 0;
 		
-		behaUbiSdhbInfoTempCount = jpaRepositoryTemp.countAll();
+		behaUbiSdhbInfoTempCount = jpaRepositoryTemp.reactiveCountAll().block();
 
 		return behaUbiSdhbInfoTempCount;
 
@@ -241,7 +239,7 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
 	public Map<String, Object> ubiSafetyDrivingScoreSearch(Map<String, Object> reqBody) {
 
 		RelationalEntityInformation<BehaUbiSdhbInfo, Integer> entity = postgresqlRepositoryFactory.getEntityInformation(BehaUbiSdhbInfo.class);
-		GenericPostgreRepository<BehaUbiSdhbInfo, Integer> repository = new GenericPostgreRepository<>(BehaUbiSdhbInfo.class, entity, postgresqlEntityOperations, r2dbcConverter);
+		GenericPostgreRepository<BehaUbiSdhbInfo, Integer> repository = new GenericPostgreRepository<>(BehaUbiSdhbInfo.class, entity, postgresqlEntityOperations);
 
     	GenericRedisRepository<RedisVin, String> redisVinRepo = new GenericRedisRepository<>(RedisVin.class, redisTemplate);
 		
@@ -260,7 +258,7 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
 
 			reqData.setCarOid(Integer.parseInt(receiveRedisVinData.get(0).getCarOid()));
 			
-			List<BehaUbiSdhbInfo> resDto = repository.findByAllCriteria(Criteria.where("carOid").is(reqData.getCarOid()));
+			List<BehaUbiSdhbInfo> resDto = repository.reactiveFindByAllCriteria(Criteria.where("carOid").is(reqData.getCarOid())).block();
 			
 	        resultData.put("body", resDto);
 	        resultData.put("resultStatus", "S");
@@ -292,7 +290,7 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
 	public Map<String, Object> ubiSafetyDrivingScoreDelete(Map<String, Object> reqBody) {
 
 		RelationalEntityInformation<BehaUbiSdhbInfo, Integer> entity = postgresqlRepositoryFactory.getEntityInformation(BehaUbiSdhbInfo.class);
-		GenericPostgreRepository<BehaUbiSdhbInfo, Integer> repository = new GenericPostgreRepository<>(BehaUbiSdhbInfo.class, entity, postgresqlEntityOperations, r2dbcConverter);
+		GenericPostgreRepository<BehaUbiSdhbInfo, Integer> repository = new GenericPostgreRepository<>(BehaUbiSdhbInfo.class, entity, postgresqlEntityOperations);
 
 		GenericRedisRepository<RedisVin, String> redisVinRepo = new GenericRedisRepository<>(RedisVin.class, redisTemplate);
 		
@@ -310,11 +308,11 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
 			
 			reqData.setCarOid(Integer.parseInt(receiveRedisVinData.get(0).getCarOid()));
 			
-			List<BehaUbiSdhbInfo> resDto = repository.findByAllCriteria(Criteria.where("carOid").is(reqData.getCarOid()));
+			List<BehaUbiSdhbInfo> resDto = repository.reactiveFindByAllCriteria(Criteria.where("carOid").is(reqData.getCarOid())).block();
 			
 			if(!(ObjectUtils.isEmpty(resDto))) {
 
-				repository.deleteAsObject(resDto.get(0));
+				repository.reactiveDeleteAsObject(resDto.get(0));
 				
 		        resultData.put("resultStatus", "S");
 		        resultData.put("status", status);

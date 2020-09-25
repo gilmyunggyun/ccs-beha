@@ -85,7 +85,7 @@ public class UbiSafetyDrivingScoreServiceTest {
 		body = new HashMap<>();
 		body.put("vin", "KMHF241DBLA285994");
 		
-		safetyScoreManagementService = new SafetyScoreManagementServiceImpl(redisTemplate, postgresqlEntityOperations, postgresqlRepositoryFactory, r2dbcConverter);
+		safetyScoreManagementService = new SafetyScoreManagementServiceImpl(redisTemplate, postgresqlEntityOperations, postgresqlRepositoryFactory);
 	}
 	
 	

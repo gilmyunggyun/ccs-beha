@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.data.r2dbc.convert.R2dbcConverter;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
 import org.springframework.data.r2dbc.repository.support.R2dbcRepositoryFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -33,13 +32,12 @@ public class IntelligenceVehicleInformationServiceImpl implements IntelligenceVe
 	private final RedisTemplate<byte[], byte[]> redisTemplate;	
 	private final R2dbcEntityOperations postgresqlEntityOperations;
 	private final R2dbcRepositoryFactory postgresqlRepositoryFactory;
-	private final R2dbcConverter r2dbcConverter; 
 
 	@SuppressWarnings("unchecked")
 	public void saveIntelligenceVehicleInformation(Map<String, Object> kafkaConsumerMap) throws GlobalCCSException {
 
 		RelationalEntityInformation<BehaSvdvHist, Integer> entity = postgresqlRepositoryFactory.getEntityInformation(BehaSvdvHist.class);
-		GenericPostgreRepository<BehaSvdvHist, Integer> jpaRepository = new GenericPostgreRepository<>(BehaSvdvHist.class, entity, postgresqlEntityOperations, r2dbcConverter);
+        GenericPostgreRepository<BehaSvdvHist, Integer> repository = new GenericPostgreRepository<>(BehaSvdvHist.class, entity, postgresqlEntityOperations);
 		
 		// 변수 선언
 		String sendDate = kafkaConsumerMap.get("sendDate").toString();
@@ -80,7 +78,7 @@ public class IntelligenceVehicleInformationServiceImpl implements IntelligenceVe
 
 	    	}
 
-	    	jpaRepository.saveAsList(behaSvdvHistList);
+	    	repository.reactiveSaveAsList(behaSvdvHistList);
 	    	
 	    	if(selectBehaSvdvHistCount(sendDate) == sendTotalCount) {
 	    		
@@ -112,11 +110,11 @@ public class IntelligenceVehicleInformationServiceImpl implements IntelligenceVe
 	public long selectBehaSvdvHistCount(String sendDate) throws GlobalCCSException {
 
 		RelationalEntityInformation<BehaSvdvHist, Integer> entity = postgresqlRepositoryFactory.getEntityInformation(BehaSvdvHist.class);
-		GenericPostgreRepository<BehaSvdvHist, Integer> jpaRepository = new GenericPostgreRepository<>(BehaSvdvHist.class, entity, postgresqlEntityOperations, r2dbcConverter);
+        GenericPostgreRepository<BehaSvdvHist, Integer> repository = new GenericPostgreRepository<>(BehaSvdvHist.class, entity, postgresqlEntityOperations);
 
 		long behaSvdvHistCount = 0;
 
-		behaSvdvHistCount = jpaRepository.countByCriteria(Criteria.where("ifDate").is(sendDate));
+		behaSvdvHistCount = repository.reactiveCountByCriteria(Criteria.where("ifDate").is(sendDate)).block();
 
 		return behaSvdvHistCount;
 		
@@ -127,7 +125,7 @@ public class IntelligenceVehicleInformationServiceImpl implements IntelligenceVe
 	public Map<String, Object> itlCarBreakpadDrvScoreSearch(Map<String, Object> reqBody) {
 
 		RelationalEntityInformation<BehaSvdvHist, Integer> entity = postgresqlRepositoryFactory.getEntityInformation(BehaSvdvHist.class);
-		GenericPostgreRepository<BehaSvdvHist, Integer> repository = new GenericPostgreRepository<>(BehaSvdvHist.class, entity, postgresqlEntityOperations, r2dbcConverter);			
+        GenericPostgreRepository<BehaSvdvHist, Integer> repository = new GenericPostgreRepository<>(BehaSvdvHist.class, entity, postgresqlEntityOperations);
 
 		GenericRedisRepository<RedisVin, String> redisVinRepo = new GenericRedisRepository<>(RedisVin.class, redisTemplate);
 
@@ -145,7 +143,7 @@ public class IntelligenceVehicleInformationServiceImpl implements IntelligenceVe
 			
 			reqData.setCarOid(Integer.parseInt(receiveRedisVinData.get(0).getCarOid()));
 			
-			List<BehaSvdvHist> resDto = repository.findByAllCriteria(Criteria.where("carOid").is(reqData.getCarOid()));
+			List<BehaSvdvHist> resDto = repository.reactiveFindByAllCriteria(Criteria.where("carOid").is(reqData.getCarOid())).block();
 
 			resultData.put("body", resDto);
 			resultData.put("resultStatus", "S");

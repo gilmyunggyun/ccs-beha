@@ -94,7 +94,7 @@ public class ItlCarBreakpadDrivingScoreServiceTest {
 		body.put("vin", "KMHF241DBLA285994");
 		
 		redisVinRepo = new GenericRedisRepository<>(RedisVin.class, redisTemplate);
-		intelligenceVehicleInformationService = new IntelligenceVehicleInformationServiceImpl(redisTemplate, postgresqlEntityOperations, postgresqlRepositoryFactory, r2dbcConverter);
+		intelligenceVehicleInformationService = new IntelligenceVehicleInformationServiceImpl(redisTemplate, postgresqlEntityOperations, postgresqlRepositoryFactory);
 	}
 	
 	@Test

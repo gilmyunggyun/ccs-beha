@@ -117,7 +117,7 @@ public class SafetyscoremanagementServiceTest {
 		log.info("[[ testSelectBehaUbiSdhbInfoTempCount Start ]]");
 
 		RelationalEntityInformation<BehaUbiSdhbInfoTemp, Integer> entityTemp = postgresqlRepositoryFactory.getEntityInformation(BehaUbiSdhbInfoTemp.class);
-		GenericPostgreRepository<BehaUbiSdhbInfoTemp, Integer> jpaRepositoryTemp = new GenericPostgreRepository<>(BehaUbiSdhbInfoTemp.class, entityTemp, postgresqlEntityOperations, r2dbcConverter);
+		GenericPostgreRepository<BehaUbiSdhbInfoTemp, Integer> jpaRepositoryTemp = new GenericPostgreRepository<>(BehaUbiSdhbInfoTemp.class, entityTemp, postgresqlEntityOperations);
 
 //		given(jpaRepositoryTemp.countAll()).willReturn(2L);
 		
