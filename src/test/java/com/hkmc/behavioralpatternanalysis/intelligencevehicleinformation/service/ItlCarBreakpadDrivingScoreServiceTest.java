@@ -97,6 +97,7 @@ public class ItlCarBreakpadDrivingScoreServiceTest {
 		intelligenceVehicleInformationService = new IntelligenceVehicleInformationServiceImpl(redisTemplate, postgresqlEntityOperations, postgresqlRepositoryFactory);
 	}
 	
+	@SuppressWarnings("unused")
 	@Test
 	public void testItlCarBreakpadDrvScoreSearchSuccess() throws GlobalCCSException {
 		log.info("testUBIItlCarBreakpadDrvScoreApiSuccess start");
@@ -109,6 +110,7 @@ public class ItlCarBreakpadDrivingScoreServiceTest {
 
 	}
 	
+	@SuppressWarnings("unused")
 	@Test
 	public void testItlCarBreakpadDrvScoreSearchException() throws GlobalCCSException {
 		log.info("testUBIItlCarBreakpadDrvScoreApiException start");

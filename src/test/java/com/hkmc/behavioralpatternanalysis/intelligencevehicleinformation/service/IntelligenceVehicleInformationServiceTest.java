@@ -61,7 +61,7 @@ public class IntelligenceVehicleInformationServiceTest {
 		
 		toDay = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 		
-		jpaRepository = new GenericPostgreRepository<>(BehaSvdvHist.class, postgresqlRepositoryFactory.getEntityInformation(BehaSvdvHist.class), postgresqlEntityOperations, r2dbcConverter);
+		jpaRepository = new GenericPostgreRepository<>(BehaSvdvHist.class, postgresqlRepositoryFactory.getEntityInformation(BehaSvdvHist.class), postgresqlEntityOperations);
 		
 		String consumerRecord = "";
 

@@ -78,7 +78,7 @@ public class IntelligenceVehicleInformationServiceImpl implements IntelligenceVe
 
 	    	}
 
-	    	repository.reactiveSaveAsList(behaSvdvHistList);
+	    	repository.reactiveSaveAsList(behaSvdvHistList).block();
 	    	
 	    	if(selectBehaSvdvHistCount(sendDate) == sendTotalCount) {
 	    		

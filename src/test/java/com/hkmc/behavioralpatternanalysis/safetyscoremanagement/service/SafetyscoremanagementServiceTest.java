@@ -111,6 +111,7 @@ public class SafetyscoremanagementServiceTest {
 		
 	}
 	
+	@SuppressWarnings("unused")
 	@Test
 	public void testSelectBehaUbiSdhbInfoTempCount() throws GlobalCCSException{
 		
