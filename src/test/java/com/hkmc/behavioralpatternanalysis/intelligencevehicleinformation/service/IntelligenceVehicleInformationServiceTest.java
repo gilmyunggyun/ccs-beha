@@ -5,6 +5,7 @@ import static org.mockito.BDDMockito.given;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +46,7 @@ public class IntelligenceVehicleInformationServiceTest {
 	private R2dbcConverter r2dbcConverter;
 	
 	@Mock
-	GenericPostgreRepository<BehaSvdvHist , Integer> jpaRepository;
+	GenericPostgreRepository<BehaSvdvHist, Integer> jpaRepository;
 	
 	private String toDay = "";
 	
@@ -55,14 +56,11 @@ public class IntelligenceVehicleInformationServiceTest {
 	
 	BehaSvdvHist behaSvdvHist;
 	
-	@SuppressWarnings("unchecked")
 	@BeforeEach
 	public void setup() throws GlobalCCSException {
 		
 		toDay = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-		
-		jpaRepository = new GenericPostgreRepository<>(BehaSvdvHist.class, postgresqlRepositoryFactory.getEntityInformation(BehaSvdvHist.class), postgresqlEntityOperations);
-		
+	
 		String consumerRecord = "";
 
 		consumerRecord = "" + 
@@ -100,9 +98,6 @@ public class IntelligenceVehicleInformationServiceTest {
 		
 		kafkaConsumerMap = JsonUtil.str2map(consumerRecord);
 		
-		kafkaListData = (List<Map<String, Object>>) kafkaConsumerMap.get("listData");
-		
-		behaSvdvHist = new BehaSvdvHist();
 	}
 	
 	
@@ -110,13 +105,26 @@ public class IntelligenceVehicleInformationServiceTest {
 	public void testSaveIntelligenceVehicleInformation() throws GlobalCCSException{
 		
 		log.info("[[ testGetCustomerBehaviorUbiInfo Start ]]");
-
+		
+		
 		intelligenceVehicleInformationService.saveIntelligenceVehicleInformation(kafkaConsumerMap);
 		
-		long sendTotalCount = (long) kafkaListData.get(0).get("sendTotalCount");
 		
-//		when(intelligenceVehicleInformationService.selectBehaSvdvHistCount(toDay)).thenReturn((long) kafkaConsumerMap.get("sendTotalCount"));
-		given(jpaRepository.reactiveCountByCriteria(Criteria.where("ifDate").is(toDay)).block()).willReturn(sendTotalCount);
+		
+		
+		
+//
+//		intelligenceVehicleInformationService.saveIntelligenceVehicleInformation(kafkaConsumerMap);
+//		
+//		List<BehaSvdvHist> behaSvdvHistList = new ArrayList<>();
+//		
+//		// listData 담기
+//		List<Map<String, Object>> kafkaListData = (List<Map<String, Object>>) kafkaConsumerMap.get("listData");
+//		
+//		long sendTotalCount = (long) kafkaListData.get(0).get("sendTotalCount");
+//		
+////		when(intelligenceVehicleInformationService.selectBehaSvdvHistCount(toDay)).thenReturn((long) kafkaConsumerMap.get("sendTotalCount"));
+//		given(jpaRepository.reactiveCountByCriteria(Criteria.where("ifDate").is(toDay)).block()).willReturn(sendTotalCount);
 
 	}
 
