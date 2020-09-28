@@ -21,6 +21,7 @@ import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.service
 import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.service.SafetyScoreManagementService;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @Api(tags = "소비자 행동패턴 분석 서비스")
@@ -42,6 +43,7 @@ public class BehavioralPatternAnalysisController {
 	 * @return	ResponseEntity<>
 	 * @throws 	GlobalCCSException
 	 */
+	@ApiOperation(value = "차량 브레이크 패드 자료에 대한 조회 요청을 처리")
 	@PostMapping(value="/itlCarBreakpadDrvScoreSearch")
 	public ResponseEntity<ResponseDTO<Map<String, Object>>> itlCarBreakpadDrvScoreSearch(@RequestHeader HttpHeaders header, @RequestBody Map<String, Object> body, HttpServletRequest req) throws GlobalCCSException {
 		
@@ -60,6 +62,7 @@ public class BehavioralPatternAnalysisController {
 	 * @return	ResponseEntity<>
 	 * @throws 	GlobalCCSException
 	 */
+	@ApiOperation(value = "UBI 안전 운전 점수 조회")
 	@PostMapping(value="/ubiSafetyDrivingScoreSearch")
 	public ResponseEntity<ResponseDTO<Map<String, Object>>> ubiSafetyDrivingScoreSearch(@RequestHeader HttpHeaders header, @RequestBody Map<String, Object> body, HttpServletRequest req) throws GlobalCCSException {
 
@@ -73,11 +76,12 @@ public class BehavioralPatternAnalysisController {
     
 	
     /**
-     * ubiSafetyDrivingScoreDelete	UBI 안전 운전 점수 조회
+     * ubiSafetyDrivingScoreDelete	UBI 안전 운전 점수 삭제
      * @param 	HttpHeaders header, Map<String, Object> body, HttpServletRequest req
      * @return	ResponseEntity<>
      * @throws 	GlobalCCSException
      */
+	@ApiOperation(value = "UBI 안전 운전 점수 삭제")
     @PostMapping(value="/ubiSafetyDrivingScoreDelete")
 	public ResponseEntity<ResponseDTO<Map<String, Object>>> ubiSafetyDrivingScoreDelete(@RequestHeader HttpHeaders header, HttpServletRequest req, @RequestBody Map<String, Object> body) throws GlobalCCSException {
     	
