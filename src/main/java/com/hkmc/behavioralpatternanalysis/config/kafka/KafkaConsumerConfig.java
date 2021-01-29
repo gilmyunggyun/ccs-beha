@@ -15,23 +15,24 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 @Configuration
 public class KafkaConsumerConfig {
-	
-	@Value("${spring.kafka.bootstrap-servers}")
-	private String kafkaBroker;
 
-    @Value("${templateservice.consumer.group-behavioralpatternanalysis")
+    @Value("${spring.kafka.bootstrap-servers}")
+    private String kafkaBroker;
+
+    @Value("${kafka.group.consumer}")
     private String serviceConsumerGroup;
-    
+
     @Value("${spring.kafka.consumer.auto-offset-reset}")
     private String autoOffsetRest;
-    
+
     @Value("${spring.kafka.consumer.enable.auto.commit}")
     private String enableAutoCommit;
 
+    @Value("${spring.kafka.consumer.max-poll-records}")
+    private String maxPollRecords;
 
     @Bean
-    public Map<String, Object> consumerProps() {
-    	
+    public Map<String, Object> consumerProps(){
         Map<String, Object> properties = new HashMap<>();
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBroker);
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, serviceConsumerGroup);
@@ -39,28 +40,21 @@ public class KafkaConsumerConfig {
         properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, enableAutoCommit);
         properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        
+        properties.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, maxPollRecords);
         return properties;
-
     }
 
-
     @Bean
-    public ConsumerFactory<String, String> consumerFactory() {
-    	
+    public ConsumerFactory<String, String> consumerFactory(){
         return new DefaultKafkaConsumerFactory<>(consumerProps(), new StringDeserializer(), new StringDeserializer());
-
     }
 
-
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
-
-        ConcurrentKafkaListenerContainerFactory<String, String> concurrentKafkaListenerContainerFactory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory(){
+        ConcurrentKafkaListenerContainerFactory<String, String> concurrentKafkaListenerContainerFactory =
+                new ConcurrentKafkaListenerContainerFactory<>();
         concurrentKafkaListenerContainerFactory.setConsumerFactory(consumerFactory());
-
         return concurrentKafkaListenerContainerFactory;
-
     }
 
 }

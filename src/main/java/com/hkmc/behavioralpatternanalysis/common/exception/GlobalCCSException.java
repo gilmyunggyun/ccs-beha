@@ -16,10 +16,10 @@ public class GlobalCCSException extends RuntimeException {
 	private final int code;
 	private final String errorMessage;
 	private final HttpStatus status;
-	
+
 	private final HttpHeaders httpHeaders;
 	private final String body;
-	
+
 	public GlobalCCSException() {
 		super(CCS_EXCEPTION_MESASGE);
 		this.code = HttpStatus.INTERNAL_SERVER_ERROR.value();
@@ -28,7 +28,7 @@ public class GlobalCCSException extends RuntimeException {
 		this.httpHeaders = new HttpHeaders();
 		this.body = StringUtils.EMPTY;
 	}
-	
+
 	public GlobalCCSException(final int code) {
 		super(CCS_EXCEPTION_MESASGE);
 		this.code = code;
@@ -55,7 +55,7 @@ public class GlobalCCSException extends RuntimeException {
 		this.httpHeaders = new HttpHeaders();
 		this.body = StringUtils.EMPTY;
 	}
-	
+
 	public GlobalCCSException(String message, int code, String ccsMessage, HttpHeaders httpHeaders, String body) {
 		super(message);
 		this.code = code;
@@ -64,8 +64,7 @@ public class GlobalCCSException extends RuntimeException {
 		this.httpHeaders = httpHeaders;
 		this.body = body;
 	}
-	
-	
+
 	public HttpStatus getHttpStatus(final int code) {
 		try {
 			return HttpStatus.valueOf(code);
@@ -73,5 +72,5 @@ public class GlobalCCSException extends RuntimeException {
 			return null;
 		}
 	}
-	
+
 }

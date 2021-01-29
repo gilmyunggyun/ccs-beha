@@ -11,6 +11,7 @@ server:
 ---
 #default config
 spring:
+  profiles: local
   application:
     name: ccsp20-behavioralpatternanalysis
   async:
@@ -27,6 +28,8 @@ management:
       exposure:
         include: "*"
 
+---
+#feign client config
 feign:
   httpclient:
     enabled: true    
@@ -37,15 +40,16 @@ feign:
       default:
         connectTimeout: 2000
         readTimeout: 122000
-        loggerLevel: headers
+        loggerLevel: FULL
+        retryer: com.hkmc.behavioralpatternanalysis.config.feign.FeignClientRetryer
 
 ---
 #local config properties
 common-message:
   hello: word
 example:
- name: hello
- 
+  name: hello
+
 ---
 #logback config
 logging:
@@ -55,32 +59,7 @@ logging:
     org.springframework.data.r2dbc: DEBUG
 
 ---
-#Kafka consumer group
-template:
-  topic-behavioralpatternanalysis-safetyscoremanagement: ccsp20.behavioralpatternanalysis.safetyscoremanagement.topic
-  topic-behavioralpatternanalysis-intelligencevehicleinformation: ccsp20.behavioralpatternanalysis.intelligencevehicleinformation.topic
-templateservice:
-  consumer:
-    group-behavioralpatternanalysis: ccsp20.behavioralpatternanalysis.group
-
-#Kafka config
-spring:
-  kafka:
-#    bootstrap-servers: 10.11.52.11:9092,10.11.52.12:9092,10.11.52.13:9092,10.11.52.14:9092,10.11.52.15:9092,10.11.52.16:9092
-    bootstrap-servers: 10.20.214.28:9092
-    consumer:      
-      auto-offset-reset: latest
-      enable: 
-        auto:
-          commit: false
-  feign:
-    server:
-      url: http://localhost:8085
-      name: customfeignClient
-#    producer:
-      
----
-#local DB config 
+#DB config
 spring:
   profiles: local
   postgres:
@@ -95,23 +74,33 @@ spring:
       maxlifetime: 100
       initalsize: 10
       max-size: 100
-      maxcreateconnectiontime: 10000   
-  data:
-    mongodb:
-      uri: mongodb://ccs_toRM:!1234ccs_toRM@10.11.52.246:27017,10.11.52.247:27017,10.11.52.248:27017/ccs?authSource=admin&replicaSet=testReplSet&readPreference=primary&appname=MongoDB%20Compass&ssl=false
-      database: ccs
-  redis:    
-    host: "10.11.39.67"    
-#    port: 34959
-#    password: "fd05a9dc-2cfb-4307-a3df-2d8622fd5f80"
-    port : 38913
-    password: "a206339c-2eef-4bb1-bdfb-019a7df9c443"
-    database : 0    
-    
+      maxcreateconnectiontime: 10000
+  kafka:
+    #    bootstrap-servers: 10.11.52.11:9092,10.11.52.12:9092,10.11.52.13:9092,10.11.52.14:9092,10.11.52.15:9092,10.11.52.16:9092
+    bootstrap-servers: 10.20.214.28:9092
+    consumer:
+      auto-offset-reset: latest
+      enable:
+        auto:
+          commit: false
+      max-poll-records: 300
   zipkin:
     base-url: http://10.11.53.1:9411
-#  r2dbc: 
-#    url: r2dbc:pool:postgresql://10.20.213.192:5432/megazone
-#    username: megazone
-#    password: megazone
-   
+    httptag: true
+  mtgateway:
+    server:
+      url: http://localhost:9001
+      name: mtgateway
+  redis:
+    host: "10.11.39.67"
+    #    port: 34959
+    #    password: "fd05a9dc-2cfb-4307-a3df-2d8622fd5f80"
+    port: 38913
+    password: "a206339c-2eef-4bb1-bdfb-019a7df9c443"
+    database: 0
+kafka:
+  topic:
+    remotecontrol-audit: ccsp20.remotecontrol.audit
+    intelligencevehicleinformation: ccsp20.behavioralpatternanalysis.intelligencevehicleinformation # TODO: 바꿈(기존=ccsp20.behavioralpatternanalysis.intelligencevehicleinformation.topic)
+  group:
+    consumer: ccsp20-behavioralpatternanalysis # TODO: 바꿈 (기존=ccsp20.behavioralpatternanalysis.group)

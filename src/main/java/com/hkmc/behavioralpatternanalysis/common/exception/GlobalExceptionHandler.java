@@ -1,18 +1,13 @@
 package com.hkmc.behavioralpatternanalysis.common.exception;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
-
+import feign.FeignException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hkmc.behavioralpatternanalysis.common.model.ResponseErrorDTO;
 
 import lombok.RequiredArgsConstructor;
@@ -26,42 +21,50 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class GlobalExceptionHandler {
 
-	private ObjectMapper mapper = new ObjectMapper();
-	
-	@ExceptionHandler(value = GlobalCCSException.class)
-	public static ResponseEntity<ResponseErrorDTO> globalCCSException(GlobalCCSException e){
-		log.debug("Exception : {}", e.getMessage());
-		log.debug("Exception : {}", e.getMessage());
+	private static final String EXCEPTION = "Exception : {}";
+
+	@ExceptionHandler(value = FeignException.class)
+	public  ResponseEntity<ResponseErrorDTO> feignException(FeignException e){
+		log.debug(EXCEPTION, e.getMessage());
 		ResponseErrorDTO errorDTO = ResponseErrorDTO.builder()
-		        .errorMessage(e.getMessage())
-		        .code(e.getCode())
-		        .build();
-		
-		return ResponseEntity.status(checkStatusCode(errorDTO.getCode())).body(errorDTO);
+				.errorMessage(e.getMessage())
+				.code(e.status())
+				.build();
+
+		return ResponseEntity.status(checkStatusCode(e.status())).headers(new HttpHeaders()).contentType(MediaType.APPLICATION_JSON).body(errorDTO);
 	}
-    
-    @ExceptionHandler(value = CCSFeignException.class)
-    public String ccsFeignClientException(CCSFeignException e, HttpServletResponse response) {
-    	response.setStatus(e.status());
-    	
-    	String body = e.contentUTF8();
-    	Map<String, Object> bodyMap = new HashMap<>();
-    	try {
-			bodyMap = mapper.readValue(body, new TypeReference<Map<String, Object>>(){});
-		} catch (JsonProcessingException e1) {
-			bodyMap.put("data", body);
-		}
-    	
-    	return body;
-    }
-    
-    @ExceptionHandler(value = Exception.class)
-    public ResponseEntity<ResponseErrorDTO> exception(Exception e) {
-    	return new ResponseEntity<>(ResponseErrorDTO.builder().errorMessage(e.getMessage()).build(),HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-    
-    private static int checkStatusCode(final int statusCode) {
-    	return (statusCode < HttpStatus.OK.value() && HttpStatus.resolve(statusCode) == null) ? HttpStatus.INTERNAL_SERVER_ERROR.value() : statusCode;
-    }
-    
+
+	@ExceptionHandler(value = GlobalCCSException.class)
+	public  ResponseEntity<ResponseErrorDTO> globalCCSException(GlobalCCSException e){
+		log.debug(EXCEPTION, e.getMessage());
+		ResponseErrorDTO errorDTO = ResponseErrorDTO.builder()
+				.errorMessage(e.getMessage())
+				.code(e.getCode())
+				.build();
+
+
+		return ResponseEntity.status(checkStatusCode(e.getCode())).headers(new HttpHeaders()).contentType(MediaType.APPLICATION_JSON).body(errorDTO);
+
+	}
+
+	@ExceptionHandler(value = GlobalExternalException.class)
+	public static ResponseEntity<String> GlobalExternalException(GlobalExternalException e){
+		log.debug(EXCEPTION, e.toString());
+		return ResponseEntity.status(e.getStatusCode()).body(e.getBody());
+	}
+
+	@ExceptionHandler(value = Exception.class)
+	public ResponseEntity<ResponseErrorDTO> exception(Exception e) {
+		log.debug(EXCEPTION, e.getMessage());
+		return new ResponseEntity<>(
+				ResponseErrorDTO.builder()
+						.errorMessage(e.getMessage())
+						.build(),
+				HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	private static int checkStatusCode(final int statusCode) {
+		return (statusCode < HttpStatus.OK.value() && HttpStatus.resolve(statusCode) == null) ? HttpStatus.INTERNAL_SERVER_ERROR.value() : statusCode;
+	}
+
 }

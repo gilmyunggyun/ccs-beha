@@ -25,7 +25,7 @@ public class KafkaConsumerItlCar {
     }
 
 	// 소비자 행통패턴 분석 - 지능형 차량관리
-	@KafkaListener(topics = "${template.topic-behavioralpatternanalysis-intelligencevehicleinformation}", groupId="${templateservice.consumer.group-behavioralpatternanalysis}")
+//	@KafkaListener(topics = "${kafka.topic.intelligencevehicleinformation}")
 	public void intelligencevehicleinformationSubscribe(String consumerRecord) throws GlobalCCSException {
 
 		Map<String, Object> consumerRecordMap = JsonUtil.str2map(consumerRecord);

@@ -1,7 +1,8 @@
-package com.hkmc.behavioralpatternanalysis.config.database;
+package com.hkmc.behavioralpatternanalysis.config.datasource;
 
 import java.time.Duration;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +20,7 @@ import org.springframework.transaction.ReactiveTransactionManager;
 
 import io.r2dbc.pool.ConnectionPool;
 import io.r2dbc.pool.ConnectionPoolConfiguration;
+import io.r2dbc.pool.PoolingConnectionFactoryProvider;
 import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
@@ -31,7 +33,7 @@ public class PostgresqlDatabaseConfig extends AbstractR2dbcConfiguration {
 	private static final String POSTGRESQL = "postgresql";
 
 	private static final String POOL = "pool";
-	
+
 	@Value("${spring.postgres.uri}")
 	private String host;
 	@Value("${spring.postgres.port}")
@@ -49,14 +51,15 @@ public class PostgresqlDatabaseConfig extends AbstractR2dbcConfiguration {
 	@Value("${spring.postgres.pool.maxidletime}")
 	private int maxLifeTime;
 	@Value("${spring.postgres.pool.initalsize}")
-	private int initalSize;
+	private int initialSize;
 	@Value("${spring.postgres.pool.max-size}")
 	private int maxSize;
 	@Value("${spring.postgres.pool.maxcreateconnectiontime}")
 	private int maxCreateConnectionTime;
-	
-	private static DefaultReactiveDataAccessStrategy strategy = new DefaultReactiveDataAccessStrategy(new PostgresDialect());
-	
+
+	private static DefaultReactiveDataAccessStrategy strategy = new DefaultReactiveDataAccessStrategy(
+			new PostgresDialect());
+
 	@Override
 	@Bean
 	public ConnectionFactory connectionFactory() {
@@ -68,46 +71,49 @@ public class PostgresqlDatabaseConfig extends AbstractR2dbcConfiguration {
 				.option(ConnectionFactoryOptions.DATABASE, database)
 				.option(ConnectionFactoryOptions.USER, usernamee)
 				.option(ConnectionFactoryOptions.PASSWORD, password)
+				.option(PoolingConnectionFactoryProvider.MAX_SIZE, maxSize)
+				.option(PoolingConnectionFactoryProvider.INITIAL_SIZE, initialSize)
+				.option(PoolingConnectionFactoryProvider.MAX_IDLE_TIME, Duration.ofMillis(maxIdleTime))
+				.option(PoolingConnectionFactoryProvider.MAX_LIFE_TIME, Duration.ofMillis(maxLifeTime))
+				.option(PoolingConnectionFactoryProvider.MAX_CREATE_CONNECTION_TIME, Duration.ofMillis(maxCreateConnectionTime))
+				.option(PoolingConnectionFactoryProvider.VALIDATION_DEPTH, ValidationDepth.LOCAL)
+				.option(PoolingConnectionFactoryProvider.VALIDATION_QUERY, "select 1+1")
 				.build());
+
 		ConnectionPoolConfiguration configuration = ConnectionPoolConfiguration.builder(connectionFactory)
-				.initialSize(initalSize)
+				.initialSize(initialSize)
 				.maxSize(maxSize)
 				.maxIdleTime(Duration.ofMinutes(maxIdleTime))
 				.maxLifeTime(Duration.ofMinutes(maxLifeTime))
 				.maxCreateConnectionTime(Duration.ofMillis(maxCreateConnectionTime))
 				.validationDepth(ValidationDepth.LOCAL)
 				.validationQuery("select 1+1")
-				.name(poolname)
-				.build();
-		
+				.name(poolname).build();
+
 		return new ConnectionPool(configuration);
 	}
-	
+
 	@Bean
 	public R2dbcEntityOperations postgresqlEntityOperations(ConnectionFactory connectionFactory) {
-		DatabaseClient databaseClient = DatabaseClient.builder()
-				.connectionFactory(connectionFactory)
-				.dataAccessStrategy(strategy)
-				.build();
-		
+		DatabaseClient databaseClient = DatabaseClient.builder().connectionFactory(connectionFactory)
+				.dataAccessStrategy(strategy).build();
+
 		strategy.getMappingContext();
 		return new R2dbcEntityTemplate(databaseClient, strategy);
 	}
-	
+
 	@Bean
 	public R2dbcRepositoryFactory postgresqlRepositoryFactory(ConnectionFactory connectionFactory) {
-		DatabaseClient databaseClient = DatabaseClient.builder()
-				.connectionFactory(connectionFactory)
-				.dataAccessStrategy(strategy)
-				.build();
+		DatabaseClient databaseClient = DatabaseClient.builder().connectionFactory(connectionFactory)
+				.dataAccessStrategy(strategy).build();
 		return new R2dbcRepositoryFactory(databaseClient, strategy);
 	}
-	
+
 	@Bean
 	public R2dbcConverter r2dbcConverter() {
 		return strategy.getConverter();
 	}
-	
+
 	@Bean
 	ReactiveTransactionManager transactionManager(ConnectionFactory connectionFactory) {
 		return new R2dbcTransactionManager(connectionFactory);
