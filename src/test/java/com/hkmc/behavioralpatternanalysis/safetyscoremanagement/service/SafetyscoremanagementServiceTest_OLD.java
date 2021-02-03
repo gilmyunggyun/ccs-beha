@@ -21,7 +21,7 @@ import org.springframework.data.relational.repository.query.RelationalEntityInfo
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalCCSException;
 import com.hkmc.behavioralpatternanalysis.common.util.JsonUtil;
 import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.BehaUbiSdhbInfoTemp;
-import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.service.impl.SafetyScoreManagementServiceImpl;
+import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.service.impl.SafetyScoreManagementServiceImpl_OLD;
 
 import ccs.core.db.repository.postgre.GenericPostgreRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -29,10 +29,10 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
-public class SafetyscoremanagementServiceTest {
+public class SafetyscoremanagementServiceTest_OLD {
 	
 	@InjectMocks
-	private SafetyScoreManagementServiceImpl safetyScoreManagementService;
+	private SafetyScoreManagementServiceImpl_OLD safetyScoreManagementService;
 	
 	@Mock
 	private R2dbcEntityOperations postgresqlEntityOperations;

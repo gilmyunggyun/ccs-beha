@@ -98,6 +98,19 @@ spring:
     port: 38913
     password: "a206339c-2eef-4bb1-bdfb-019a7df9c443"
     database: 0
+interface-server:
+  blu:
+    url: http://10.11.60.218:6101
+#    url: http://10.11.61.206:6101
+    name: BlueLink
+  uvo:
+    url: http://10.11.60.218:6101
+#    url: http://10.11.61.206:6201
+    name: UVO
+  gne:
+    url: http://10.11.60.218:6101
+#    url: http://10.11.61.206:6301
+    name: GenesisConnected
 kafka:
   topic:
     remotecontrol-audit: ccsp20.remotecontrol.audit

@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalCCSException;
 import com.hkmc.behavioralpatternanalysis.common.model.RedisVin;
 import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.BehaUbiSdhbInfo;
-import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.service.impl.SafetyScoreManagementServiceImpl;
+import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.service.impl.SafetyScoreManagementServiceImpl_OLD;
 
 import ccs.core.db.repository.redis.GenericRedisRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +37,7 @@ public class UbiSafetyDrivingScoreServiceTest {
 	
 	Map<String, Object> body;
 	
-	SafetyScoreManagementService  safetyScoreManagementService;
+	SafetyScoreManagementService_OLD safetyScoreManagementServiceOLD;
 	
 	List<RedisVin> redisVinList;
 	
@@ -85,7 +85,7 @@ public class UbiSafetyDrivingScoreServiceTest {
 		body = new HashMap<>();
 		body.put("vin", "KMHF241DBLA285994");
 		
-		safetyScoreManagementService = new SafetyScoreManagementServiceImpl(redisTemplate, postgresqlEntityOperations, postgresqlRepositoryFactory);
+		safetyScoreManagementServiceOLD = new SafetyScoreManagementServiceImpl_OLD(redisTemplate, postgresqlEntityOperations, postgresqlRepositoryFactory);
 	}
 	
 	
@@ -97,7 +97,7 @@ public class UbiSafetyDrivingScoreServiceTest {
 		String srchPatt = "*_" + body.get("vin");
 		
 		given(redisVinRepo.findByAllHash(srchPatt)).willReturn(redisVinList); //	Redis Vin 데이터 조회
-		Map<String, Object> retResp = safetyScoreManagementService.ubiSafetyDrivingScoreSearch(body);
+		Map<String, Object> retResp = safetyScoreManagementServiceOLD.ubiSafetyDrivingScoreSearch(body);
 
 		log.info("testUbiSafetyDrivingScoreSearch end");
 	}
@@ -108,7 +108,7 @@ public class UbiSafetyDrivingScoreServiceTest {
 		log.info("testUbiSafetyDrivingScoreSearchFaile start");
 		
 		Assertions.assertThrows(GlobalCCSException.class, () -> {
-			safetyScoreManagementService.ubiSafetyDrivingScoreSearch(body);			
+			safetyScoreManagementServiceOLD.ubiSafetyDrivingScoreSearch(body);
 		});
 		
 		log.info("testUbiSafetyDrivingScoreSearchFaile end");
@@ -119,7 +119,7 @@ public class UbiSafetyDrivingScoreServiceTest {
 	public void testUbiSafetyDrivingScoreDelete() {
 		log.info("testUbiSafetyDrivingScoreDelete start");
 
-		Map<String, Object> retResp = safetyScoreManagementService.ubiSafetyDrivingScoreDelete(body);
+		Map<String, Object> retResp = safetyScoreManagementServiceOLD.ubiSafetyDrivingScoreDelete(body);
 		log.debug("[Result] = {}", retResp.toString());
 
 		log.info("testUbiSafetyDrivingScoreDelete end");
@@ -131,7 +131,7 @@ public class UbiSafetyDrivingScoreServiceTest {
 		log.info("testUbiSafetyDrivingScoreDeleteFaile start");
 		
 		Assertions.assertThrows(GlobalCCSException.class, () -> {
-			safetyScoreManagementService.ubiSafetyDrivingScoreDelete(body);
+			safetyScoreManagementServiceOLD.ubiSafetyDrivingScoreDelete(body);
 		});
 		
 		log.info("testUbiSafetyDrivingScoreDeleteFaile end");

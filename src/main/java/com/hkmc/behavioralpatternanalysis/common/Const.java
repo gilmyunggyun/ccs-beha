@@ -35,7 +35,8 @@ public class Const {
 		public static final String HOST = "host";
 		public static final String CAR_MODEL = "carmodel";
 		public static final String X_ORG_URI = "x-org-uri";
-	}
+        public static final String CCID = "ccid";
+    }
 
 	public static class System {
 		public static final String PHONE = "PHONE";
@@ -120,10 +121,33 @@ public class Const {
 		public static final String AUDIT_STATUS_NAN = "NaN";
 	}
 
+	public static class ResponseMessage {
+		public static final String SUCCESS = "Success";
+	}
+
 	public static class ServiceNo {
 		public static final String CAR_STATUS = "F6";
 		public static final String POLL_CAR_STATUS = "P2";
 		public static final String POLL_COODI_OPTION = "P7";
+		public static final String UBI_SCORE = "A26";
+	}
+
+	public static class AppType {
+		public static final String UVO = "UVO";
+		public static final String BLUE_LINK = "BLU";
+		public static final String GENESIS_CONNECTED = "GEN";
+//		public static final String ? = "BLC";
+//		public static final String ? = "UVC";
+	}
+
+	public static class ClientKey {
+		public static final String SAFETY_DRV_SCORE = "safety_drv_score";
+		public static final String INS_DISCOUNT_YN = "ins_discount_yn";
+		public static final String SCORE_DATE = "score_date";
+		public static final String RANGE_DRV_DIST = "range_drv_dist";
+		public static final String BRST_ACC_GRADE = "brst_acc_grade";
+		public static final String BRST_DEC_GRADE = "brst_dec_grade";
+		public static final String NIGHT_DRV_GRADE = "night_drv_grade";
 	}
 
 	/** Notification */
@@ -157,6 +181,5 @@ public class Const {
 	public static final String FILTER_DATETIME_REGX = "\\/";
 	public static final String LIST_INDEX_REGX = "\\[0\\]";
 	public static final int FILTER_SKIP_INDEX = 3;
-
 }
 

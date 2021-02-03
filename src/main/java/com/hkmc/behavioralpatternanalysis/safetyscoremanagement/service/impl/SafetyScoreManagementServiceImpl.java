@@ -1,349 +1,124 @@
 package com.hkmc.behavioralpatternanalysis.safetyscoremanagement.service.impl;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
-import org.springframework.data.r2dbc.repository.support.R2dbcRepositoryFactory;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.relational.core.query.Criteria;
-import org.springframework.data.relational.repository.query.RelationalEntityInformation;
-import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
-
 import com.google.gson.Gson;
-import com.hkmc.behavioralpatternanalysis.common.exception.GlobalCCSException;
-import com.hkmc.behavioralpatternanalysis.common.model.RedisVin;
-import com.hkmc.behavioralpatternanalysis.common.util.CommonUtil;
-import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.BehaUbiSdhbInfo;
-import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.BehaUbiSdhbInfoTemp;
+import com.hkmc.behavioralpatternanalysis.common.Const;
+import com.hkmc.behavioralpatternanalysis.common.client.InterfaceBluelinkClient;
+import com.hkmc.behavioralpatternanalysis.common.client.InterfaceGenesisConnectedClient;
+import com.hkmc.behavioralpatternanalysis.common.client.InterfaceUVOClient;
+import com.hkmc.behavioralpatternanalysis.common.code.BehavioralPatternAnalysisServiceEnum;
+import com.hkmc.behavioralpatternanalysis.common.code.SpaResponseCodeEnum;
+import com.hkmc.behavioralpatternanalysis.common.exception.GlobalExternalException;
+import com.hkmc.behavioralpatternanalysis.common.model.SpaResponseDTO;
+import com.hkmc.behavioralpatternanalysis.common.util.JsonUtil;
+import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreReqVO;
+import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreResDTO;
+import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreVO;
 import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.service.SafetyScoreManagementService;
+import feign.FeignException;
+import io.netty.util.internal.StringUtil;
+import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
-import ccs.core.db.repository.postgre.GenericPostgreRepository;
-import ccs.core.db.repository.redis.GenericRedisRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementService {
+    @Autowired
+    private InterfaceUVOClient interfaceUVOClient;
+    @Autowired
+    private InterfaceGenesisConnectedClient interfaceGenesisConnectedClient;
+    @Autowired
+    private InterfaceBluelinkClient interfaceBluelinkClient;
 
-	private final RedisTemplate<byte[], byte[]> redisTemplate;
-	private final R2dbcEntityOperations postgresqlEntityOperations;
-	private final R2dbcRepositoryFactory postgresqlRepositoryFactory;
-
-	public void saveSafetyScoreManagement(Map<String, Object> kafkaConsumerMap) throws GlobalCCSException {
-
-		try {
-	
-			// 페이지 add
-			CommonUtil.addConsumerPage();
-			
-			// 처음 실행시 데이터가 존재할 수 있을 경우를 대비하여 삭제
-			if (CommonUtil.getConsumerPage() == 1) {
-				
-				// BEHA_UBI_SDHB_INFO_TEMP 삭제
-				deleteBehaUbiSdhbInfoTemp();
-
-			}
-
-			// BEHA_UBI_SDHB_INFO_TEMP에 데이터 저장
-			insertBehaUbiSdhbInfoTemp(kafkaConsumerMap);
-			
-			// selectBehaUbiSdhbInfoTempCount()가 sendTotalCount와 동일할 경우만 실행
-			if(selectBehaUbiSdhbInfoTempCount() == Long.parseLong(kafkaConsumerMap.get("sendTotalCount").toString())) {
-				
-				// BEHA_UBI_SDHB_INFO의 기존 데이터 삭제
-				deleteBehaUbiSdhbInfo();
-				
-				// BEHA_UBI_SDHB_INFO_TEMP의 데이터를 BEHA_UBI_SDHB_INFO에 저장
-				insertBehaUbiSdhbInfo();
-
-				// BEHA_UBI_SDHB_INFO_TEMP 삭제
-				deleteBehaUbiSdhbInfoTemp();				
-
-				// 페이지 및 건수 초기화
-				CommonUtil.resetConsumerPage();
-				CommonUtil.resetConsumerCount();
-				
-				log.info("[SafetyScoreManagementServiceImpl.saveSafetyScoreManagement END]");
-			}
-
-		}
-		catch(Exception e) {
-
-			// 페이지 및 건수 초기화
-			CommonUtil.resetConsumerPage();
-			CommonUtil.resetConsumerCount();
-			
-			log.error("[SafetyScoreManagementServiceImpl.saveSafetyScoreManagement] Ex : ", e);
-		}
-
-	}
-	
-	
-	// BEHA_UBI_SDHB_INFO_TEMP 삭제
-	public void deleteBehaUbiSdhbInfoTemp() throws GlobalCCSException {
-
-		RelationalEntityInformation<BehaUbiSdhbInfoTemp, Integer> entityTemp = postgresqlRepositoryFactory.getEntityInformation(BehaUbiSdhbInfoTemp.class);
-		GenericPostgreRepository<BehaUbiSdhbInfoTemp, Integer> rpositoryTemp = new GenericPostgreRepository<>(BehaUbiSdhbInfoTemp.class, entityTemp, postgresqlEntityOperations);
-		
-		try {
-
-			rpositoryTemp.reactiveDeleteAsAll().block();
-
-		}
-		catch(Exception e) {
-
-			log.error("[SafetyScoreManagementServiceImpl.deleteBehaUbiSdhbInfoTemp] Ex : ", e);
-
-		}
-
-	}
-
-
-	// BEHA_UBI_SDHB_INFO_TEMP에 데이터 저장
-	@SuppressWarnings("unchecked")
-	public void insertBehaUbiSdhbInfoTemp(Map<String, Object> kafkaConsumerMap) throws GlobalCCSException {
-
-		RelationalEntityInformation<BehaUbiSdhbInfoTemp, Integer> entityTemp = postgresqlRepositoryFactory.getEntityInformation(BehaUbiSdhbInfoTemp.class);
-		GenericPostgreRepository<BehaUbiSdhbInfoTemp, Integer> repositoryTemp = new GenericPostgreRepository<>(BehaUbiSdhbInfoTemp.class, entityTemp, postgresqlEntityOperations);
-
-		List<Map<String, Object>> kafkaListData = (List<Map<String, Object>>) kafkaConsumerMap.get("listData");
-
-		List<BehaUbiSdhbInfoTemp> behaUbiSdhbInfoTempList = new ArrayList<>();
-		
-		Gson gson = new Gson();
-		
-		// 변수 선언
-		String sendDate = kafkaConsumerMap.get("sendDate").toString();
-		long sendTotalPage = Long.parseLong(kafkaConsumerMap.get("sendTotalPage").toString());
-		long sendCurrentPage = Long.parseLong(kafkaConsumerMap.get("sendCurrentPage").toString());
-		long sendTotalCount = Long.parseLong(kafkaConsumerMap.get("sendTotalCount").toString());
-		long sendPageInCount = Long.parseLong(kafkaConsumerMap.get("sendPageInCount").toString());
-		
-		String strNnidVin = "";
-		int intCarOid = 0;
-		
-		try {
-			
-	    	for (Map<String, Object> data : kafkaListData) {
-	    		
-				CommonUtil.addConsumerCount();
-	    		
-				BehaUbiSdhbInfoTemp behaUbiSdhbInfoTemp = gson.fromJson(data.toString(), BehaUbiSdhbInfoTemp.class);
-				
-	    		// carOid를 가져와 저장하기 위함
-				strNnidVin = behaUbiSdhbInfoTemp.getNnidVin();
-				intCarOid = Integer.parseInt(strNnidVin.substring(16, (16 + (strNnidVin.length() - 19))), 16);
-	    		
-	    		behaUbiSdhbInfoTemp.setCarOid(intCarOid);
-	    		behaUbiSdhbInfoTemp.setIfDate(LocalDateTime.now());
-    		
-	    		behaUbiSdhbInfoTempList.add(behaUbiSdhbInfoTemp);
-
-	    	}
-
-	    	repositoryTemp.reactiveSaveAsList(behaUbiSdhbInfoTempList).block();
-	    	
-		}
-		catch (Exception e) {
-
-			log.error("[SafetyScoreManagementServiceImpl.insertBehaUbiSdhbInfoTemp Error] : sendDate({}), sendTotalPage({}) / currentPage({}) / sendCurrentPage({}), sendTotalCount({}) / currentCount({}) / sendPageInCount({}), vin({})"
-					, sendDate, sendTotalPage, CommonUtil.consumerPage, sendCurrentPage, sendTotalCount, CommonUtil.consumerCount,  sendPageInCount, strNnidVin);
-
-			// 페이지 및 건수 초기화
-			CommonUtil.resetConsumerCount();
-			CommonUtil.resetConsumerPage();
-			
-			log.error("[SafetyScoreManagementServiceImpl.insertBehaUbiSdhbInfoTemp] Ex : ", e);
-		} 
-
-	}
-
-
-	// BEHA_UBI_SDHB_INFO의 기존 데이터 삭제
-	public void deleteBehaUbiSdhbInfo() throws GlobalCCSException {
-
-		RelationalEntityInformation<BehaUbiSdhbInfo, Integer> entity = postgresqlRepositoryFactory.getEntityInformation(BehaUbiSdhbInfo.class);
-		GenericPostgreRepository<BehaUbiSdhbInfo, Integer> repository = new GenericPostgreRepository<>(BehaUbiSdhbInfo.class, entity, postgresqlEntityOperations);
-
-		try {
-
-			repository.reactiveDeleteAsAll().block();
-		}
-		catch (Exception e) {
-
-			log.error("[SafetyScoreManagementServiceImpl.deleteBehaUbiSdhbInfo] Ex : ", e);
-			
-		}
-
-	}
-
-
-	// BEHA_UBI_SDHB_INFO_TEMP의 데이터를 BEHA_UBI_SDHB_INFO에 저장
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void insertBehaUbiSdhbInfo() throws GlobalCCSException {
-
-		RelationalEntityInformation<BehaUbiSdhbInfoTemp, Integer> entityTemp = postgresqlRepositoryFactory.getEntityInformation(BehaUbiSdhbInfoTemp.class);
-		GenericPostgreRepository<BehaUbiSdhbInfoTemp, Integer> repositoryTemp = new GenericPostgreRepository<>(BehaUbiSdhbInfoTemp.class, entityTemp,  postgresqlEntityOperations);
-		
-		RelationalEntityInformation<BehaUbiSdhbInfo, Integer> entity = postgresqlRepositoryFactory.getEntityInformation(BehaUbiSdhbInfo.class);
-		GenericPostgreRepository<BehaUbiSdhbInfo, Integer> repository = new GenericPostgreRepository<>(BehaUbiSdhbInfo.class, entity, postgresqlEntityOperations);
-
-		try {
-			
-			// BEHA_UBI_SDHB_INFO_TEMP 정보 가져오기
-			List behaUbiSdhbInfoTempList = new ArrayList();
-			behaUbiSdhbInfoTempList = repositoryTemp.reactiveFindByAll().block();
-
-			// behaUbiSdhbInfoList에 복사하기
-			List behaUbiSdhbInfoList = new ArrayList(behaUbiSdhbInfoTempList);
-			Collections.copy(behaUbiSdhbInfoList, behaUbiSdhbInfoTempList);
-			
-			// BEHA_UBI_SDHB_INFO에 저장
-			repository.reactiveSaveAsList(behaUbiSdhbInfoList).block();
-
-		}
-		catch (Exception e) {
-
-			log.error("[SafetyScoreManagementServiceImpl.insertBehaUbiSdhbInfo] Ex : ", e);
-
-		}
-
-	}
-
-	
-	// BEHA_UBI_SDHB_INFO_TEMP의 데이터건수 가져오기
-	public long selectBehaUbiSdhbInfoTempCount() throws GlobalCCSException {
-
-		RelationalEntityInformation<BehaUbiSdhbInfoTemp, Integer> entityTemp = postgresqlRepositoryFactory.getEntityInformation(BehaUbiSdhbInfoTemp.class);
-		GenericPostgreRepository<BehaUbiSdhbInfoTemp, Integer> jpaRepositoryTemp = new GenericPostgreRepository<>(BehaUbiSdhbInfoTemp.class, entityTemp, postgresqlEntityOperations);
-
-		long behaUbiSdhbInfoTempCount = 0;
-		
-		behaUbiSdhbInfoTempCount = jpaRepositoryTemp.reactiveCountAll().block();
-
-		return behaUbiSdhbInfoTempCount;
-
-	}
-
-	
-	// UBI 안전 운전 점수 조회
-	@Override
-	public Map<String, Object> ubiSafetyDrivingScoreSearch(Map<String, Object> reqBody) {
-
-		RelationalEntityInformation<BehaUbiSdhbInfo, Integer> entity = postgresqlRepositoryFactory.getEntityInformation(BehaUbiSdhbInfo.class);
-		GenericPostgreRepository<BehaUbiSdhbInfo, Integer> repository = new GenericPostgreRepository<>(BehaUbiSdhbInfo.class, entity, postgresqlEntityOperations);
-
-    	GenericRedisRepository<RedisVin, String> redisVinRepo = new GenericRedisRepository<>(RedisVin.class, redisTemplate);
-		
-		Map<String, Object> resultData = new HashMap<String, Object>();
-
-		BehaUbiSdhbInfo reqData = new BehaUbiSdhbInfo();
-		
-		int status = 200;
-		String resultMessage = "Success";
-		
+    @Override
+    public DrivingScoreVO ubiSafetyDrivingScoreRequest(DrivingScoreReqVO drivingScoreReqVO) throws GlobalExternalException {
+        String serviceNo = drivingScoreReqVO.getDrivingScoreReqDTO().getServiceNo();
         try {
+            ResponseEntity<Map<String, Object>> response;
+            switch (drivingScoreReqVO.getDrivingScoreReqDTO().getAppType()) {
+                case Const.AppType.BLUE_LINK:
+                    response = interfaceBluelinkClient.requestBluCallGet(
+                            drivingScoreReqVO.getHeader(),
+                            BehavioralPatternAnalysisServiceEnum.UBI_SCORE.getServiceUrl()
+                    );
+                    break;
+                case Const.AppType.UVO:
+                    response = interfaceUVOClient.requestUvoCallGet(
+                            drivingScoreReqVO.getHeader(),
+                            BehavioralPatternAnalysisServiceEnum.UBI_SCORE.getServiceUrl()
+                    );
+                    break;
+                case Const.AppType.GENESIS_CONNECTED:
+                    response = interfaceGenesisConnectedClient.requestGenCallGet(
+                            drivingScoreReqVO.getHeader(),
+                            BehavioralPatternAnalysisServiceEnum.UBI_SCORE.getServiceUrl()
+                    );
+                    break;
+                default:
+                    throw new Exception();
+            }
 
-			String srchPatt = "*_" + reqBody.get("vin").toString();
-			List<RedisVin> receiveRedisVinData = redisVinRepo.findByAllHash(srchPatt);
+            Map<String, Object> body = Optional.ofNullable(response.getBody()).orElse(new HashMap<>());
 
-			reqData.setCarOid(Integer.parseInt(receiveRedisVinData.get(0).getCarOid()));
-			
-			List<BehaUbiSdhbInfo> resDto = repository.reactiveFindByAllCriteria(Criteria.where("carOid").is(reqData.getCarOid())).block();
-			
-	        resultData.put("body", resDto);
-	        resultData.put("resultStatus", "S");
-	        resultData.put("status", status);
-	        resultData.put("message", resultMessage);
+            DrivingScoreResDTO drivingScoreResDTO = DrivingScoreResDTO.builder()
+                    .ServiceNo(serviceNo)
+                    .RetCode(SpaResponseCodeEnum.SUCCESS.getRetCode())
+                    .resCode(SpaResponseCodeEnum.SUCCESS.getResCode())
+                    .safetyDrivingScore(this.npThenZeroInteger(body.get(Const.ClientKey.SAFETY_DRV_SCORE)))
+                    .insuranceDiscountYN(this.npThenEmptyString(body.get(Const.ClientKey.INS_DISCOUNT_YN)))
+                    .updateAt(this.npThenEmptyString(body.get(Const.ClientKey.SCORE_DATE)))
+                    .drvDistance(this.npThenZeroInteger(body.get(Const.ClientKey.RANGE_DRV_DIST)))
+                    .accelGrade(this.npThenEmptyString(body.get(Const.ClientKey.BRST_ACC_GRADE)))
+                    .decelGrade(this.npThenEmptyString(body.get(Const.ClientKey.BRST_DEC_GRADE)))
+                    .nightDrivingGrade(this.npThenEmptyString(body.get(Const.ClientKey.NIGHT_DRV_GRADE)))
+                    .build();
 
-		}
-        catch (GlobalCCSException e) {
+            return DrivingScoreVO.builder()
+                    .status(HttpStatus.OK.value())
+                    .drivingScoreResDTO(drivingScoreResDTO)
+                    .build();
+        } catch (FeignException e) {
+            Map<String, Object> body = JsonUtil.str2map(e.contentUTF8());
+            if (ObjectUtils.isNotEmpty(body)
+                    && this.npThenEmptyString(body.get("errCode")).equals("5003")) {
 
-			resultData.put("resultStatus", "F");
-			resultData.put("status", e.getStatus());
-			resultData.put("message", e.getErrorMessage());
+                throw new GlobalExternalException(
+                        HttpStatus.OK.value(),
+                        new Gson().toJson(SpaResponseDTO.builder()
+                                .ServiceNo(serviceNo)
+                                .RetCode(SpaResponseCodeEnum.ERROR_E110.getRetCode())
+                                .resCode(SpaResponseCodeEnum.ERROR_E110.getResCode())
+                                .build())
+                );
+            }
+            throw GlobalExternalException_EX01(serviceNo);
+        } catch (Exception e) {
+            throw GlobalExternalException_EX01(serviceNo);
+        }
+    }
 
-		}
-        catch (Exception e) {
+    private GlobalExternalException GlobalExternalException_EX01(String serviceNo) {
+        return new GlobalExternalException(
+                HttpStatus.OK.value(),
+                new Gson().toJson(SpaResponseDTO.builder()
+                        .ServiceNo(serviceNo)
+                        .RetCode(SpaResponseCodeEnum.ERROR_EX01.getRetCode())
+                        .resCode(SpaResponseCodeEnum.ERROR_EX01.getResCode())
+                        .build())
+        );
+    }
 
-			resultData.put("resultStatus", "F");
-			resultData.put("status", e.getCause());
-			resultData.put("message", e.getMessage());
+    public String npThenEmptyString(Object obj) {
+        return String.valueOf(Optional.ofNullable(obj).orElse(StringUtil.EMPTY_STRING));
+    }
 
-		} 
-        
-   		return resultData;
-	}	
-
-
-	// UBI 안전 운전 점수 삭제
-	@Override
-	public Map<String, Object> ubiSafetyDrivingScoreDelete(Map<String, Object> reqBody) {
-
-		RelationalEntityInformation<BehaUbiSdhbInfo, Integer> entity = postgresqlRepositoryFactory.getEntityInformation(BehaUbiSdhbInfo.class);
-		GenericPostgreRepository<BehaUbiSdhbInfo, Integer> repository = new GenericPostgreRepository<>(BehaUbiSdhbInfo.class, entity, postgresqlEntityOperations);
-
-		GenericRedisRepository<RedisVin, String> redisVinRepo = new GenericRedisRepository<>(RedisVin.class, redisTemplate);
-		
-		Map<String, Object> resultData = new HashMap<String, Object>();
-
-    	BehaUbiSdhbInfo reqData = new BehaUbiSdhbInfo();
-
-		int status = 200;
-		String resultMessage = "Success";
-    	
-		try {
-
-			String srchPatt = "*_" + reqBody.get("vin").toString();
-			List<RedisVin> receiveRedisVinData = redisVinRepo.findByAllHash(srchPatt);
-			
-			reqData.setCarOid(Integer.parseInt(receiveRedisVinData.get(0).getCarOid()));
-			
-			List<BehaUbiSdhbInfo> resDto = repository.reactiveFindByAllCriteria(Criteria.where("carOid").is(reqData.getCarOid())).block();
-			
-			if(!(ObjectUtils.isEmpty(resDto))) {
-
-				repository.reactiveDeleteAsObject(resDto.get(0)).block();
-				
-		        resultData.put("resultStatus", "S");
-		        resultData.put("status", status);
-		        resultData.put("message", resultMessage);
-
-			}
-			else {
-
-				resultData.put("resultStatus", "F");
-				resultData.put("status", 500);
-				resultData.put("message", "데이터 없음");
-
-			}
-	        
-		}
-		catch (GlobalCCSException e) {
-
-			resultData.put("resultStatus", "F");
-			resultData.put("status", e.getStatus());
-			resultData.put("message", e.getErrorMessage());
-
-		}
-		catch (Exception e) {
-
-			resultData.put("resultStatus", "F");
-			resultData.put("status", e.getCause());
-			resultData.put("message", e.getMessage());
-
-		}
-
-   		return resultData;
-
-	}
-
+    public Integer npThenZeroInteger(Object obj) {
+        return Integer.parseInt(String.valueOf(Optional.ofNullable(obj).orElse(BigInteger.ZERO.intValue())));
+    }
 }

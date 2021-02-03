@@ -1,34 +1,44 @@
 package com.hkmc.behavioralpatternanalysis.common.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.netty.util.internal.StringUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import lombok.Builder.Default;
 import lombok.experimental.SuperBuilder;
+
+import java.math.BigInteger;
 
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel(description = "SPA 공통응답객체")
+@ToString
 public class SpaResponseDTO {
 
 	@JsonProperty("ServiceNo")
 	@ApiModelProperty(value = "서비스 구분 코드", required = true, example = "F6")
-	private String ServiceNo;
+	@Default
+	private String ServiceNo = StringUtil.EMPTY_STRING;
 
 	@JsonProperty("RetCode")
 	@ApiModelProperty(value = "S:제어요청접수 / F:제어요청실패", required = true, example = "S")
-	private String RetCode;
+	@Default
+	private String RetCode = StringUtil.EMPTY_STRING;
 
 	@ApiModelProperty(value = "센터에서 발급한 세션 ID", required = true)
-	private int svcTime;
+	@JsonInclude(Include.NON_NULL)
+	private Integer svcTime;
 
 	@JsonProperty("FncCnt")
 	@ApiModelProperty(value = "센터에서 발급한 서비스 세션 ID", required = true, example = "4")
-	private int FncCnt;
+	@JsonInclude(Include.NON_NULL)
+	private Integer FncCnt;
 
 	/**
 	 * 0000	제어요청 정상처리
@@ -41,7 +51,7 @@ public class SpaResponseDTO {
 	 * CC05	원격대기시간 종료 상태
 	 */
 	@ApiModelProperty(value = "응답 메세지 코드", required = true, example = "0000")
-	private String resCode;
-
+	@Default
+	private String resCode = StringUtil.EMPTY_STRING;
 
 }
