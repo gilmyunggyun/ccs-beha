@@ -88,25 +88,4 @@ public class KafkaConsumerItlCarTest {
 		
 	}
 	
-	
-	@Test
-	public void testIntelligencevehicleinformationSubscribe() throws JsonProcessingException {
-		
-		log.info("[[ testIntelligencevehicleinformationSubscribe Start ]]");
-
-		kafkaConsumerItlCar.intelligencevehicleinformationSubscribe(consumerRecord);
-		
-		verify(intelligenceVehicleInformationService, times(1)).saveIntelligenceVehicleInformation((Mockito.anyMap()));
-	}
-	
-	@Test
-	public void testIntelligencevehicleinformationSubscribeErr() throws JsonProcessingException {
-		
-		log.info("[[ testIntelligencevehicleinformationSubscribeErr Start ]]");
-
-		kafkaConsumerItlCar.intelligencevehicleinformationSubscribe(consumerRecordErr);
-
-		verify(intelligenceVehicleInformationService, times(0)).saveIntelligenceVehicleInformation((Mockito.anyMap()));
-	}
-	
 }

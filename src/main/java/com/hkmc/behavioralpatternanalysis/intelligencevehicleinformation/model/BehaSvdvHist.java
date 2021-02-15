@@ -2,6 +2,9 @@ package com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.model;
 
 import java.io.Serializable;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -10,10 +13,13 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-@SuppressWarnings("serial")
+//@SuppressWarnings("serial")
 @Data
 @ApiModel(description = "행동패턴 가혹운행이력객체")
+@NoArgsConstructor
+@AllArgsConstructor
 @Table("BEHA_SVDV_HIST")
+@Builder
 public class BehaSvdvHist implements Serializable {
 
 //	private static final long serialVersionUID = 1L;

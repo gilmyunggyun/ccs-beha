@@ -76,8 +76,7 @@ spring:
       max-size: 100
       maxcreateconnectiontime: 10000
   kafka:
-    #    bootstrap-servers: 10.11.52.11:9092,10.11.52.12:9092,10.11.52.13:9092,10.11.52.14:9092,10.11.52.15:9092,10.11.52.16:9092
-    bootstrap-servers: 10.20.214.28:9092
+    bootstrap-servers: 10.11.52.11:9092,10.11.52.12:9092,10.11.52.13:9092,10.11.52.14:9092,10.11.52.15:9092,10.11.52.16:9092
     consumer:
       auto-offset-reset: latest
       enable:
@@ -97,7 +96,6 @@ spring:
     #    password: "fd05a9dc-2cfb-4307-a3df-2d8622fd5f80"
     port: 38913
     password: "a206339c-2eef-4bb1-bdfb-019a7df9c443"
-    database: 0
 interface-server:
   blu:
     url: http://10.11.60.218:6101
@@ -113,7 +111,7 @@ interface-server:
     name: GenesisConnected
 kafka:
   topic:
-    remotecontrol-audit: ccsp20.remotecontrol.audit
-    intelligencevehicleinformation: ccsp20.behavioralpatternanalysis.intelligencevehicleinformation # TODO: 바꿈(기존=ccsp20.behavioralpatternanalysis.intelligencevehicleinformation.topic)
+    intelligence: ccsp20.behavioralpattern.intelligence # TODO: 바꿈(기존=ccsp20.behavioralpatternanalysis.intelligencevehicleinformation.topic)
   group:
     consumer: ccsp20-behavioralpatternanalysis # TODO: 바꿈 (기존=ccsp20.behavioralpatternanalysis.group)
+
