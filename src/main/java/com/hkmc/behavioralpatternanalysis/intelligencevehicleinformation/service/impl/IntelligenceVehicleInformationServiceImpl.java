@@ -124,55 +124,32 @@ public class IntelligenceVehicleInformationServiceImpl implements IntelligenceVe
 
 	// 차량 브레이크 패드 자료에 대한 조회 요청을 처리
 	@Override
-	public Map<String, Object> itlCarBreakpadDrvScoreSearch(Map<String, Object> reqBody) {
+	public ItlBreakpadResDTO getItlCarBreakpadDrvScore(String vinPath) throws GlobalCCSException {
+		this.behaSvdvHistRepository = this.behaSvdvHistRepository();
 
-		Map<String, Object> resultData = new HashMap<String, Object>();
-		
-		BehaSvdvHist reqData = new BehaSvdvHist();
-		
-		int status = 200;
-		String resMsg = "Success";
-		
 		try {
 
-			final String vinPath = reqBody.get("vin").toString();
 			final String nadid = this.carTmuBasicRepository.findByIdHash(
 					CarTmuBasicInfoDTO.builder().vin(vinPath).build()
 			).getNadid();
 
 			final String carOid = this.nadidVinAuthRepository.findByIdHash(
-				NadidVinAuthDTO.builder().nadidVin(String.format("%s_%s", nadid, vinPath)).build()
+					NadidVinAuthDTO.builder().nadidVin(String.format("%s_%s", nadid, vinPath)).build()
 			).getCarOid();
 
-			reqData.setCarOid(Integer.parseInt(carOid));
-			
 			List<BehaSvdvHist> resDto = this.behaSvdvHistRepository.reactiveFindByAllCriteria(
-					Criteria.where("carOid").is(reqData.getCarOid())
+					Criteria.where("carOid").is(carOid)
 			).block();
 
-			resultData.put("body", resDto);
-			resultData.put("resultStatus", "S");
-			resultData.put("status", status);
-			resultData.put("message", resMsg);
-			
+			return ItlBreakpadResDTO.builder()
+					.body(resDto)
+					.resultStatus("S")
+					.message("Success")
+					.build();
 		}
-		catch (GlobalCCSException e) {
-			
-			resultData.put("resultStatus", "F");
-			resultData.put("status", e.getStatus());
-			resultData.put("message", e.getErrorMessage());
-			
+		catch (Exception e){
+			log.error("\n----------[Exception] [RVP-D] | {}(vin) | {}", vinPath, e.getMessage());
+			throw new GlobalCCSException(590);
 		}
-		catch (Exception e) {
-			
-			resultData.put("resultStatus", "F");
-			resultData.put("status", e.getCause());
-			resultData.put("message", e.getMessage());
-			
-		}
-        
-   		return resultData;
-
 	}
-	
 }

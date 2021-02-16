@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.model.ItlBreakpadReqDTO;
+import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.model.ItlBreakpadResDTO;
 import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreReqDTO;
 import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreReqVO;
 import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreVO;
@@ -35,37 +37,30 @@ public class BehavioralPatternAnalysisController {
 	private SafetyScoreManagementService safetyScoreManagementService;
 
 	@ApiOperation(value = "차량 브레 이크 패드 자료에 대한 조회 요청을 처리")
-	@PostMapping(value="/itlCarBreakpadDrvScoreSearch")
-	public ResponseEntity<ResponseDTO<Map<String, Object>>> itlCarBreakpadDrvScoreSearch (
+	@PostMapping(value="/itl/breakpad")
+	public ResponseEntity<ResponseDTO<ItlBreakpadResDTO>> getItlCarBreakpadDrvScore(
 			@RequestHeader HttpHeaders header,
-			@RequestBody Map<String, Object> body,
-			HttpServletRequest req
+			@RequestBody ItlBreakpadReqDTO body
 	) throws GlobalCCSException {
-		
-		Map<String, Object> resultData = intelligenceVehicleInformationService.itlCarBreakpadDrvScoreSearch(body);
-
 		return ResponseEntity
-				.status(Optional
-						.ofNullable(HttpStatus.resolve(Integer.parseInt(resultData.get("status").toString())))
-						.orElse(HttpStatus.INTERNAL_SERVER_ERROR))
-				.body(ResponseDTO.<Map<String, Object>>builder()
-						.code(Integer.parseInt(resultData.get("status").toString()))
-						.data(resultData)
-						.resultMessage(resultData.get("message").toString()).build());
-    }
+				.status(HttpStatus.OK)
+				.body(ResponseDTO.<ItlBreakpadResDTO>builder()
+						.code(HttpStatus.OK.value())
+						.data(intelligenceVehicleInformationService.getItlCarBreakpadDrvScore(body.getVin()))
+						.resultMessage("Success").build());
+	}
 
 	@ApiOperation(value = "UBI 안전 운전 점수 조회")
-	@PostMapping(value="/ubi/score/{vinPath}")
+	@PostMapping(value="/ubi/score")
 	public ResponseEntity<?> getUbiSafetyDrivingScore (
 			@RequestHeader HttpHeaders headers,
-			@RequestBody DrivingScoreReqDTO body,
-			@PathVariable("vinPath") String vinPath
+			@RequestBody DrivingScoreReqDTO body
 	) {
 
 		DrivingScoreVO drivingScoreVO = safetyScoreManagementService.ubiSafetyDrivingScoreRequest(
 				DrivingScoreReqVO.builder()
 						.drivingScoreReqDTO(body)
-						.vinPath(vinPath)
+						.vinPath(body.getVin())
 						.header(headers.toSingleValueMap())
 						.build()
 		);
