@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.env.Environment;
 import org.springframework.data.r2dbc.convert.R2dbcConverter;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
 import org.springframework.data.r2dbc.repository.support.R2dbcRepositoryFactory;
@@ -46,7 +47,7 @@ public class IntelligenceVehicleInformationServiceTest {
 	private R2dbcConverter r2dbcConverter;
 	
 	@Mock
-	GenericPostgreRepository<BehaSvdvHist, Integer> jpaRepository;
+	private GenericPostgreRepository<BehaSvdvHist, Integer> jpaRepository;
 	
 	private String toDay = "";
 	
@@ -97,7 +98,7 @@ public class IntelligenceVehicleInformationServiceTest {
 				"}";
 		
 		kafkaConsumerMap = JsonUtil.str2map(consumerRecord);
-		
+
 	}
 	
 	

@@ -109,15 +109,6 @@ public class IntelligenceVehicleInformationServiceImpl implements IntelligenceVe
 					consumerRecord.topic(), consumerRecord.offset(), consumerRecord.partition(),
 					consumerRecord.timestamp(), consumerRecord.value(), e.getMessage());
 			throw new GlobalCCSException();
-
-//			log.error("[IntelligenceVehicleInformationServiceImpl.saveIntelligenceVehicleInformation Error] : sendDate({}), sendTotalPage({}) / currentPage({}) / sendCurrentPage({}), sendTotalCount({}) / currentCount({}) / sendPageInCount({}), vin({})"
-//					, sendDate, sendTotalPage, CommonUtil.consumerPage, sendCurrentPage, sendTotalCount, CommonUtil.consumerCount, sendPageInCount, strNnidVin);
-//
-//			// 페이지 및 건수 초기화
-//			CommonUtil.resetConsumerCount();
-//			CommonUtil.resetConsumerPage();
-//
-//			log.error("[IntelligenceVehicleInformationServiceImpl.saveIntelligenceVehicleInformation] Ex : ", e);
 		}
 
 	}

@@ -13,11 +13,13 @@ import com.hkmc.behavioralpatternanalysis.common.util.JsonUtil;
 import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreReqVO;
 import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreResDTO;
 import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreVO;
+import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DspReqDTO;
 import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.service.SafetyScoreManagementService;
 import feign.FeignException;
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -35,9 +37,13 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
     private InterfaceGenesisConnectedClient interfaceGenesisConnectedClient;
     @Autowired
     private InterfaceBluelinkClient interfaceBluelinkClient;
+    @Autowired
+    private Environment env;
 
     @Override
     public DrivingScoreVO ubiSafetyDrivingScoreRequest(DrivingScoreReqVO drivingScoreReqVO) throws GlobalExternalException {
+        String auth = env.getProperty("dsp.auth");
+        drivingScoreReqVO.getHeader().put("Authorization", auth);
         String serviceNo = drivingScoreReqVO.getDrivingScoreReqDTO().getServiceNo();
         try {
             ResponseEntity<Map<String, Object>> response;
@@ -45,19 +51,22 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
                 case Const.AppType.BLUE_LINK:
                     response = interfaceBluelinkClient.requestBluCallGet(
                             drivingScoreReqVO.getHeader(),
-                            BehavioralPatternAnalysisServiceEnum.UBI_SCORE.getServiceUrl()
+                            BehavioralPatternAnalysisServiceEnum.UBI_SCORE.getServiceUrl(),
+                            drivingScoreReqVO.getVinPath()
                     );
                     break;
                 case Const.AppType.UVO:
                     response = interfaceUVOClient.requestUvoCallGet(
                             drivingScoreReqVO.getHeader(),
-                            BehavioralPatternAnalysisServiceEnum.UBI_SCORE.getServiceUrl()
+                            BehavioralPatternAnalysisServiceEnum.UBI_SCORE.getServiceUrl(),
+                            drivingScoreReqVO.getVinPath()
                     );
                     break;
                 case Const.AppType.GENESIS_CONNECTED:
                     response = interfaceGenesisConnectedClient.requestGenCallGet(
                             drivingScoreReqVO.getHeader(),
-                            BehavioralPatternAnalysisServiceEnum.UBI_SCORE.getServiceUrl()
+                            BehavioralPatternAnalysisServiceEnum.UBI_SCORE.getServiceUrl(),
+                            drivingScoreReqVO.getVinPath()
                     );
                     break;
                 default:

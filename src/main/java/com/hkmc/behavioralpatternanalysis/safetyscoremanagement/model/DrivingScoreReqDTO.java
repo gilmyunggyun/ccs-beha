@@ -12,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder
 public class DrivingScoreReqDTO extends SpaRequestDTO {
-    @JsonProperty("body")
+    @JsonProperty("vin")
     @ApiModelProperty(value = "차량 ID", required = true, example = "vinPath")
     private String vin;
 

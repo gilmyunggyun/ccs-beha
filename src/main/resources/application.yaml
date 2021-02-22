@@ -114,4 +114,5 @@ kafka:
     intelligence: ccsp20.behavioralpattern.intelligence # TODO: 바꿈(기존=ccsp20.behavioralpatternanalysis.intelligencevehicleinformation.topic)
   group:
     consumer: ccsp20-behavioralpatternanalysis # TODO: 바꿈 (기존=ccsp20.behavioralpatternanalysis.group)
-
+dsp:
+  auth: Basic MTVlYWMyNmItNWIwOC00MDc1LWI5NDktN2Q5YzBhMzg5MTc2OkFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaMTIzNDU2Nzg5MEhLTUNJQ1REU1A0NA==

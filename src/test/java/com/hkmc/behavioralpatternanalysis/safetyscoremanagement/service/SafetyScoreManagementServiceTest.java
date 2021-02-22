@@ -8,10 +8,7 @@ import com.hkmc.behavioralpatternanalysis.common.client.InterfaceUVOClient;
 import com.hkmc.behavioralpatternanalysis.common.code.SpaResponseCodeEnum;
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalExternalException;
 import com.hkmc.behavioralpatternanalysis.common.util.JsonUtil;
-import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreReqDTO;
-import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreReqVO;
-import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreResDTO;
-import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreVO;
+import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.*;
 import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.service.impl.SafetyScoreManagementServiceImpl;
 import feign.*;
 import io.netty.util.internal.StringUtil;
@@ -22,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -47,6 +45,8 @@ class SafetyScoreManagementServiceTest {
     private InterfaceBluelinkClient interfaceBluelinkClient;
     @Mock
     private InterfaceGenesisConnectedClient interfaceGenesisConnectedClient;
+    @Mock
+    private Environment env;
 
     @Spy
     @InjectMocks
@@ -92,6 +92,8 @@ class SafetyScoreManagementServiceTest {
                 .header(new HashMap<>())
                 .drivingScoreReqDTO(this.drivingScoreReqDTO)
                 .build();
+
+        when(this.env.getProperty(eq("dsp.auth"))).thenReturn("Basic ########");
     }
 
     @Test
@@ -108,35 +110,35 @@ class SafetyScoreManagementServiceTest {
 
         // bluTest
         assertDoesNotThrow(() -> {
-            when(this.interfaceBluelinkClient.requestBluCallGet(anyMap(), anyString())).thenReturn(resSuccess);
+            when(this.interfaceBluelinkClient.requestBluCallGet(anyMap(), anyString(), anyString())).thenReturn(resSuccess);
             this.drivingScoreReqDTO.setCCID(this.bluCCID);
 
             DrivingScoreVO bluSuccess = this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreReqVO);
 
-            verify(this.interfaceBluelinkClient, times(1)).requestBluCallGet(anyMap(), anyString());
+            verify(this.interfaceBluelinkClient, times(1)).requestBluCallGet(anyMap(), anyString(), anyString());
             assertResult(dspResBody, bluSuccess);
         });
 
         // uvoTest
         assertDoesNotThrow(() -> {
-            when(this.interfaceUVOClient.requestUvoCallGet(anyMap(), anyString())).thenReturn(resSuccess);
+            when(this.interfaceUVOClient.requestUvoCallGet(anyMap(), anyString(), anyString())).thenReturn(resSuccess);
             this.drivingScoreReqDTO.setCCID(this.uvoCCID);
 
             DrivingScoreVO uvoSuccess = this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreReqVO);
 
-            verify(this.interfaceUVOClient, times(1)).requestUvoCallGet(anyMap(), anyString());
+            verify(this.interfaceUVOClient, times(1)).requestUvoCallGet(anyMap(), anyString(), anyString());
             assertResult(dspResBody, uvoSuccess);
         });
 
         // genTest
 
         assertDoesNotThrow(() -> {
-            when(this.interfaceGenesisConnectedClient.requestGenCallGet(anyMap(), anyString())).thenReturn(resSuccess);
+            when(this.interfaceGenesisConnectedClient.requestGenCallGet(anyMap(), anyString(), anyString())).thenReturn(resSuccess);
             this.drivingScoreReqDTO.setCCID(this.gneCCID);
 
             DrivingScoreVO genSuccess = this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreReqVO);
 
-            verify(this.interfaceGenesisConnectedClient, times(1)).requestGenCallGet(anyMap(), anyString());
+            verify(this.interfaceGenesisConnectedClient, times(1)).requestGenCallGet(anyMap(), anyString(), anyString());
             assertResult(dspResBody, genSuccess);
         });
     }
@@ -165,13 +167,13 @@ class SafetyScoreManagementServiceTest {
     @Test
     public void ubiSafetyDrivingScoreRequest_npBody() {
         ResponseEntity<Map<String, Object>> resSuccess = ResponseEntity.status(HttpStatus.OK).build();
-        when(this.interfaceBluelinkClient.requestBluCallGet(anyMap(), anyString())).thenReturn(resSuccess);
+        when(this.interfaceBluelinkClient.requestBluCallGet(anyMap(), anyString(), anyString())).thenReturn(resSuccess);
         this.drivingScoreReqDTO.setCCID(this.bluCCID);
 
         assertDoesNotThrow(() -> {
             DrivingScoreVO resultVO = this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreReqVO);
 
-            verify(this.interfaceBluelinkClient, times(1)).requestBluCallGet(anyMap(), anyString());
+            verify(this.interfaceBluelinkClient, times(1)).requestBluCallGet(anyMap(), anyString(), anyString());
             assertEquals(HttpStatus.OK.value(), resultVO.getStatus());
             DrivingScoreResDTO drivingScoreResDTO = resultVO.getDrivingScoreResDTO();
             if (!ObjectUtils.isEmpty(drivingScoreResDTO)) {
@@ -213,7 +215,7 @@ class SafetyScoreManagementServiceTest {
                 .headers(headerMap)
                 .build();
 
-        when(this.interfaceBluelinkClient.requestBluCallGet(anyMap(), anyString()))
+        when(this.interfaceBluelinkClient.requestBluCallGet(anyMap(), anyString(), anyString()))
                 .thenThrow(FeignException.errorStatus("requestBLCallGet", mockedFeignResponse));
         this.drivingScoreReqDTO.setCCID(this.drivingScoreReqDTO.getCCID() + "_BLU");
 
@@ -221,23 +223,14 @@ class SafetyScoreManagementServiceTest {
             this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreReqVO);
         });
 
-        verify(this.interfaceBluelinkClient, times(1)).requestBluCallGet(anyMap(), anyString());
+        verify(this.interfaceBluelinkClient, times(1)).requestBluCallGet(anyMap(), anyString(), anyString());
 
         Map<String, Object> spaResponse = JsonUtil.str2map(globalExternalException.getBody());
 
         assertNotEquals(new HashMap<>(), spaResponse);
-        assertEquals(
-                HttpStatus.OK.value(),
-                globalExternalException.getStatusCode()
-        );
-        assertEquals(
-                SpaResponseCodeEnum.ERROR_E110.getResCode(),
-                spaResponse.get(Const.Key.RES_CODE_MAP)
-        );
-        assertEquals(
-                SpaResponseCodeEnum.ERROR_E110.getRetCode(),
-                spaResponse.get(Const.Key.RET_CODE_MAP)
-        );
+        assertEquals(HttpStatus.OK.value(), globalExternalException.getStatusCode());
+        assertEquals(SpaResponseCodeEnum.ERROR_E110.getResCode(), spaResponse.get(Const.Key.RES_CODE_MAP));
+        assertEquals(SpaResponseCodeEnum.ERROR_E110.getRetCode(), spaResponse.get(Const.Key.RET_CODE_MAP));
     }
 
     @Test
@@ -247,7 +240,7 @@ class SafetyScoreManagementServiceTest {
         bodyErr5003.put("errCode", "5001");
         bodyErr5003.put("errMsg", "Error Internal Server");
 
-        when(this.interfaceBluelinkClient.requestBluCallGet(anyMap(), anyString()))
+        when(this.interfaceBluelinkClient.requestBluCallGet(anyMap(), anyString(), anyString()))
                 .thenThrow(FeignException.class);
 
         this.drivingScoreReqDTO.setCCID(this.drivingScoreReqDTO.getCCID() + "_BLU");
@@ -255,22 +248,13 @@ class SafetyScoreManagementServiceTest {
             this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreReqVO);
         });
 
-        verify(this.interfaceBluelinkClient, times(1)).requestBluCallGet(anyMap(), anyString());
+        verify(this.interfaceBluelinkClient, times(1)).requestBluCallGet(anyMap(), anyString(), anyString());
 
         Map<String, Object> spaResponse = JsonUtil.str2map(globalExternalException.getBody());
         if (spaResponse != null) {
-            assertEquals(
-                    HttpStatus.OK.value(),
-                    globalExternalException.getStatusCode()
-            );
-            assertEquals(
-                    SpaResponseCodeEnum.ERROR_EX01.getResCode(),
-                    spaResponse.get(Const.Key.RES_CODE_MAP)
-            );
-            assertEquals(
-                    SpaResponseCodeEnum.ERROR_EX01.getRetCode(),
-                    spaResponse.get(Const.Key.RET_CODE_MAP)
-            );
+            assertEquals(HttpStatus.OK.value(), globalExternalException.getStatusCode());
+            assertEquals(SpaResponseCodeEnum.ERROR_EX01.getResCode(), spaResponse.get(Const.Key.RES_CODE_MAP));
+            assertEquals(SpaResponseCodeEnum.ERROR_EX01.getRetCode(), spaResponse.get(Const.Key.RET_CODE_MAP));
         } else {
             fail("result is null");
         }
