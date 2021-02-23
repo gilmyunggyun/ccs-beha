@@ -8,73 +8,19 @@ server:
       force: true
       charset: UTF-8
 
+spring:
+  application:
+    name: ccsp20-behavioralpatternanalysis
+
 ---
 #default config
 spring:
   profiles: local
-  application:
-    name: ccsp20-behavioralpatternanalysis
   async:
     core-pool-size: 200
     max-pool-size: 3200
     queue-capacity-size: 1
     keep-allive-secound: 15
-
----
-#spring actuator config
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-
----
-#feign client config
-feign:
-  httpclient:
-    enabled: true    
-    max-connections: 200000
-    max-connections-per-route: 150000
-  client:
-    config:
-      default:
-        connectTimeout: 2000
-        readTimeout: 122000
-        loggerLevel: FULL
-        retryer: com.hkmc.behavioralpatternanalysis.config.feign.FeignClientRetryer
-
----
-#local config properties
-common-message:
-  hello: word
-example:
-  name: hello
-
----
-#logback config
-logging:
-  level:
-    root: INFO
-    com.hkmc: DEBUG
-    org.springframework.data.r2dbc: DEBUG
-
----
-#DB config
-spring:
-  profiles: local
-  postgres:
-    uri: "10.20.213.192"
-    port: 5432
-    database: "megazone"
-    username: "megazone"
-    password: "megazone"
-    pool:
-      name: "customPool"
-      maxidletime: 100
-      maxlifetime: 100
-      initalsize: 10
-      max-size: 100
-      maxcreateconnectiontime: 10000
   kafka:
     bootstrap-servers: 10.11.52.11:9092,10.11.52.12:9092,10.11.52.13:9092,10.11.52.14:9092,10.11.52.15:9092,10.11.52.16:9092
     consumer:
@@ -92,27 +38,68 @@ spring:
       name: mtgateway
   redis:
     host: "10.11.39.67"
-    #    port: 34959
-    #    password: "fd05a9dc-2cfb-4307-a3df-2d8622fd5f80"
     port: 38913
     password: "a206339c-2eef-4bb1-bdfb-019a7df9c443"
-interface-server:
-  blu:
-    url: http://10.11.60.218:6101
-#    url: http://10.11.61.206:6101
-    name: BlueLink
-  uvo:
-    url: http://10.11.60.218:6101
-#    url: http://10.11.61.206:6201
-    name: UVO
-  gne:
-    url: http://10.11.60.218:6101
-#    url: http://10.11.61.206:6301
-    name: GenesisConnected
+  postgres:
+    uri: "10.20.213.192"
+    port: 5432
+    database: "megazone"
+    username: "megazone"
+    password: "megazone"
+    pool:
+      name: "customPool"
+      maxidletime: 100
+      maxlifetime: 100
+      initalsize: 10
+      max-size: 100
+      maxcreateconnectiontime: 10000
+
+#kafka topic
 kafka:
   topic:
-    intelligence: ccsp20.behavioralpattern.intelligence # TODO: 바꿈(기존=ccsp20.behavioralpatternanalysis.intelligencevehicleinformation.topic)
+    intelligence: ccsp20.behavioralpattern.intelligence
   group:
-    consumer: ccsp20-behavioralpatternanalysis # TODO: 바꿈 (기존=ccsp20.behavioralpatternanalysis.group)
+    consumer: ccsp20-behavioralpatternanalysis
+
+#feign client config
+feign:
+  httpclient:
+    enabled: true
+    max-connections: 200000
+    max-connections-per-route: 150000
+  client:
+    config:
+      default:
+        connectTimeout: 2000
+        readTimeout: 122000
+        loggerLevel: FULL
+        retryer: com.hkmc.behavioralpatternanalysis.config.feign.FeignClientRetryer
+
+#logback config
+logging:
+  level:
+    root: INFO
+    com.hkmc: DEBUG
+    org.springframework.data.r2dbc: DEBUG
+
+#DSP server info
 dsp:
-  auth: Basic MTVlYWMyNmItNWIwOC00MDc1LWI5NDktN2Q5YzBhMzg5MTc2OkFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaMTIzNDU2Nzg5MEhLTUNJQ1REU1A0NA==
+  header.auth: Basic MTVlYWMyNmItNWIwOC00MDc1LWI5NDktN2Q5YzBhMzg5MTc2OkFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaMTIzNDU2Nzg5MEhLTUNJQ1REU1A0NA==
+  server:
+    bluelink:
+      url: http://10.11.60.218:6101
+      name: BlueLink
+    uvo:
+      url: http://10.11.60.218:6101
+      name: UVO
+    genesis:
+      url: http://10.11.60.218:6101
+      name: GenesisConnected
+
+---
+#spring actuator config
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
