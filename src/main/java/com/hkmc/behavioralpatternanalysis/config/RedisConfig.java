@@ -1,8 +1,8 @@
 package com.hkmc.behavioralpatternanalysis.config;
 
 import ccs.core.db.repository.redis.GenericRedisRepository;
-import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.model.NadidVinAuthDTO;
-import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.model.CarTmuBasicInfoDTO;
+import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.model.NadidVinAuth;
+import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.model.CarTmuBasicInfo;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -51,8 +51,8 @@ public class RedisConfig {
 	}
 
 	@Bean
-	public GenericRedisRepository<NadidVinAuthDTO, String> nadidVinAuthRepository() {
-		return new GenericRedisRepository<NadidVinAuthDTO, String>(NadidVinAuthDTO.class, redisTemplateDB00());
+	public GenericRedisRepository<NadidVinAuth, String> nadidVinAuthRepository() {
+		return new GenericRedisRepository<NadidVinAuth, String>(NadidVinAuth.class, redisTemplateDB00());
 	}
 
 	@Primary
@@ -82,8 +82,8 @@ public class RedisConfig {
 	}
 
 	@Bean
-	public GenericRedisRepository<CarTmuBasicInfoDTO, String> carTmuBasicRepository() {
-		return new GenericRedisRepository<CarTmuBasicInfoDTO, String>(CarTmuBasicInfoDTO.class, redisTemplateDB09());
+	public GenericRedisRepository<CarTmuBasicInfo, String> carTmuBasicRepository() {
+		return new GenericRedisRepository<CarTmuBasicInfo, String>(CarTmuBasicInfo.class, redisTemplateDB09());
 	}
 	
 //	@Bean

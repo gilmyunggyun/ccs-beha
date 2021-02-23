@@ -1,14 +1,8 @@
 package com.hkmc.behavioralpatternanalysis.controller;
 
-import java.util.Map;
-import java.util.Optional;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.model.ItlBreakpadReqDTO;
 import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.model.ItlBreakpadResDTO;
 import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreReqDTO;
-import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreReqVO;
 import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreVO;
 import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.service.SafetyScoreManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,17 +50,14 @@ public class BehavioralPatternAnalysisController {
 			@RequestHeader HttpHeaders headers,
 			@RequestBody DrivingScoreReqDTO body
 	) {
-
-		DrivingScoreVO drivingScoreVO = safetyScoreManagementService.ubiSafetyDrivingScoreRequest(
-				DrivingScoreReqVO.builder()
-						.drivingScoreReqDTO(body)
-						.vinPath(body.getVin())
-						.header(headers.toSingleValueMap())
-						.build()
-		);
-
 		return ResponseEntity
 				.status(HttpStatus.OK.value())
-				.body(drivingScoreVO.getDrivingScoreResDTO());
+				.body(safetyScoreManagementService.ubiSafetyDrivingScoreRequest(
+						DrivingScoreVO.builder()
+								.drivingScoreReqDTO(body)
+								.vinPath(body.getVin())
+								.header(headers.toSingleValueMap())
+								.build()
+				));
 	}
 }

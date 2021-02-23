@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RefreshScope
-@FeignClient(url = "${interface-server.blu.url:bluDspUrl}", name = "${spring.interface.blu.name:blukDsp}")
+@FeignClient(url = "${dsp.server.bluelink.url:dspBluelinkUrl}", name = "${dsp.server.bluelink.name:dspBlueLink}")
 public interface InterfaceBluelinkClient {
      @GetMapping(value = "{uriPath}")
      ResponseEntity<Map<String, Object>> requestBluCallGet(@RequestHeader Map<String, String> header,

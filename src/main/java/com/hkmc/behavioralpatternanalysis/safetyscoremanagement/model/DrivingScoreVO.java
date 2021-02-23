@@ -1,16 +1,18 @@
 package com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model;
 
-import com.hkmc.behavioralpatternanalysis.common.model.SpaResponseDTO;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
+import java.util.Map;
+import java.util.Optional;
+
+@Builder
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
-@ToString
-public class DrivingScoreVO extends SpaResponseDTO {
-    private Integer status;
-    private DrivingScoreResDTO drivingScoreResDTO;
+public class DrivingScoreVO {
+    private String vinPath;
+    private Map<String, String> header;
+    private DrivingScoreReqDTO drivingScoreReqDTO;
+
 }

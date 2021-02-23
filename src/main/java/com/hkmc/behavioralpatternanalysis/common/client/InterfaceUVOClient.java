@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Map;
 
 @RefreshScope
-@FeignClient(url = "${interface-server.uvo.url:uvoDspUrl}", name = "${spring.interface.uvo.name:uvoDsp}")
+@FeignClient(url = "${dsp.server.uvo.url:dspUvoUrl}", name = "${dsp.server.uvo.name:dspUvo}")
 public interface InterfaceUVOClient {
      @GetMapping(value = "{uriPath}")
      ResponseEntity<Map<String, Object>> requestUvoCallGet(@RequestHeader Map<String, String> header,

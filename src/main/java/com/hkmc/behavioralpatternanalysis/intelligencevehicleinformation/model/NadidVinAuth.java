@@ -12,7 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder
 @RedisHash("nadidVinAuth")
-public class NadidVinAuthDTO implements Serializable {
+public class NadidVinAuth implements Serializable {
     @Id
     private String nadidVin;
     private String nadid;

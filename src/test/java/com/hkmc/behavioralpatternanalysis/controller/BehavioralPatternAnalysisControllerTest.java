@@ -4,12 +4,10 @@ import com.hkmc.behavioralpatternanalysis.common.Const;
 import com.hkmc.behavioralpatternanalysis.common.client.InterfaceBluelinkClient;
 import com.hkmc.behavioralpatternanalysis.common.client.InterfaceGenesisConnectedClient;
 import com.hkmc.behavioralpatternanalysis.common.client.InterfaceUVOClient;
-import com.hkmc.behavioralpatternanalysis.common.client.MTGatewayClient;
 import com.hkmc.behavioralpatternanalysis.common.util.JsonUtil;
 import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreReqDTO;
-import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreVO;
+import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreResDTO;
 import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.service.SafetyScoreManagementService;
-import org.apache.http.entity.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -79,7 +77,7 @@ class BehavioralPatternAnalysisControllerTest {
         this.drivingScoreReqDTO.setFromHost(Const.System.PHONE);
 
         when(safetyScoreManagementService.ubiSafetyDrivingScoreRequest(any()))
-                .thenReturn(DrivingScoreVO.builder().build());
+                .thenReturn(DrivingScoreResDTO.builder().build());
 
         MvcResult response = this.mockMvc.perform(
                 post(Const.BehavioralPatternAnalysis.VERSION_V1 + "/ubi/score/{vinpath}", this.vinPath)

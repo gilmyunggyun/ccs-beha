@@ -6,19 +6,16 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.hkmc.behavioralpatternanalysis.common.util.JsonUtil;
-import com.hkmc.behavioralpatternanalysis.config.RedisConfig;
 import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.model.*;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
 import org.springframework.data.r2dbc.repository.support.R2dbcRepositoryFactory;
 import org.springframework.data.relational.core.query.Criteria;
-import org.springframework.data.relational.repository.query.RelationalEntityInformation;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalCCSException;
-import com.hkmc.behavioralpatternanalysis.common.model.RedisVin;
 import com.hkmc.behavioralpatternanalysis.common.util.CommonUtil;
 import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.service.IntelligenceVehicleInformationService;
 
@@ -37,9 +34,9 @@ public class IntelligenceVehicleInformationServiceImpl implements IntelligenceVe
 	private final R2dbcEntityOperations postgresqlEntityOperations;
 	private final R2dbcRepositoryFactory postgresqlRepositoryFactory;
 	@Autowired
-	private GenericRedisRepository<CarTmuBasicInfoDTO, String> carTmuBasicRepository;
+	private GenericRedisRepository<CarTmuBasicInfo, String> carTmuBasicRepository;
 	@Autowired
-	private GenericRedisRepository<NadidVinAuthDTO, String> nadidVinAuthRepository;
+	private GenericRedisRepository<NadidVinAuth, String> nadidVinAuthRepository;
 
 	private GenericPostgreRepository<BehaSvdvHist, Integer> behaSvdvHistRepository;
 
@@ -121,11 +118,11 @@ public class IntelligenceVehicleInformationServiceImpl implements IntelligenceVe
 		try {
 
 			final String nadid = this.carTmuBasicRepository.findByIdHash(
-					CarTmuBasicInfoDTO.builder().vin(vinPath).build()
+					CarTmuBasicInfo.builder().vin(vinPath).build()
 			).getNadid();
 
 			final String carOid = this.nadidVinAuthRepository.findByIdHash(
-					NadidVinAuthDTO.builder().nadidVin(String.format("%s_%s", nadid, vinPath)).build()
+					NadidVinAuth.builder().nadidVin(String.format("%s_%s", nadid, vinPath)).build()
 			).getCarOid();
 
 			List<BehaSvdvHist> resDto = this.behaSvdvHistRepository.reactiveFindByAllCriteria(

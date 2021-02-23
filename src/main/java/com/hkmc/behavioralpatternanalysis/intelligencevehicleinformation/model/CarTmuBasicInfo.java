@@ -12,7 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder
 @RedisHash("carTmuBasicInfo")
-public class CarTmuBasicInfoDTO implements Serializable {
+public class CarTmuBasicInfo implements Serializable {
     @Id
     private String vin;
     private String nadid;

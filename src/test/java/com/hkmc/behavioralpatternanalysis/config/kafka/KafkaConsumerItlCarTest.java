@@ -1,20 +1,16 @@
 package com.hkmc.behavioralpatternanalysis.config.kafka;
 
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalCCSException;
 import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.service.IntelligenceVehicleInformationService;
 
@@ -26,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class KafkaConsumerItlCarTest {
 
 	@InjectMocks
-	KafkaConsumerItlCar kafkaConsumerItlCar;
+    KafkaConsumer kafkaConsumerItlCar;
 	
 	@Mock
 	IntelligenceVehicleInformationService intelligenceVehicleInformationService;

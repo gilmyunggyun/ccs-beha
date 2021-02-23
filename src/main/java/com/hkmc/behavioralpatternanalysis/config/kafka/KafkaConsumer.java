@@ -13,7 +13,7 @@ import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.service
 @EnableKafka
 @RequiredArgsConstructor
 @Slf4j
-public class KafkaConsumerItlCar {
+public class KafkaConsumer {
     private final IntelligenceVehicleInformationService intelligenceVehicleInformationService;
 
     // 소비자 행통패턴 분석 - 지능형 차량관리

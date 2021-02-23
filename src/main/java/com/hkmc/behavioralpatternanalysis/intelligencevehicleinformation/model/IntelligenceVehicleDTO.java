@@ -7,7 +7,6 @@ import java.io.Serializable;
 
 @Data
 @Entity
-@IdClass(IntelligenceVehiclePK.class)
 public class IntelligenceVehicleDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;

@@ -48,7 +48,7 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(value = GlobalExternalException.class)
-	public static ResponseEntity<String> GlobalExternalException(GlobalExternalException e){
+	public static ResponseEntity<String> globalExternalException(GlobalExternalException e){
 		log.debug(EXCEPTION, e.toString());
 		return ResponseEntity.status(e.getStatusCode()).body(e.getBody());
 	}

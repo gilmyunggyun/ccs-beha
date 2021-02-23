@@ -86,6 +86,7 @@ logging:
 dsp:
   header.auth: Basic MTVlYWMyNmItNWIwOC00MDc1LWI5NDktN2Q5YzBhMzg5MTc2OkFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaMTIzNDU2Nzg5MEhLTUNJQ1REU1A0NA==
   server:
+    common.uri: /api/v1/dsp/ubi
     bluelink:
       url: http://10.11.60.218:6101
       name: BlueLink

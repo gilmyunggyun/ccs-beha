@@ -54,7 +54,7 @@ class SafetyScoreManagementServiceTest {
 
     private String vin;
 
-    private DrivingScoreReqVO drivingScoreReqVO;
+    private DrivingScoreVO drivingScoreVO;
     private DrivingScoreReqDTO drivingScoreReqDTO;
 
     private String serviceNo;
@@ -87,7 +87,7 @@ class SafetyScoreManagementServiceTest {
                 .mtsNo(this.mtsNo)
                 .build();
 
-        this.drivingScoreReqVO = DrivingScoreReqVO.builder()
+        this.drivingScoreVO = DrivingScoreVO.builder()
                 .vinPath(this.vin)
                 .header(new HashMap<>())
                 .drivingScoreReqDTO(this.drivingScoreReqDTO)
@@ -113,7 +113,7 @@ class SafetyScoreManagementServiceTest {
             when(this.interfaceBluelinkClient.requestBluCallGet(anyMap(), anyString(), anyString())).thenReturn(resSuccess);
             this.drivingScoreReqDTO.setCCID(this.bluCCID);
 
-            DrivingScoreVO bluSuccess = this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreReqVO);
+            DrivingScoreResDTO bluSuccess = this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreVO);
 
             verify(this.interfaceBluelinkClient, times(1)).requestBluCallGet(anyMap(), anyString(), anyString());
             assertResult(dspResBody, bluSuccess);
@@ -124,7 +124,7 @@ class SafetyScoreManagementServiceTest {
             when(this.interfaceUVOClient.requestUvoCallGet(anyMap(), anyString(), anyString())).thenReturn(resSuccess);
             this.drivingScoreReqDTO.setCCID(this.uvoCCID);
 
-            DrivingScoreVO uvoSuccess = this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreReqVO);
+            DrivingScoreResDTO uvoSuccess = this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreVO);
 
             verify(this.interfaceUVOClient, times(1)).requestUvoCallGet(anyMap(), anyString(), anyString());
             assertResult(dspResBody, uvoSuccess);
@@ -136,26 +136,24 @@ class SafetyScoreManagementServiceTest {
             when(this.interfaceGenesisConnectedClient.requestGenCallGet(anyMap(), anyString(), anyString())).thenReturn(resSuccess);
             this.drivingScoreReqDTO.setCCID(this.gneCCID);
 
-            DrivingScoreVO genSuccess = this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreReqVO);
+            DrivingScoreResDTO genSuccess = this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreVO);
 
             verify(this.interfaceGenesisConnectedClient, times(1)).requestGenCallGet(anyMap(), anyString(), anyString());
             assertResult(dspResBody, genSuccess);
         });
     }
 
-    private void assertResult(Map<String, Object> dspResBody, DrivingScoreVO resultVO) {
-        if (resultVO != null) {
-            assertEquals(HttpStatus.OK.value(), resultVO.getStatus());
-            DrivingScoreResDTO drivingScoreResDTO = resultVO.getDrivingScoreResDTO();
-            if (!ObjectUtils.isEmpty(drivingScoreResDTO)) {
-                assertEquals(this.drivingScoreReqDTO.getServiceNo(), drivingScoreResDTO.getServiceNo());
-                assertEquals(dspResBody.get(Const.ClientKey.SAFETY_DRV_SCORE), drivingScoreResDTO.getSafetyDrivingScore());
-                assertEquals(dspResBody.get(Const.ClientKey.INS_DISCOUNT_YN), drivingScoreResDTO.getInsuranceDiscountYN());
-                assertEquals(dspResBody.get(Const.ClientKey.SCORE_DATE), drivingScoreResDTO.getUpdateAt());
-                assertEquals(dspResBody.get(Const.ClientKey.RANGE_DRV_DIST), drivingScoreResDTO.getDrvDistance());
-                assertEquals(dspResBody.get(Const.ClientKey.BRST_ACC_GRADE), drivingScoreResDTO.getAccelGrade());
-                assertEquals(dspResBody.get(Const.ClientKey.BRST_DEC_GRADE), drivingScoreResDTO.getDecelGrade());
-                assertEquals(dspResBody.get(Const.ClientKey.NIGHT_DRV_GRADE), drivingScoreResDTO.getNightDrivingGrade());
+    private void assertResult(Map<String, Object> dspResBody, DrivingScoreResDTO resultDTO) {
+        if (resultDTO != null) {
+            if (!ObjectUtils.isEmpty(resultDTO)) {
+                assertEquals(this.drivingScoreReqDTO.getServiceNo(), resultDTO.getServiceNo());
+                assertEquals(dspResBody.get(Const.ClientKey.SAFETY_DRV_SCORE), resultDTO.getSafetyDrivingScore());
+                assertEquals(dspResBody.get(Const.ClientKey.INS_DISCOUNT_YN), resultDTO.getInsuranceDiscountYN());
+                assertEquals(dspResBody.get(Const.ClientKey.SCORE_DATE), resultDTO.getUpdateAt());
+                assertEquals(dspResBody.get(Const.ClientKey.RANGE_DRV_DIST), resultDTO.getDrvDistance());
+                assertEquals(dspResBody.get(Const.ClientKey.BRST_ACC_GRADE), resultDTO.getAccelGrade());
+                assertEquals(dspResBody.get(Const.ClientKey.BRST_DEC_GRADE), resultDTO.getDecelGrade());
+                assertEquals(dspResBody.get(Const.ClientKey.NIGHT_DRV_GRADE), resultDTO.getNightDrivingGrade());
             } else {
                 fail("drivingScoreResDTO is null");
             }
@@ -171,20 +169,18 @@ class SafetyScoreManagementServiceTest {
         this.drivingScoreReqDTO.setCCID(this.bluCCID);
 
         assertDoesNotThrow(() -> {
-            DrivingScoreVO resultVO = this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreReqVO);
+            DrivingScoreResDTO resultVO = this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreVO);
 
             verify(this.interfaceBluelinkClient, times(1)).requestBluCallGet(anyMap(), anyString(), anyString());
-            assertEquals(HttpStatus.OK.value(), resultVO.getStatus());
-            DrivingScoreResDTO drivingScoreResDTO = resultVO.getDrivingScoreResDTO();
-            if (!ObjectUtils.isEmpty(drivingScoreResDTO)) {
-                assertEquals(this.drivingScoreReqDTO.getServiceNo(), drivingScoreResDTO.getServiceNo());
-                assertEquals(BigInteger.ZERO.intValue(), drivingScoreResDTO.getSafetyDrivingScore());
-                assertEquals(StringUtil.EMPTY_STRING, drivingScoreResDTO.getInsuranceDiscountYN());
-                assertEquals(StringUtil.EMPTY_STRING, drivingScoreResDTO.getUpdateAt());
-                assertEquals(BigInteger.ZERO.intValue(), drivingScoreResDTO.getDrvDistance());
-                assertEquals(StringUtil.EMPTY_STRING, drivingScoreResDTO.getAccelGrade());
-                assertEquals(StringUtil.EMPTY_STRING, drivingScoreResDTO.getDecelGrade());
-                assertEquals(StringUtil.EMPTY_STRING, drivingScoreResDTO.getNightDrivingGrade());
+            if (!ObjectUtils.isEmpty(resultVO)) {
+                assertEquals(this.drivingScoreReqDTO.getServiceNo(), resultVO.getServiceNo());
+                assertEquals(BigInteger.ZERO.intValue(), resultVO.getSafetyDrivingScore());
+                assertEquals(StringUtil.EMPTY_STRING, resultVO.getInsuranceDiscountYN());
+                assertEquals(StringUtil.EMPTY_STRING, resultVO.getUpdateAt());
+                assertEquals(BigInteger.ZERO.intValue(), resultVO.getDrvDistance());
+                assertEquals(StringUtil.EMPTY_STRING, resultVO.getAccelGrade());
+                assertEquals(StringUtil.EMPTY_STRING, resultVO.getDecelGrade());
+                assertEquals(StringUtil.EMPTY_STRING, resultVO.getNightDrivingGrade());
             } else {
                 fail("drivingScoreResDTO is null");
             }
@@ -220,7 +216,7 @@ class SafetyScoreManagementServiceTest {
         this.drivingScoreReqDTO.setCCID(this.drivingScoreReqDTO.getCCID() + "_BLU");
 
         GlobalExternalException globalExternalException = assertThrows(GlobalExternalException.class, () -> {
-            this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreReqVO);
+            this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreVO);
         });
 
         verify(this.interfaceBluelinkClient, times(1)).requestBluCallGet(anyMap(), anyString(), anyString());
@@ -245,7 +241,7 @@ class SafetyScoreManagementServiceTest {
 
         this.drivingScoreReqDTO.setCCID(this.drivingScoreReqDTO.getCCID() + "_BLU");
         GlobalExternalException globalExternalException = assertThrows(GlobalExternalException.class, () -> {
-            this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreReqVO);
+            this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreVO);
         });
 
         verify(this.interfaceBluelinkClient, times(1)).requestBluCallGet(anyMap(), anyString(), anyString());
@@ -264,7 +260,7 @@ class SafetyScoreManagementServiceTest {
     public void ubiSafetyDrivingScoreRequest_Exception_EX01() throws FeignException {
         this.drivingScoreReqDTO.setCCID(this.drivingScoreReqDTO.getCCID());
         GlobalExternalException globalExternalException = assertThrows(GlobalExternalException.class, () -> {
-            this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreReqVO);
+            this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreVO);
         });
 
         assertEquals(HttpStatus.OK.value(), globalExternalException.getStatusCode());

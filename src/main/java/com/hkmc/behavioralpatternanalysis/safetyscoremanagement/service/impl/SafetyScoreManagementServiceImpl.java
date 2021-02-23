@@ -5,15 +5,12 @@ import com.hkmc.behavioralpatternanalysis.common.Const;
 import com.hkmc.behavioralpatternanalysis.common.client.InterfaceBluelinkClient;
 import com.hkmc.behavioralpatternanalysis.common.client.InterfaceGenesisConnectedClient;
 import com.hkmc.behavioralpatternanalysis.common.client.InterfaceUVOClient;
-import com.hkmc.behavioralpatternanalysis.common.code.BehavioralPatternAnalysisServiceEnum;
 import com.hkmc.behavioralpatternanalysis.common.code.SpaResponseCodeEnum;
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalExternalException;
 import com.hkmc.behavioralpatternanalysis.common.model.SpaResponseDTO;
 import com.hkmc.behavioralpatternanalysis.common.util.JsonUtil;
-import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreReqVO;
-import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreResDTO;
 import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreVO;
-import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DspReqDTO;
+import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreResDTO;
 import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.service.SafetyScoreManagementService;
 import feign.FeignException;
 import io.netty.util.internal.StringUtil;
@@ -41,33 +38,26 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
     private Environment env;
 
     @Override
-    public DrivingScoreVO ubiSafetyDrivingScoreRequest(DrivingScoreReqVO drivingScoreReqVO) throws GlobalExternalException {
-        String auth = env.getProperty("dsp.auth");
-        drivingScoreReqVO.getHeader().put("Authorization", auth);
-        String serviceNo = drivingScoreReqVO.getDrivingScoreReqDTO().getServiceNo();
+    public DrivingScoreResDTO ubiSafetyDrivingScoreRequest(DrivingScoreVO drivingScoreVO) throws GlobalExternalException {
+        String serviceNo = drivingScoreVO.getDrivingScoreReqDTO().getServiceNo();
         try {
+            final Map<String, String> header = drivingScoreVO.getHeader();
+            header.put("Authorization", env.getProperty("dsp.header.auth"));
+
+            final String uri = env.getProperty("dsp.server.common.uri");
+
+            final String vinPath = drivingScoreVO.getVinPath();
+
             ResponseEntity<Map<String, Object>> response;
-            switch (drivingScoreReqVO.getDrivingScoreReqDTO().getAppType()) {
+            switch (drivingScoreVO.getDrivingScoreReqDTO().getAppType()) {
                 case Const.AppType.BLUE_LINK:
-                    response = interfaceBluelinkClient.requestBluCallGet(
-                            drivingScoreReqVO.getHeader(),
-                            BehavioralPatternAnalysisServiceEnum.UBI_SCORE.getServiceUrl(),
-                            drivingScoreReqVO.getVinPath()
-                    );
+                    response = interfaceBluelinkClient.requestBluCallGet(header, uri, vinPath);
                     break;
                 case Const.AppType.UVO:
-                    response = interfaceUVOClient.requestUvoCallGet(
-                            drivingScoreReqVO.getHeader(),
-                            BehavioralPatternAnalysisServiceEnum.UBI_SCORE.getServiceUrl(),
-                            drivingScoreReqVO.getVinPath()
-                    );
+                    response = interfaceUVOClient.requestUvoCallGet(header, uri, vinPath);
                     break;
                 case Const.AppType.GENESIS_CONNECTED:
-                    response = interfaceGenesisConnectedClient.requestGenCallGet(
-                            drivingScoreReqVO.getHeader(),
-                            BehavioralPatternAnalysisServiceEnum.UBI_SCORE.getServiceUrl(),
-                            drivingScoreReqVO.getVinPath()
-                    );
+                    response = interfaceGenesisConnectedClient.requestGenCallGet(header, uri, vinPath);
                     break;
                 default:
                     throw new Exception();
@@ -75,7 +65,7 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
 
             Map<String, Object> body = Optional.ofNullable(response.getBody()).orElse(new HashMap<>());
 
-            DrivingScoreResDTO drivingScoreResDTO = DrivingScoreResDTO.builder()
+            return DrivingScoreResDTO.builder()
                     .ServiceNo(serviceNo)
                     .RetCode(SpaResponseCodeEnum.SUCCESS.getRetCode())
                     .resCode(SpaResponseCodeEnum.SUCCESS.getResCode())
@@ -86,11 +76,6 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
                     .accelGrade(this.npThenEmptyString(body.get(Const.ClientKey.BRST_ACC_GRADE)))
                     .decelGrade(this.npThenEmptyString(body.get(Const.ClientKey.BRST_DEC_GRADE)))
                     .nightDrivingGrade(this.npThenEmptyString(body.get(Const.ClientKey.NIGHT_DRV_GRADE)))
-                    .build();
-
-            return DrivingScoreVO.builder()
-                    .status(HttpStatus.OK.value())
-                    .drivingScoreResDTO(drivingScoreResDTO)
                     .build();
         } catch (FeignException e) {
             Map<String, Object> body = JsonUtil.str2map(e.contentUTF8());

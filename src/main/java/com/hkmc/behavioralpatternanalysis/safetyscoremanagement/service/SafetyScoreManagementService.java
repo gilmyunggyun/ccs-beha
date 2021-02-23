@@ -1,9 +1,9 @@
 package com.hkmc.behavioralpatternanalysis.safetyscoremanagement.service;
 
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalExternalException;
-import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreReqVO;
 import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreVO;
+import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreResDTO;
 
 public interface SafetyScoreManagementService {
-	DrivingScoreVO ubiSafetyDrivingScoreRequest(DrivingScoreReqVO drivingScoreReqVO) throws GlobalExternalException;
+	DrivingScoreResDTO ubiSafetyDrivingScoreRequest(DrivingScoreVO drivingScoreVO) throws GlobalExternalException;
 }

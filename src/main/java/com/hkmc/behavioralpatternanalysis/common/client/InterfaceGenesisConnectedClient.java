@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Map;
 
 @RefreshScope
-@FeignClient(url = "${interface-server.gne.url:genDspUrl}", name = "${spring.interface.gne.name:genDsp}")
+@FeignClient(url = "${dsp.server.genesis.url:dspGenesisConnectedUrl}", name = "${dsp.server.genesis.name:dspGenesisConnected}")
 public interface InterfaceGenesisConnectedClient {
      @GetMapping(value = "{uriPath}")
      ResponseEntity<Map<String, Object>> requestGenCallGet(@RequestHeader Map<String, String> header,
