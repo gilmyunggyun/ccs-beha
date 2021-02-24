@@ -5,6 +5,7 @@ import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.model.I
 import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreReqDTO;
 import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreVO;
 import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.service.SafetyScoreManagementService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,13 +23,10 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @Api(tags = "소비자 행동패턴 분석 서비스")
 @RequestMapping(Const.BehavioralPatternAnalysis.VERSION_V1)
+@RequiredArgsConstructor
 public class BehavioralPatternAnalysisController {
-
-	@Autowired
-	private IntelligenceVehicleInformationService intelligenceVehicleInformationService;
-	
-	@Autowired
-	private SafetyScoreManagementService safetyScoreManagementService;
+	private final IntelligenceVehicleInformationService intelligenceVehicleInformationService;
+	private final SafetyScoreManagementService safetyScoreManagementService;
 
 	@ApiOperation(value = "차량 브레 이크 패드 자료에 대한 조회 요청을 처리")
 	@PostMapping(value="/itl/breakpad") //itlCarBreakpadDrvScore
@@ -45,17 +43,18 @@ public class BehavioralPatternAnalysisController {
 	}
 
 	@ApiOperation(value = "UBI 안전 운전 점수 조회")
-	@PostMapping(value="/ubi/score") //ubiSafetyDrvScoreService
+	@PostMapping(value="/ubi/score/{vinPath}") //ubiSafetyDrvScoreService
 	public ResponseEntity<?> getUbiSafetyDrivingScore (
 			@RequestHeader HttpHeaders headers,
-			@RequestBody DrivingScoreReqDTO body
+			@RequestBody DrivingScoreReqDTO body,
+			@PathVariable("vinPath") String vinPath
 	) {
 		return ResponseEntity
 				.status(HttpStatus.OK.value())
 				.body(safetyScoreManagementService.ubiSafetyDrivingScoreRequest(
 						DrivingScoreVO.builder()
 								.drivingScoreReqDTO(body)
-								.vinPath(body.getVin())
+								.vinPath(vinPath)
 								.header(headers.toSingleValueMap())
 								.build()
 				));

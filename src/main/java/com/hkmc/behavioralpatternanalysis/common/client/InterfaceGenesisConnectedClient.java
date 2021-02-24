@@ -14,7 +14,7 @@ import java.util.Map;
 @FeignClient(url = "${dsp.server.genesis.url:dspGenesisConnectedUrl}", name = "${dsp.server.genesis.name:dspGenesisConnected}")
 public interface InterfaceGenesisConnectedClient {
      @GetMapping(value = "{uriPath}")
-     ResponseEntity<Map<String, Object>> requestGenCallGet(@RequestHeader Map<String, String> header,
-                                                           @PathVariable("uriPath") String uriPath,
-                                                           @RequestParam("vin") String vinPath);
+     ResponseEntity<Map<String, Object>> requestCallGet(@RequestHeader Map<String, String> header,
+                                                        @PathVariable("uriPath") String uriPath,
+                                                        @RequestParam("vin") String vinPath);
 }

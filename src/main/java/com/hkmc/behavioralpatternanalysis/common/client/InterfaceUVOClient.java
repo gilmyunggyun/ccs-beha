@@ -14,7 +14,7 @@ import java.util.Map;
 @FeignClient(url = "${dsp.server.uvo.url:dspUvoUrl}", name = "${dsp.server.uvo.name:dspUvo}")
 public interface InterfaceUVOClient {
      @GetMapping(value = "{uriPath}")
-     ResponseEntity<Map<String, Object>> requestUvoCallGet(@RequestHeader Map<String, String> header,
-                                                           @PathVariable("uriPath") String uriPath,
-                                                           @RequestParam("vin") String vinPath);
+     ResponseEntity<Map<String, Object>> requestCallGet(@RequestHeader Map<String, String> header,
+                                                        @PathVariable("uriPath") String uriPath,
+                                                        @RequestParam("vin") String vinPath);
 }

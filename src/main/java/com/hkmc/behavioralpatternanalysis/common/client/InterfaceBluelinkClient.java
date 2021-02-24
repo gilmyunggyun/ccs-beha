@@ -12,7 +12,7 @@ import java.util.Map;
 @FeignClient(url = "${dsp.server.bluelink.url:dspBluelinkUrl}", name = "${dsp.server.bluelink.name:dspBlueLink}")
 public interface InterfaceBluelinkClient {
      @GetMapping(value = "{uriPath}")
-     ResponseEntity<Map<String, Object>> requestBluCallGet(@RequestHeader Map<String, String> header,
-                                                           @PathVariable("uriPath") String uriPath,
-                                                           @RequestParam("vin") String vinPath);
+     ResponseEntity<Map<String, Object>> requestCallGet(@RequestHeader Map<String, String> header,
+                                                        @PathVariable("uriPath") String uriPath,
+                                                        @RequestParam("vin") String vinPath);
 }

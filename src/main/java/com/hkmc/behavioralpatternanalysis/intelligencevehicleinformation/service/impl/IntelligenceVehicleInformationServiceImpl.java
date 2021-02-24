@@ -32,13 +32,10 @@ public class IntelligenceVehicleInformationServiceImpl implements IntelligenceVe
 	private final R2dbcEntityOperations postgresqlEntityOperations;
 	private final R2dbcRepositoryFactory postgresqlRepositoryFactory;
 
-	@Autowired
-	private GenericRedisRepository<CarTmuBasicInfo, String> carTmuBasicRepository;
-	@Autowired
-	private GenericRedisRepository<NadidVinAuth, String> nadidVinAuthRepository;
+	private final GenericRedisRepository<CarTmuBasicInfo, String> carTmuBasicRepository;
+	private final GenericRedisRepository<NadidVinAuth, String> nadidVinAuthRepository;
 
 	private GenericPostgreRepository<BehaSvdvHist, Integer> behaSvdvHistRepository;
-
 	private GenericPostgreRepository<BehaSvdvHist, Integer> behaSvdvHistRepository() {
 		return new GenericPostgreRepository<>(
 				BehaSvdvHist.class,
@@ -91,7 +88,7 @@ public class IntelligenceVehicleInformationServiceImpl implements IntelligenceVe
 			this.behaSvdvHistRepository.reactiveSaveAsList(itlVehicleList).block();
 
 			if (Objects.equals(
-					this.behaSvdvHistRepository.reactiveCountByCriteria(Criteria.where(Const.Column.CRTN_YMD).is(sendDate)).block(),
+					this.behaSvdvHistRepository.reactiveCountByCriteria(Criteria.where(Const.Key.CRTN_YMD).is(sendDate)).block(),
 					sendTotalCount
 			)) {
 				// 페이지 및 건수 초기화
@@ -124,7 +121,7 @@ public class IntelligenceVehicleInformationServiceImpl implements IntelligenceVe
 			).getCarOid();
 
 			final List<BehaSvdvHist> resDto = this.behaSvdvHistRepository.reactiveFindByAllCriteria(
-					Criteria.where(Const.Column.CAR_OID).is(carOid)
+					Criteria.where(Const.Key.CAR_OID).is(carOid)
 			).block();
 
 			return ItlBreakpadResDTO.builder()
