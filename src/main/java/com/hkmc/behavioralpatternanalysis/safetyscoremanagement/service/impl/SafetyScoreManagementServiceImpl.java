@@ -111,17 +111,17 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
         );
     }
 
-    public Map<String, Object> npThenEmptyMap(final Map<String, Object> body) {
+    private Map<String, Object> npThenEmptyMap(final Map<String, Object> body) {
         return Optional.ofNullable(body).orElse(new HashMap<>());
     }
 
-    public String npThenEmptyString(final Map<String, Object> body, final String keyName) {
+    private String npThenEmptyString(final Map<String, Object> body, final String keyName) {
         return String.valueOf(
                 Optional.ofNullable(body.get(keyName)).orElse(StringUtil.EMPTY_STRING)
         );
     }
 
-    public Integer npThenZeroInteger(final Map<String, Object> body, final String keyName) {
+    private Integer npThenZeroInteger(final Map<String, Object> body, final String keyName) {
         return Integer.parseInt(
                 String.valueOf(Optional.ofNullable(body.get(keyName)).orElse(BigInteger.ZERO.intValue()))
         );

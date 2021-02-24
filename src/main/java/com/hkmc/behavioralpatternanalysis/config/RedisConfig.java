@@ -85,17 +85,4 @@ public class RedisConfig {
 	public GenericRedisRepository<CarTmuBasicInfo, String> carTmuBasicRepository() {
 		return new GenericRedisRepository<CarTmuBasicInfo, String>(CarTmuBasicInfo.class, redisTemplateDB09());
 	}
-	
-//	@Bean
-//	public RedisTemplate<String, Object> redisTemplate() {
-//	
-//		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-//		redisTemplate.setConnectionFactory(redisConnectionFactory());
-//		redisTemplate.setKeySerializer(new StringRedisSerializer());
-//		redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-//	
-//		return redisTemplate;
-//	
-//	}
-
 }

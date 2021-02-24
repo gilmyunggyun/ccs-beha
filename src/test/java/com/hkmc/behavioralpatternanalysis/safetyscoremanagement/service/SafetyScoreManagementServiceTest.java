@@ -94,6 +94,7 @@ class SafetyScoreManagementServiceTest {
                 .build();
 
         when(this.env.getProperty(eq(Const.Key.DSP_HEADER_AUTH))).thenReturn("Basic ########");
+        when(this.env.getProperty(eq(Const.Key.DSP_COMMON_URI))).thenReturn("/api/v1/dsp/ubi");
     }
 
     @Test
