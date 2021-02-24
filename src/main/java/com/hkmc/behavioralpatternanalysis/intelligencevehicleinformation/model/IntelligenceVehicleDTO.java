@@ -37,4 +37,7 @@ public class IntelligenceVehicleDTO implements Serializable {
 	/** 가혹 운행 플러스 건수 */
 	private int cntSeverePlus;
 
+	public Integer getCarOid(){
+		return Integer.parseInt(this.getNnidVin().substring(16, (16 + (this.getNnidVin().length() - 19))), 16);
+	}
 }

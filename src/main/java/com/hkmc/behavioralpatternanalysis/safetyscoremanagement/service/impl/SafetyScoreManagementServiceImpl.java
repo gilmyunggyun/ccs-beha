@@ -14,7 +14,7 @@ import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingSco
 import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.service.SafetyScoreManagementService;
 import feign.FeignException;
 import io.netty.util.internal.StringUtil;
-import org.apache.commons.lang3.ObjectUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementService {
     @Autowired
     private InterfaceUVOClient interfaceUVOClient;
@@ -39,13 +40,11 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
 
     @Override
     public DrivingScoreResDTO ubiSafetyDrivingScoreRequest(DrivingScoreVO drivingScoreVO) throws GlobalExternalException {
-        String serviceNo = drivingScoreVO.getDrivingScoreReqDTO().getServiceNo();
+        final String serviceNo = drivingScoreVO.getDrivingScoreReqDTO().getServiceNo();
+        final String uri = env.getProperty(Const.Key.DSP_COMMON_URI);
+        final Map<String, String> header = drivingScoreVO.getHeader();
+        header.put(Const.Header.Authorization, env.getProperty(Const.Key.DSP_HEADER_AUTH));
         try {
-            final Map<String, String> header = drivingScoreVO.getHeader();
-            header.put("Authorization", env.getProperty("dsp.header.auth"));
-
-            final String uri = env.getProperty("dsp.server.common.uri");
-
             final String vinPath = drivingScoreVO.getVinPath();
 
             ResponseEntity<Map<String, Object>> response;
@@ -63,41 +62,45 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
                     throw new Exception();
             }
 
-            Map<String, Object> body = Optional.ofNullable(response.getBody()).orElse(new HashMap<>());
+            final Map<String, Object> body = this.npThenEmptyMap(response.getBody());
 
             return DrivingScoreResDTO.builder()
                     .ServiceNo(serviceNo)
                     .RetCode(SpaResponseCodeEnum.SUCCESS.getRetCode())
                     .resCode(SpaResponseCodeEnum.SUCCESS.getResCode())
-                    .safetyDrivingScore(this.npThenZeroInteger(body.get(Const.ClientKey.SAFETY_DRV_SCORE)))
-                    .insuranceDiscountYN(this.npThenEmptyString(body.get(Const.ClientKey.INS_DISCOUNT_YN)))
-                    .updateAt(this.npThenEmptyString(body.get(Const.ClientKey.SCORE_DATE)))
-                    .drvDistance(this.npThenZeroInteger(body.get(Const.ClientKey.RANGE_DRV_DIST)))
-                    .accelGrade(this.npThenEmptyString(body.get(Const.ClientKey.BRST_ACC_GRADE)))
-                    .decelGrade(this.npThenEmptyString(body.get(Const.ClientKey.BRST_DEC_GRADE)))
-                    .nightDrivingGrade(this.npThenEmptyString(body.get(Const.ClientKey.NIGHT_DRV_GRADE)))
+                    .safetyDrivingScore(this.npThenZeroInteger(body, Const.ClientKey.SAFETY_DRV_SCORE))
+                    .insuranceDiscountYN(this.npThenEmptyString(body, Const.ClientKey.INS_DISCOUNT_YN))
+                    .updateAt(this.npThenEmptyString(body, Const.ClientKey.SCORE_DATE))
+                    .drvDistance(this.npThenZeroInteger(body, Const.ClientKey.RANGE_DRV_DIST))
+                    .accelGrade(this.npThenEmptyString(body, Const.ClientKey.BRST_ACC_GRADE))
+                    .decelGrade(this.npThenEmptyString(body, Const.ClientKey.BRST_DEC_GRADE))
+                    .nightDrivingGrade(this.npThenEmptyString(body, Const.ClientKey.NIGHT_DRV_GRADE))
                     .build();
         } catch (FeignException e) {
-            Map<String, Object> body = JsonUtil.str2map(e.contentUTF8());
-            if (ObjectUtils.isNotEmpty(body)
-                    && this.npThenEmptyString(body.get("errCode")).equals("5003")) {
+            log.error("\n++++++++++[FeignException] [itlCarBreakpadDrvScoreSearch] | CALL : {} | STATUS : {} | VIN : {} | AUTH : {} | {}",
+                    uri, e.status(), drivingScoreVO.getVinPath(), header.get(Const.Header.Authorization), e.getMessage());
 
+            final Map<String, Object> body = this.npThenEmptyMap(JsonUtil.str2map(e.contentUTF8()));
+            if (this.npThenEmptyString(body, Const.Key.ERR_CODE_MAP).equals(Const.ErrMsg.CANNOT_FOUND_VIN)){
                 throw new GlobalExternalException(
                         HttpStatus.OK.value(),
                         new Gson().toJson(SpaResponseDTO.builder()
                                 .ServiceNo(serviceNo)
                                 .RetCode(SpaResponseCodeEnum.ERROR_E110.getRetCode())
                                 .resCode(SpaResponseCodeEnum.ERROR_E110.getResCode())
-                                .build())
+                                .build()
+                        )
                 );
             }
             throw GlobalExternalException_EX01(serviceNo);
         } catch (Exception e) {
+            log.error("\n++++++++++[Exception] [itlCarBreakpadDrvScoreSearch] | VIN : {} | {}",
+                    drivingScoreVO.getVinPath(), e.getMessage());
             throw GlobalExternalException_EX01(serviceNo);
         }
     }
 
-    private GlobalExternalException GlobalExternalException_EX01(String serviceNo) {
+    private GlobalExternalException GlobalExternalException_EX01(final String serviceNo) {
         return new GlobalExternalException(
                 HttpStatus.OK.value(),
                 new Gson().toJson(SpaResponseDTO.builder()
@@ -108,11 +111,19 @@ public class SafetyScoreManagementServiceImpl implements SafetyScoreManagementSe
         );
     }
 
-    public String npThenEmptyString(Object obj) {
-        return String.valueOf(Optional.ofNullable(obj).orElse(StringUtil.EMPTY_STRING));
+    public Map<String, Object> npThenEmptyMap(final Map<String, Object> body) {
+        return Optional.ofNullable(body).orElse(new HashMap<>());
     }
 
-    public Integer npThenZeroInteger(Object obj) {
-        return Integer.parseInt(String.valueOf(Optional.ofNullable(obj).orElse(BigInteger.ZERO.intValue())));
+    public String npThenEmptyString(final Map<String, Object> body, final String keyName) {
+        return String.valueOf(
+                Optional.ofNullable(body.get(keyName)).orElse(StringUtil.EMPTY_STRING)
+        );
+    }
+
+    public Integer npThenZeroInteger(final Map<String, Object> body, final String keyName) {
+        return Integer.parseInt(
+                String.valueOf(Optional.ofNullable(body.get(keyName)).orElse(BigInteger.ZERO.intValue()))
+        );
     }
 }

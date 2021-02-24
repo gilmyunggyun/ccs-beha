@@ -93,7 +93,7 @@ class SafetyScoreManagementServiceTest {
                 .drivingScoreReqDTO(this.drivingScoreReqDTO)
                 .build();
 
-        when(this.env.getProperty(eq("dsp.auth"))).thenReturn("Basic ########");
+        when(this.env.getProperty(eq(Const.Key.DSP_HEADER_AUTH))).thenReturn("Basic ########");
     }
 
     @Test

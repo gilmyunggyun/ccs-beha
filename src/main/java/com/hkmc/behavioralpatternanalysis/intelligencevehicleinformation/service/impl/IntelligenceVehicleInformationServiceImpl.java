@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.hkmc.behavioralpatternanalysis.common.Const;
 import com.hkmc.behavioralpatternanalysis.common.util.JsonUtil;
 import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.model.*;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -28,11 +29,9 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class IntelligenceVehicleInformationServiceImpl implements IntelligenceVehicleInformationService {
-
-//	private final RedisTemplate<byte[], byte[]> redisTemplate;
-
 	private final R2dbcEntityOperations postgresqlEntityOperations;
 	private final R2dbcRepositoryFactory postgresqlRepositoryFactory;
+
 	@Autowired
 	private GenericRedisRepository<CarTmuBasicInfo, String> carTmuBasicRepository;
 	@Autowired
@@ -50,50 +49,51 @@ public class IntelligenceVehicleInformationServiceImpl implements IntelligenceVe
 
 	@Override
 	@Async
-	public void saveIntelligenceVehicleInformation(ConsumerRecord<String, String> consumerRecord) throws GlobalCCSException {
+	public void saveIntelligenceVehicleInformation(final ConsumerRecord<String, String> consumerRecord) throws GlobalCCSException {
 
-		TemplateProduceDTO kafkaConsumerMap = JsonUtil.str2obj(consumerRecord.value(), TemplateProduceDTO.class);
+		final TemplateConsumeDTO kafkaConsumerMap = Optional
+				.ofNullable(JsonUtil.str2obj(consumerRecord.value(), TemplateConsumeDTO.class))
+				.orElse(new TemplateConsumeDTO());
 
 		// 전송일자와 현재일자가 동일할 경우와 데이터가 존재할 경우에만 실행
-		final String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-		final boolean sendDateIsNotToday = !(today.equals(kafkaConsumerMap.getSendDate()));
-		final int dataLength = Optional.ofNullable(kafkaConsumerMap.getIntelligenceVehicleList()).orElse(new ArrayList<>()).size();
-		if (sendDateIsNotToday || dataLength == 0) {
+		if (!(LocalDate.now().format(DateTimeFormatter.ofPattern(Const.YYYYMMDD)).equals(kafkaConsumerMap.getSendDate()))
+				|| 0 == Optional.ofNullable(kafkaConsumerMap.getIntelligenceVehicleList()).orElse(new ArrayList<>()).size()) {
 			return;
 		}
 
 		this.behaSvdvHistRepository = behaSvdvHistRepository();
 
 		// 변수 선언
-		String sendDate = kafkaConsumerMap.getSendDate();
-		long sendTotalPage = kafkaConsumerMap.getSendTotalPage();
-		long sendCurrentPage = kafkaConsumerMap.getSendCurrentPage();
-		long sendTotalCount = kafkaConsumerMap.getSendTotalCount();
-		long sendPageInCount = kafkaConsumerMap.getSendPageInCount();
+		final String sendDate = kafkaConsumerMap.getSendDate();
+		final long sendTotalPage = kafkaConsumerMap.getSendTotalPage();
+		final long sendCurrentPage = kafkaConsumerMap.getSendCurrentPage();
+		final long sendTotalCount = kafkaConsumerMap.getSendTotalCount();
+		final long sendPageInCount = kafkaConsumerMap.getSendPageInCount();
 
 		try {
 			// 페이지 add
 			CommonUtil.addConsumerPage();
-			this.behaSvdvHistRepository
-					.reactiveSaveAsList(kafkaConsumerMap.getIntelligenceVehicleList().stream ()
-							.map((IntelligenceVehicleDTO data) -> {
-								CommonUtil.addConsumerCount();
-								return BehaSvdvHist.builder()
-										.ifDate(data.getIfDate())
-										.nnidVin(data.getNnidVin())
-										.prjVehlCd(data.getPrjVehlCd())
-										.severeNormal(data.getSevereNormal())
-										.cntNormal(data.getCntNormal())
-										.cntCaution(data.getCntCaution())
-										.cntSevere(data.getCntSevere())
-										.carOid(Integer.parseInt(data.getNnidVin().substring(16, (16 + (data.getNnidVin().length() - 19))), 16))
-										.build();
-							}).collect(Collectors.toList()))
-					.block();
+			final List<BehaSvdvHist> itlVehicleList = kafkaConsumerMap.getIntelligenceVehicleList().stream()
+					.map((IntelligenceVehicleDTO data) -> {
+						CommonUtil.addConsumerCount();
+						return BehaSvdvHist.builder()
+								.ifDate(data.getIfDate())
+								.nnidVin(data.getNnidVin())
+								.prjVehlCd(data.getPrjVehlCd())
+								.severeNormal(data.getSevereNormal())
+								.cntNormal(data.getCntNormal())
+								.cntCaution(data.getCntCaution())
+								.cntSevere(data.getCntSevere())
+								.carOid(data.getCarOid())
+								.build();
+					}).collect(Collectors.toList());
+
+			this.behaSvdvHistRepository.reactiveSaveAsList(itlVehicleList).block();
 
 			if (Objects.equals(
-					this.behaSvdvHistRepository.reactiveCountByCriteria(Criteria.where("ifDate").is(sendDate)).block(),
-					sendTotalCount)) {
+					this.behaSvdvHistRepository.reactiveCountByCriteria(Criteria.where(Const.Column.CRTN_YMD).is(sendDate)).block(),
+					sendTotalCount
+			)) {
 				// 페이지 및 건수 초기화
 				CommonUtil.resetConsumerCount();
 				CommonUtil.resetConsumerPage();
@@ -112,11 +112,9 @@ public class IntelligenceVehicleInformationServiceImpl implements IntelligenceVe
 
 	// 차량 브레이크 패드 자료에 대한 조회 요청을 처리
 	@Override
-	public ItlBreakpadResDTO getItlCarBreakpadDrvScore(String vinPath) throws GlobalCCSException {
+	public ItlBreakpadResDTO getItlCarBreakpadDrvScore(final String vinPath) throws GlobalCCSException {
 		this.behaSvdvHistRepository = this.behaSvdvHistRepository();
-
 		try {
-
 			final String nadid = this.carTmuBasicRepository.findByIdHash(
 					CarTmuBasicInfo.builder().vin(vinPath).build()
 			).getNadid();
@@ -125,18 +123,18 @@ public class IntelligenceVehicleInformationServiceImpl implements IntelligenceVe
 					NadidVinAuth.builder().nadidVin(String.format("%s_%s", nadid, vinPath)).build()
 			).getCarOid();
 
-			List<BehaSvdvHist> resDto = this.behaSvdvHistRepository.reactiveFindByAllCriteria(
-					Criteria.where("carOid").is(carOid)
+			final List<BehaSvdvHist> resDto = this.behaSvdvHistRepository.reactiveFindByAllCriteria(
+					Criteria.where(Const.Column.CAR_OID).is(carOid)
 			).block();
 
 			return ItlBreakpadResDTO.builder()
 					.body(resDto)
-					.resultStatus("S")
-					.message("Success")
+					.resultStatus(Const.ResponseCode.SUCCESS_STATUS)
+					.message(Const.ResponseMessage.SUCCESS)
 					.build();
-		}
-		catch (Exception e){
-			log.error("\n----------[Exception] [RVP-D] | {}(vin) | {}", vinPath, e.getMessage());
+		} catch (Exception e){
+			log.error("\n++++++++++[Exception] [itlCarBreakpadDrvScore] | {}(vin) | {}",
+					vinPath, e.getMessage());
 			throw new GlobalCCSException(590);
 		}
 	}

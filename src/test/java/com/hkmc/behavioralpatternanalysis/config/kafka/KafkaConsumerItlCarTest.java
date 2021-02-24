@@ -5,6 +5,7 @@ import static org.mockito.Mockito.verify;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import com.hkmc.behavioralpatternanalysis.common.Const;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -36,7 +37,7 @@ public class KafkaConsumerItlCarTest {
 	@BeforeEach
 	public void setup() throws GlobalCCSException {
 
-		toDay = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")); 
+		toDay = LocalDate.now().format(DateTimeFormatter.ofPattern(Const.YYYYMMDD));
 		
 		consumerRecord = "" + 
 				"{\r\n" +

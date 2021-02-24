@@ -12,6 +12,6 @@ public interface IntelligenceVehicleInformationService {
 	public void saveIntelligenceVehicleInformation(ConsumerRecord<String, String> kafkaConsumer) throws GlobalCCSException;
 
 	/* 차량 브레이크 패드 자료에 대한 조회 요청을 처리  */
-	public ItlBreakpadResDTO getItlCarBreakpadDrvScore(String vinPath) throws GlobalCCSException;
+	public ItlBreakpadResDTO getItlCarBreakpadDrvScore(final String vinPath) throws GlobalCCSException;
 
 }

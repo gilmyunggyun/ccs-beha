@@ -41,11 +41,11 @@ public class BehavioralPatternAnalysisController {
 				.body(ResponseDTO.<ItlBreakpadResDTO>builder()
 						.code(HttpStatus.OK.value())
 						.data(intelligenceVehicleInformationService.getItlCarBreakpadDrvScore(body.getVin()))
-						.resultMessage("Success").build());
+						.resultMessage(Const.ResponseMessage.SUCCESS).build());
 	}
 
 	@ApiOperation(value = "UBI 안전 운전 점수 조회")
-	@PostMapping(value="/ubi/score")
+	@PostMapping(value="/ubi/score") //itlCarBreakpadDrvScoreSearch
 	public ResponseEntity<?> getUbiSafetyDrivingScore (
 			@RequestHeader HttpHeaders headers,
 			@RequestBody DrivingScoreReqDTO body

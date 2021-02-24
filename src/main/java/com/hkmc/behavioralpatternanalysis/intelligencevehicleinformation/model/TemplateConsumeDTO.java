@@ -8,7 +8,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TemplateProduceDTO {
+public class TemplateConsumeDTO {
 	private String serviceCode;
 
 	private String subCode;

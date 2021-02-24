@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.hkmc.behavioralpatternanalysis.common.Const;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,7 +61,7 @@ public class IntelligenceVehicleInformationServiceTest {
 	@BeforeEach
 	public void setup() throws GlobalCCSException {
 		
-		toDay = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+		toDay = LocalDate.now().format(DateTimeFormatter.ofPattern(Const.YYYYMMDD));
 	
 		String consumerRecord = "";
 
