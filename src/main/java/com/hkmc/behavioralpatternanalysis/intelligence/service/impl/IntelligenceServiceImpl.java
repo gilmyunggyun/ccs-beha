@@ -1,4 +1,4 @@
-package com.hkmc.behavioralpatternanalysis.intelligenceve.service.impl;
+package com.hkmc.behavioralpatternanalysis.intelligence.service.impl;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import com.hkmc.behavioralpatternanalysis.common.Const;
 import com.hkmc.behavioralpatternanalysis.common.util.JsonUtil;
-import com.hkmc.behavioralpatternanalysis.intelligenceve.model.*;
+import com.hkmc.behavioralpatternanalysis.intelligence.model.*;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
 import org.springframework.data.r2dbc.repository.support.R2dbcRepositoryFactory;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalCCSException;
 import com.hkmc.behavioralpatternanalysis.common.util.CommonUtil;
-import com.hkmc.behavioralpatternanalysis.intelligenceve.service.IntelligenceService;
+import com.hkmc.behavioralpatternanalysis.intelligence.service.IntelligenceService;
 
 import ccs.core.db.repository.postgre.GenericPostgreRepository;
 import ccs.core.db.repository.redis.GenericRedisRepository;

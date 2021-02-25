@@ -1,4 +1,4 @@
-package com.hkmc.behavioralpatternanalysis.intelligenceve.model;
+package com.hkmc.behavioralpatternanalysis.intelligence.model;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;

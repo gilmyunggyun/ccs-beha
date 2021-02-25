@@ -1,4 +1,4 @@
-package com.hkmc.behavioralpatternanalysis.intelligenceve.service;
+package com.hkmc.behavioralpatternanalysis.intelligence.service;
 
 
 import java.time.LocalDate;
@@ -18,8 +18,8 @@ import org.springframework.data.r2dbc.repository.support.R2dbcRepositoryFactory;
 
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalCCSException;
 import com.hkmc.behavioralpatternanalysis.common.util.JsonUtil;
-import com.hkmc.behavioralpatternanalysis.intelligenceve.model.BehaSvdvHist;
-import com.hkmc.behavioralpatternanalysis.intelligenceve.service.impl.IntelligenceServiceImpl;
+import com.hkmc.behavioralpatternanalysis.intelligence.model.BehaSvdvHist;
+import com.hkmc.behavioralpatternanalysis.intelligence.service.impl.IntelligenceServiceImpl;
 
 import ccs.core.db.repository.postgre.GenericPostgreRepository;
 import lombok.extern.slf4j.Slf4j;

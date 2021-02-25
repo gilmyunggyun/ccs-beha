@@ -1,7 +1,7 @@
-package com.hkmc.behavioralpatternanalysis.intelligenceve.service;
+package com.hkmc.behavioralpatternanalysis.intelligence.service;
 
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalCCSException;
-import com.hkmc.behavioralpatternanalysis.intelligenceve.model.ItlBreakpadResDTO;
+import com.hkmc.behavioralpatternanalysis.intelligence.model.ItlBreakpadResDTO;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 public interface IntelligenceService {

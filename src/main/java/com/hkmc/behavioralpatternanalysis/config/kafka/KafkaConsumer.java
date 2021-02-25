@@ -7,7 +7,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import com.hkmc.behavioralpatternanalysis.intelligenceve.service.IntelligenceService;
+import com.hkmc.behavioralpatternanalysis.intelligence.service.IntelligenceService;
 
 @Component
 @EnableKafka

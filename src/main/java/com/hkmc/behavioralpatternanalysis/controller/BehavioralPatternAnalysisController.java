@@ -1,7 +1,7 @@
 package com.hkmc.behavioralpatternanalysis.controller;
 
-import com.hkmc.behavioralpatternanalysis.intelligenceve.model.ItlBreakpadReqDTO;
-import com.hkmc.behavioralpatternanalysis.intelligenceve.model.ItlBreakpadResDTO;
+import com.hkmc.behavioralpatternanalysis.intelligence.model.ItlBreakpadReqDTO;
+import com.hkmc.behavioralpatternanalysis.intelligence.model.ItlBreakpadResDTO;
 import com.hkmc.behavioralpatternanalysis.safetyscore.model.DrivingScoreReqDTO;
 import com.hkmc.behavioralpatternanalysis.safetyscore.model.DrivingScoreVO;
 import com.hkmc.behavioralpatternanalysis.safetyscore.service.SafetyScoreService;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import com.hkmc.behavioralpatternanalysis.common.Const;
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalCCSException;
 import com.hkmc.behavioralpatternanalysis.common.model.ResponseDTO;
-import com.hkmc.behavioralpatternanalysis.intelligenceve.service.IntelligenceService;
+import com.hkmc.behavioralpatternanalysis.intelligence.service.IntelligenceService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
