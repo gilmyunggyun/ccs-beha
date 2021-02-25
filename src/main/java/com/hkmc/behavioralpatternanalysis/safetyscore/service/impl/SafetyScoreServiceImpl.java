@@ -53,13 +53,6 @@ public class SafetyScoreServiceImpl implements SafetyScoreService {
             } else if (Const.APP_TYPE_GENESIS_CONNECTED.equals(appType)) {
                 feignResponse = interfaceGenesisConnectedClient.requestCallGet(requestHeader, uri, vinPath);
             }
-//            final ResponseEntity<Map<String, Object>> feignResponse = Const.APP_TYPE_BLUE_LINK.equals(appType)
-//                    ? interfaceBluelinkClient.requestCallGet(requestHeader, uri, vinPath)
-//                    : Const.APP_TYPE_UVO.equals(appType)
-//                    ? interfaceUVOClient.requestCallGet(requestHeader, uri, vinPath)
-//                    : Const.APP_TYPE_GENESIS_CONNECTED.equals(appType)
-//                    ? interfaceGenesisConnectedClient.requestCallGet(requestHeader, uri, vinPath)
-//                    : ResponseEntity.noContent().build();
 
             final Map<String, Object> feignResponseSuccessBody = feignResponse.getBody();
             return ObjectUtils.isEmpty(feignResponseSuccessBody)
