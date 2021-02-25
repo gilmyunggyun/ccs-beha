@@ -1,12 +1,11 @@
 package com.hkmc.behavioralpatternanalysis.controller;
 
-import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.model.ItlBreakpadReqDTO;
-import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.model.ItlBreakpadResDTO;
-import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreReqDTO;
-import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreVO;
-import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.service.SafetyScoreManagementService;
+import com.hkmc.behavioralpatternanalysis.intelligenceve.model.ItlBreakpadReqDTO;
+import com.hkmc.behavioralpatternanalysis.intelligenceve.model.ItlBreakpadResDTO;
+import com.hkmc.behavioralpatternanalysis.safetyscore.model.DrivingScoreReqDTO;
+import com.hkmc.behavioralpatternanalysis.safetyscore.model.DrivingScoreVO;
+import com.hkmc.behavioralpatternanalysis.safetyscore.service.SafetyScoreService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import com.hkmc.behavioralpatternanalysis.common.Const;
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalCCSException;
 import com.hkmc.behavioralpatternanalysis.common.model.ResponseDTO;
-import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.service.IntelligenceVehicleInformationService;
+import com.hkmc.behavioralpatternanalysis.intelligenceve.service.IntelligenceService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,8 +24,8 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping(Const.BehavioralPatternAnalysis.VERSION_V1)
 @RequiredArgsConstructor
 public class BehavioralPatternAnalysisController {
-	private final IntelligenceVehicleInformationService intelligenceVehicleInformationService;
-	private final SafetyScoreManagementService safetyScoreManagementService;
+	private final IntelligenceService intelligenceService;
+	private final SafetyScoreService safetyScoreService;
 
 	@ApiOperation(value = "차량 브레 이크 패드 자료에 대한 조회 요청을 처리")
 	@PostMapping(value="/itl/breakpad") //itlCarBreakpadDrvScore
@@ -38,7 +37,7 @@ public class BehavioralPatternAnalysisController {
 				.status(HttpStatus.OK)
 				.body(ResponseDTO.<ItlBreakpadResDTO>builder()
 						.code(HttpStatus.OK.value())
-						.data(intelligenceVehicleInformationService.getItlCarBreakpadDrvScore(body.getVin()))
+						.data(intelligenceService.getItlCarBreakpadDrvScore(body.getVin()))
 						.resultMessage(Const.ResponseMessage.SUCCESS).build());
 	}
 
@@ -51,7 +50,7 @@ public class BehavioralPatternAnalysisController {
 	) {
 		return ResponseEntity
 				.status(HttpStatus.OK.value())
-				.body(safetyScoreManagementService.ubiSafetyDrivingScoreRequest(
+				.body(safetyScoreService.ubiSafetyDrivingScoreRequest(
 						DrivingScoreVO.builder()
 								.drivingScoreReqDTO(body)
 								.vinPath(vinPath)

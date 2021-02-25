@@ -1,4 +1,4 @@
-package com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.model;
+package com.hkmc.behavioralpatternanalysis.intelligenceve.model;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.service.impl;
+package com.hkmc.behavioralpatternanalysis.intelligenceve.service.impl;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -7,9 +7,8 @@ import java.util.stream.Collectors;
 
 import com.hkmc.behavioralpatternanalysis.common.Const;
 import com.hkmc.behavioralpatternanalysis.common.util.JsonUtil;
-import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.model.*;
+import com.hkmc.behavioralpatternanalysis.intelligenceve.model.*;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
 import org.springframework.data.r2dbc.repository.support.R2dbcRepositoryFactory;
 import org.springframework.data.relational.core.query.Criteria;
@@ -18,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalCCSException;
 import com.hkmc.behavioralpatternanalysis.common.util.CommonUtil;
-import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.service.IntelligenceVehicleInformationService;
+import com.hkmc.behavioralpatternanalysis.intelligenceve.service.IntelligenceService;
 
 import ccs.core.db.repository.postgre.GenericPostgreRepository;
 import ccs.core.db.repository.redis.GenericRedisRepository;
@@ -28,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class IntelligenceVehicleInformationServiceImpl implements IntelligenceVehicleInformationService {
+public class IntelligenceServiceImpl implements IntelligenceService {
 	private final R2dbcEntityOperations postgresqlEntityOperations;
 	private final R2dbcRepositoryFactory postgresqlRepositoryFactory;
 
@@ -46,7 +45,7 @@ public class IntelligenceVehicleInformationServiceImpl implements IntelligenceVe
 
 	@Override
 	@Async
-	public void saveIntelligenceVehicleInformation(final ConsumerRecord<String, String> consumerRecord) throws GlobalCCSException {
+	public void saveIntelligence(final ConsumerRecord<String, String> consumerRecord) throws GlobalCCSException {
 
 		final TemplateConsumeDTO kafkaConsumerMap = Optional
 				.ofNullable(JsonUtil.str2obj(consumerRecord.value(), TemplateConsumeDTO.class))
@@ -71,7 +70,7 @@ public class IntelligenceVehicleInformationServiceImpl implements IntelligenceVe
 			// 페이지 add
 			CommonUtil.addConsumerPage();
 			final List<BehaSvdvHist> itlVehicleList = kafkaConsumerMap.getIntelligenceVehicleList().stream()
-					.map((IntelligenceVehicleDTO data) -> {
+					.map((IntelligenceDTO data) -> {
 						CommonUtil.addConsumerCount();
 						return BehaSvdvHist.builder()
 								.ifDate(data.getIfDate())

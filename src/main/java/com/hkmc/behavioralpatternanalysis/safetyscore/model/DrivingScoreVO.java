@@ -1,9 +1,8 @@
-package com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model;
+package com.hkmc.behavioralpatternanalysis.safetyscore.model;
 
 import lombok.*;
 
 import java.util.Map;
-import java.util.Optional;
 
 @Builder
 @Getter

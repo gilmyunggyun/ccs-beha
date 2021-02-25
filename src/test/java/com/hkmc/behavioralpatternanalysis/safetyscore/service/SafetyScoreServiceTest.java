@@ -1,4 +1,4 @@
-package com.hkmc.behavioralpatternanalysis.safetyscoremanagement.service;
+package com.hkmc.behavioralpatternanalysis.safetyscore.service;
 
 import com.google.gson.Gson;
 import com.hkmc.behavioralpatternanalysis.common.Const;
@@ -8,8 +8,8 @@ import com.hkmc.behavioralpatternanalysis.common.client.InterfaceUVOClient;
 import com.hkmc.behavioralpatternanalysis.common.code.SpaResponseCodeEnum;
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalExternalException;
 import com.hkmc.behavioralpatternanalysis.common.util.JsonUtil;
-import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.*;
-import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.service.impl.SafetyScoreManagementServiceImpl;
+import com.hkmc.behavioralpatternanalysis.safetyscore.model.*;
+import com.hkmc.behavioralpatternanalysis.safetyscore.service.impl.SafetyScoreServiceImpl;
 import feign.*;
 import io.netty.util.internal.StringUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +38,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("local")
 @TestPropertySource("classpath:application.yaml")
-class SafetyScoreManagementServiceTest {
+class SafetyScoreServiceTest {
     @Mock
     private InterfaceUVOClient interfaceUVOClient;
     @Mock
@@ -50,7 +50,7 @@ class SafetyScoreManagementServiceTest {
 
     @Spy
     @InjectMocks
-    private SafetyScoreManagementServiceImpl safetyScoreManagementService;
+    private SafetyScoreServiceImpl safetyScoreManagementService;
 
     private String vin;
 

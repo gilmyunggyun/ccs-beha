@@ -1,4 +1,4 @@
-package com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.model;
+package com.hkmc.behavioralpatternanalysis.intelligenceve.model;
 
 import lombok.*;
 
@@ -24,6 +24,6 @@ public class TemplateConsumeDTO {
 	private long sendPageInCount;
 
 	@Singular("IntelligenceVehicleList")
-	private List<IntelligenceVehicleDTO> IntelligenceVehicleList;
+	private List<IntelligenceDTO> IntelligenceVehicleList;
 
 }

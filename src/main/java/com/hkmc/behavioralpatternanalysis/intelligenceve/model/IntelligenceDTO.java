@@ -1,4 +1,4 @@
-package com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.model;
+package com.hkmc.behavioralpatternanalysis.intelligenceve.model;
 
 import lombok.Data;
 
@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 @Data
 @Entity
-public class IntelligenceVehicleDTO implements Serializable {
+public class IntelligenceDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

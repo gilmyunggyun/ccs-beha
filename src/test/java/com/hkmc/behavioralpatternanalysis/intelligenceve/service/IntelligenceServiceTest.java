@@ -1,31 +1,25 @@
-package com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.service;
+package com.hkmc.behavioralpatternanalysis.intelligenceve.service;
 
-
-import static org.mockito.BDDMockito.given;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import com.hkmc.behavioralpatternanalysis.common.Const;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.core.env.Environment;
 import org.springframework.data.r2dbc.convert.R2dbcConverter;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
 import org.springframework.data.r2dbc.repository.support.R2dbcRepositoryFactory;
-import org.springframework.data.relational.core.query.Criteria;
 
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalCCSException;
 import com.hkmc.behavioralpatternanalysis.common.util.JsonUtil;
-import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.model.BehaSvdvHist;
-import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.service.impl.IntelligenceVehicleInformationServiceImpl;
+import com.hkmc.behavioralpatternanalysis.intelligenceve.model.BehaSvdvHist;
+import com.hkmc.behavioralpatternanalysis.intelligenceve.service.impl.IntelligenceServiceImpl;
 
 import ccs.core.db.repository.postgre.GenericPostgreRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -33,10 +27,10 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
-public class IntelligenceVehicleInformationServiceTest {
+public class IntelligenceServiceTest {
 	
 	@InjectMocks
-	private IntelligenceVehicleInformationServiceImpl intelligenceVehicleInformationService;
+	private IntelligenceServiceImpl intelligenceVehicleInformationService;
 	
 	@Mock
 	private R2dbcEntityOperations postgresqlEntityOperations;

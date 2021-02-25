@@ -1,6 +1,5 @@
 package com.hkmc.behavioralpatternanalysis.common.client;
 
-import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DspReqDTO;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;

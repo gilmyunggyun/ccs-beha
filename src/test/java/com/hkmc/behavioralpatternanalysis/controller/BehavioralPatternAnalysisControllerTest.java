@@ -5,9 +5,9 @@ import com.hkmc.behavioralpatternanalysis.common.client.InterfaceBluelinkClient;
 import com.hkmc.behavioralpatternanalysis.common.client.InterfaceGenesisConnectedClient;
 import com.hkmc.behavioralpatternanalysis.common.client.InterfaceUVOClient;
 import com.hkmc.behavioralpatternanalysis.common.util.JsonUtil;
-import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreReqDTO;
-import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model.DrivingScoreResDTO;
-import com.hkmc.behavioralpatternanalysis.safetyscoremanagement.service.SafetyScoreManagementService;
+import com.hkmc.behavioralpatternanalysis.safetyscore.model.DrivingScoreReqDTO;
+import com.hkmc.behavioralpatternanalysis.safetyscore.model.DrivingScoreResDTO;
+import com.hkmc.behavioralpatternanalysis.safetyscore.service.SafetyScoreService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,7 +46,7 @@ class BehavioralPatternAnalysisControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private SafetyScoreManagementService safetyScoreManagementService;
+    private SafetyScoreService safetyScoreService;
 
     @Mock
     private InterfaceBluelinkClient interfaceBluelinkClient;
@@ -76,7 +76,7 @@ class BehavioralPatternAnalysisControllerTest {
         this.drivingScoreReqDTO.setCarID("someCarId");
         this.drivingScoreReqDTO.setFromHost(Const.System.PHONE);
 
-        when(safetyScoreManagementService.ubiSafetyDrivingScoreRequest(any()))
+        when(safetyScoreService.ubiSafetyDrivingScoreRequest(any()))
                 .thenReturn(DrivingScoreResDTO.builder().build());
 
         MvcResult response = this.mockMvc.perform(
@@ -91,7 +91,7 @@ class BehavioralPatternAnalysisControllerTest {
 
     @Test
     public void getUbiSafetyDrivingScoreTest_500_bodynull() throws Exception {
-        when(safetyScoreManagementService.ubiSafetyDrivingScoreRequest(any()))
+        when(safetyScoreService.ubiSafetyDrivingScoreRequest(any()))
                 .thenReturn(null);
 
         MvcResult response = this.mockMvc.perform(

@@ -1,4 +1,4 @@
-package com.hkmc.behavioralpatternanalysis.safetyscoremanagement.model;
+package com.hkmc.behavioralpatternanalysis.safetyscore.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hkmc.behavioralpatternanalysis.common.model.SpaRequestDTO;

@@ -1,8 +1,8 @@
 package com.hkmc.behavioralpatternanalysis.config;
 
 import ccs.core.db.repository.redis.GenericRedisRepository;
-import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.model.NadidVinAuth;
-import com.hkmc.behavioralpatternanalysis.intelligencevehicleinformation.model.CarTmuBasicInfo;
+import com.hkmc.behavioralpatternanalysis.intelligenceve.model.NadidVinAuth;
+import com.hkmc.behavioralpatternanalysis.intelligenceve.model.CarTmuBasicInfo;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
