@@ -21,14 +21,6 @@ spring:
     max-pool-size: 3200
     queue-capacity-size: 1
     keep-allive-secound: 15
-  kafka:
-    bootstrap-servers: 10.11.52.11:9092,10.11.52.12:9092,10.11.52.13:9092,10.11.52.14:9092,10.11.52.15:9092,10.11.52.16:9092
-    consumer:
-      auto-offset-reset: latest
-      enable:
-        auto:
-          commit: false
-      max-poll-records: 300
   zipkin:
     base-url: http://10.11.53.1:9411
     httptag: true
@@ -53,13 +45,6 @@ spring:
       initalsize: 10
       max-size: 100
       maxcreateconnectiontime: 10000
-
-#kafka topic
-kafka:
-  topic:
-    intelligence: ccsp20.behavioralpattern.intelligence
-  group:
-    consumer: ccsp20-behavioralpatternanalysis
 
 #feign client config
 feign:

@@ -2,9 +2,9 @@ package com.hkmc.behavioralpatternanalysis.safetyscore.service;
 
 import com.google.gson.Gson;
 import com.hkmc.behavioralpatternanalysis.common.Const;
-import com.hkmc.behavioralpatternanalysis.common.client.InterfaceBluelinkClient;
-import com.hkmc.behavioralpatternanalysis.common.client.InterfaceGenesisConnectedClient;
-import com.hkmc.behavioralpatternanalysis.common.client.InterfaceUVOClient;
+import com.hkmc.behavioralpatternanalysis.common.client.InterfaceBluelinkDspClient;
+import com.hkmc.behavioralpatternanalysis.common.client.InterfaceGenesisConnectedDspClient;
+import com.hkmc.behavioralpatternanalysis.common.client.InterfaceUvoDspClient;
 import com.hkmc.behavioralpatternanalysis.common.code.SpaResponseCodeEnum;
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalExternalException;
 import com.hkmc.behavioralpatternanalysis.common.util.JsonUtil;
@@ -40,11 +40,11 @@ import static org.mockito.Mockito.*;
 @TestPropertySource("classpath:application.yaml")
 class SafetyScoreServiceTest {
     @Mock
-    private InterfaceUVOClient interfaceUVOClient;
+    private InterfaceUvoDspClient interfaceUvoDspClient;
     @Mock
-    private InterfaceBluelinkClient interfaceBluelinkClient;
+    private InterfaceBluelinkDspClient interfaceBluelinkDspClient;
     @Mock
-    private InterfaceGenesisConnectedClient interfaceGenesisConnectedClient;
+    private InterfaceGenesisConnectedDspClient interfaceGenesisConnectedDspClient;
     @Mock
     private Environment env;
 
@@ -110,34 +110,34 @@ class SafetyScoreServiceTest {
 
         // bluTest
         assertDoesNotThrow(() -> {
-            when(this.interfaceBluelinkClient.requestCallGet(anyMap(), anyString(), anyString())).thenReturn(resSuccess);
+            when(this.interfaceBluelinkDspClient.requestCallGet(anyMap(), anyString(), anyString())).thenReturn(resSuccess);
             this.drivingScoreReqDTO.setCCID(this.bluCCID);
 
             DrivingScoreResDTO bluSuccess = this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreVO);
 
-            verify(this.interfaceBluelinkClient, times(1)).requestCallGet(anyMap(), anyString(), anyString());
+            verify(this.interfaceBluelinkDspClient, times(1)).requestCallGet(anyMap(), anyString(), anyString());
             assertResult(dspResBody, bluSuccess);
         });
 
         // uvoTest
         assertDoesNotThrow(() -> {
-            when(this.interfaceUVOClient.requestCallGet(anyMap(), anyString(), anyString())).thenReturn(resSuccess);
+            when(this.interfaceUvoDspClient.requestCallGet(anyMap(), anyString(), anyString())).thenReturn(resSuccess);
             this.drivingScoreReqDTO.setCCID(this.uvoCCID);
 
             DrivingScoreResDTO uvoSuccess = this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreVO);
 
-            verify(this.interfaceUVOClient, times(1)).requestCallGet(anyMap(), anyString(), anyString());
+            verify(this.interfaceUvoDspClient, times(1)).requestCallGet(anyMap(), anyString(), anyString());
             assertResult(dspResBody, uvoSuccess);
         });
 
         // genTest
         assertDoesNotThrow(() -> {
-            when(this.interfaceGenesisConnectedClient.requestCallGet(anyMap(), anyString(), anyString())).thenReturn(resSuccess);
+            when(this.interfaceGenesisConnectedDspClient.requestCallGet(anyMap(), anyString(), anyString())).thenReturn(resSuccess);
             this.drivingScoreReqDTO.setCCID(this.gneCCID);
 
             DrivingScoreResDTO genSuccess = this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreVO);
 
-            verify(this.interfaceGenesisConnectedClient, times(1)).requestCallGet(anyMap(), anyString(), anyString());
+            verify(this.interfaceGenesisConnectedDspClient, times(1)).requestCallGet(anyMap(), anyString(), anyString());
             assertResult(dspResBody, genSuccess);
         });
     }
@@ -165,13 +165,13 @@ class SafetyScoreServiceTest {
     public void ubiSafetyDrivingScoreRequest_npBody() {
         when(this.env.getProperty(eq(Const.Key.DSP_HEADER_AUTH))).thenReturn("Basic ########");
         ResponseEntity<Map<String, Object>> resSuccess = ResponseEntity.status(HttpStatus.OK).build();
-        when(this.interfaceBluelinkClient.requestCallGet(anyMap(), anyString(), anyString())).thenReturn(resSuccess);
+        when(this.interfaceBluelinkDspClient.requestCallGet(anyMap(), anyString(), anyString())).thenReturn(resSuccess);
         this.drivingScoreReqDTO.setCCID(this.bluCCID);
 
         assertDoesNotThrow(() -> {
             DrivingScoreResDTO resultVO = this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreVO);
 
-            verify(this.interfaceBluelinkClient, times(1)).requestCallGet(anyMap(), anyString(), anyString());
+            verify(this.interfaceBluelinkDspClient, times(1)).requestCallGet(anyMap(), anyString(), anyString());
             if (!ObjectUtils.isEmpty(resultVO)) {
                 assertEquals(this.drivingScoreReqDTO.getServiceNo(), resultVO.getServiceNo());
                 assertEquals(BigInteger.ZERO.intValue(), resultVO.getSafetyDrivingScore());
@@ -212,7 +212,7 @@ class SafetyScoreServiceTest {
                 .headers(headerMap)
                 .build();
 
-        when(this.interfaceBluelinkClient.requestCallGet(anyMap(), anyString(), anyString()))
+        when(this.interfaceBluelinkDspClient.requestCallGet(anyMap(), anyString(), anyString()))
                 .thenThrow(FeignException.errorStatus("requestBLCallGet", mockedFeignResponse));
         this.drivingScoreReqDTO.setCCID(this.drivingScoreReqDTO.getCCID() + "_BLU");
 
@@ -220,7 +220,7 @@ class SafetyScoreServiceTest {
             this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreVO);
         });
 
-        verify(this.interfaceBluelinkClient, times(1)).requestCallGet(anyMap(), anyString(), anyString());
+        verify(this.interfaceBluelinkDspClient, times(1)).requestCallGet(anyMap(), anyString(), anyString());
 
         Map<String, Object> spaResponse = JsonUtil.str2map(globalExternalException.getBody());
 
@@ -238,7 +238,7 @@ class SafetyScoreServiceTest {
         bodyErr5003.put("errCode", "5001");
         bodyErr5003.put("errMsg", "Error Internal Server");
 
-        when(this.interfaceBluelinkClient.requestCallGet(anyMap(), anyString(), anyString()))
+        when(this.interfaceBluelinkDspClient.requestCallGet(anyMap(), anyString(), anyString()))
                 .thenThrow(FeignException.class);
 
         this.drivingScoreReqDTO.setCCID(this.drivingScoreReqDTO.getCCID() + "_BLU");
@@ -246,7 +246,7 @@ class SafetyScoreServiceTest {
             this.safetyScoreManagementService.ubiSafetyDrivingScoreRequest(this.drivingScoreVO);
         });
 
-        verify(this.interfaceBluelinkClient, times(1)).requestCallGet(anyMap(), anyString(), anyString());
+        verify(this.interfaceBluelinkDspClient, times(1)).requestCallGet(anyMap(), anyString(), anyString());
 
         Map<String, Object> spaResponse = JsonUtil.str2map(globalExternalException.getBody());
         if (spaResponse != null) {

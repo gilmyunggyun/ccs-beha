@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.hkmc.behavioralpatternanalysis.common.Const;
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalCCSException;
-import com.hkmc.behavioralpatternanalysis.common.model.ResponseDTO;
 import com.hkmc.behavioralpatternanalysis.intelligence.service.IntelligenceService;
 
 import io.swagger.annotations.Api;
@@ -29,16 +28,13 @@ public class BehavioralPatternAnalysisController {
 
 	@ApiOperation(value = "차량 브레 이크 패드 자료에 대한 조회 요청을 처리")
 	@PostMapping(value="/itl/breakpad") //itlCarBreakpadDrvScore
-	public ResponseEntity<ResponseDTO<ItlBreakpadResDTO>> getItlCarBreakpadDrvScore(
+	public ResponseEntity<ItlBreakpadResDTO> getItlCarBreakpadDrvScore(
 			@RequestHeader HttpHeaders header,
 			@RequestBody ItlBreakpadReqDTO body
 	) throws GlobalCCSException {
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.body(ResponseDTO.<ItlBreakpadResDTO>builder()
-						.code(HttpStatus.OK.value())
-						.data(intelligenceService.getItlCarBreakpadDrvScore(body.getVin()))
-						.resultMessage(Const.ResponseMessage.SUCCESS).build());
+				.body(this.intelligenceService.getItlCarBreakpadDrvScore(body.getVin()));
 	}
 
 	@ApiOperation(value = "UBI 안전 운전 점수 조회")
@@ -50,7 +46,7 @@ public class BehavioralPatternAnalysisController {
 	) {
 		return ResponseEntity
 				.status(HttpStatus.OK.value())
-				.body(safetyScoreService.ubiSafetyDrivingScoreRequest(
+				.body(this.safetyScoreService.ubiSafetyDrivingScoreRequest(
 						DrivingScoreVO.builder()
 								.drivingScoreReqDTO(body)
 								.vinPath(vinPath)

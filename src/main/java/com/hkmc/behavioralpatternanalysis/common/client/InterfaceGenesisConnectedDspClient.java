@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Map;
 
 @RefreshScope
-@FeignClient(url = "${dsp.server.uvo.url:dspUvoUrl}", name = "${dsp.server.uvo.name:dspUvo}")
-public interface InterfaceUVOClient {
+@FeignClient(url = "${dsp.server.genesis.url:dspGenesisConnectedUrl}", name = "${dsp.server.genesis.name:dspGenesisConnected}")
+public interface InterfaceGenesisConnectedDspClient {
      @GetMapping(value = "{uriPath}")
      ResponseEntity<Map<String, Object>> requestCallGet(@RequestHeader Map<String, String> header,
                                                         @PathVariable("uriPath") String uriPath,

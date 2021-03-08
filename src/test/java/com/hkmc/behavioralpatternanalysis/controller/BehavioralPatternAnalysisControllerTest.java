@@ -1,9 +1,9 @@
 package com.hkmc.behavioralpatternanalysis.controller;
 
 import com.hkmc.behavioralpatternanalysis.common.Const;
-import com.hkmc.behavioralpatternanalysis.common.client.InterfaceBluelinkClient;
-import com.hkmc.behavioralpatternanalysis.common.client.InterfaceGenesisConnectedClient;
-import com.hkmc.behavioralpatternanalysis.common.client.InterfaceUVOClient;
+import com.hkmc.behavioralpatternanalysis.common.client.InterfaceBluelinkDspClient;
+import com.hkmc.behavioralpatternanalysis.common.client.InterfaceGenesisConnectedDspClient;
+import com.hkmc.behavioralpatternanalysis.common.client.InterfaceUvoDspClient;
 import com.hkmc.behavioralpatternanalysis.common.util.JsonUtil;
 import com.hkmc.behavioralpatternanalysis.safetyscore.model.DrivingScoreReqDTO;
 import com.hkmc.behavioralpatternanalysis.safetyscore.model.DrivingScoreResDTO;
@@ -49,11 +49,11 @@ class BehavioralPatternAnalysisControllerTest {
     private SafetyScoreService safetyScoreService;
 
     @Mock
-    private InterfaceBluelinkClient interfaceBluelinkClient;
+    private InterfaceBluelinkDspClient interfaceBluelinkDspClient;
     @Mock
-    private InterfaceGenesisConnectedClient genesisConnectedClient;
+    private InterfaceGenesisConnectedDspClient genesisConnectedClient;
     @Mock
-    private InterfaceUVOClient interfaceUVOClient;
+    private InterfaceUvoDspClient interfaceUvoDspClient;
 
     private String vinPath;
 

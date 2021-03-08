@@ -18,7 +18,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
-@EnableRedisRepositories
 @RequiredArgsConstructor
 public class RedisConfig {
 	

@@ -2,9 +2,9 @@ package com.hkmc.behavioralpatternanalysis.safetyscore.service.impl;
 
 import com.google.gson.Gson;
 import com.hkmc.behavioralpatternanalysis.common.Const;
-import com.hkmc.behavioralpatternanalysis.common.client.InterfaceBluelinkClient;
-import com.hkmc.behavioralpatternanalysis.common.client.InterfaceGenesisConnectedClient;
-import com.hkmc.behavioralpatternanalysis.common.client.InterfaceUVOClient;
+import com.hkmc.behavioralpatternanalysis.common.client.InterfaceBluelinkDspClient;
+import com.hkmc.behavioralpatternanalysis.common.client.InterfaceGenesisConnectedDspClient;
+import com.hkmc.behavioralpatternanalysis.common.client.InterfaceUvoDspClient;
 import com.hkmc.behavioralpatternanalysis.common.code.SpaResponseCodeEnum;
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalExternalException;
 import com.hkmc.behavioralpatternanalysis.common.model.SpaResponseDTO;
@@ -30,9 +30,9 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 public class SafetyScoreServiceImpl implements SafetyScoreService {
-    private final InterfaceUVOClient interfaceUVOClient;
-    private final InterfaceGenesisConnectedClient interfaceGenesisConnectedClient;
-    private final InterfaceBluelinkClient interfaceBluelinkClient;
+    private final InterfaceUvoDspClient interfaceUvoDspClient;
+    private final InterfaceGenesisConnectedDspClient interfaceGenesisConnectedDspClient;
+    private final InterfaceBluelinkDspClient interfaceBluelinkDspClient;
     private final Environment env;
 
     @Override
@@ -47,11 +47,11 @@ public class SafetyScoreServiceImpl implements SafetyScoreService {
 
             ResponseEntity<Map<String, Object>> feignResponse = ResponseEntity.noContent().build();
             if (Const.APP_TYPE_BLUE_LINK.equals(appType)) {
-                feignResponse = interfaceBluelinkClient.requestCallGet(requestHeader, uri, vinPath);
+                feignResponse = interfaceBluelinkDspClient.requestCallGet(requestHeader, uri, vinPath);
             } else if (Const.APP_TYPE_UVO.equals(appType)) {
-                feignResponse = interfaceUVOClient.requestCallGet(requestHeader, uri, vinPath);
+                feignResponse = interfaceUvoDspClient.requestCallGet(requestHeader, uri, vinPath);
             } else if (Const.APP_TYPE_GENESIS_CONNECTED.equals(appType)) {
-                feignResponse = interfaceGenesisConnectedClient.requestCallGet(requestHeader, uri, vinPath);
+                feignResponse = interfaceGenesisConnectedDspClient.requestCallGet(requestHeader, uri, vinPath);
             }
 
             final Map<String, Object> feignResponseSuccessBody = feignResponse.getBody();
