@@ -22,4 +22,5 @@ public class CarTmuBasicInfo implements Serializable {
     private String advDec;
     private String imei;
     private String meid;
+    private String carOid;
 }

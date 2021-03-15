@@ -21,18 +21,25 @@ public class ItlBreakpadResDTO {
     private String severeNormal;
 
     @ApiModelProperty(notes = "운행건수(양호)")
-    private int cntNormal;
+    private Integer cntNormal;
 
     @ApiModelProperty(notes = "운행건수(주의)")
-    private int cntCaution;
+    private Integer cntCaution;
 
     @ApiModelProperty(notes = "운행건수(가혹)")
-    private int cntSevere;
+    private Integer cntSevere;
 
     @ApiModelProperty(notes = "누적주행거리(주행당시 거리)")
-    private int acumTrvgDist;
+    private Integer acumTrvgDist;
 
-    public ItlBreakpadResDTO(BehaSvdvHist data, String vin, int acumTrvgDist) {
+    @ApiModelProperty(notes = "수행 결과/상태")
+    private String resultStatus;
+    @ApiModelProperty(notes = "exception 시 esb error code")
+    private String errCd;
+    @ApiModelProperty(notes = "exception 시 esb error 내용")
+    private String errNm;
+
+    public ItlBreakpadResDTO(BehaSvdvHist data, String vin, Integer acumTrvgDist, String status) {
         this.vin = vin;
         this.ifDate = data.getIfDate();
         this.severeNormal = data.getSevereNormal();
@@ -40,5 +47,6 @@ public class ItlBreakpadResDTO {
         this.cntCaution = data.getCntCaution();
         this.cntSevere = data.getCntSevere() + data.getCntSeverePlus();
         this.acumTrvgDist = acumTrvgDist;
+        this.resultStatus = status;
     }
 }
