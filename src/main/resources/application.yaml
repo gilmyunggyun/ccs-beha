@@ -29,17 +29,17 @@ spring:
       url: http://localhost:9001
       name: mtgateway
   redis:
-    host: "10.11.39.67"
+    host: 10.11.39.67
     port: 38913
-    password: "a206339c-2eef-4bb1-bdfb-019a7df9c443"
+    password: a206339c-2eef-4bb1-bdfb-019a7df9c443
   postgres:
-    uri: "10.20.213.192"
+    uri: 10.11.53.85
     port: 5432
-    database: "megazone"
-    username: "megazone"
-    password: "megazone"
+    database: behadb
+    username: behawas
+    password: ENC(olrf9mCKQJNcETlhtoCH1beB9gcqLoI2vn2V3nBa/JpmYp4tr5jHfUXO4OlCH+B9)
     pool:
-      name: "customPool"
+      name: customPool
       maxidletime: 100
       maxlifetime: 100
       initalsize: 10

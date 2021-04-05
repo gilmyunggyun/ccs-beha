@@ -6,12 +6,11 @@ applications:
   instances: 1
   buildpack: java_buildpack_offline_v200907dev
   services:
-#    - smongovechilestatus
-#    - s-ccsp20-redis-mtsync
     - stgregistry
     - stgconfig
+    - ssyslog
   env:
     TZ: Asia/Seoul
-    SPRING_PROFILES_ACTIVE: dev,redis,postgresql
+    SPRING_PROFILES_ACTIVE: dev,redis
     JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 13.0.+ } }'
     SPRING_CLOUD_CONFIG_NAME: ccsp20-common,ccsp20-behavioralpatternanalysis
