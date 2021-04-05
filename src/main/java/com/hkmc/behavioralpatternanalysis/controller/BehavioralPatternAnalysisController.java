@@ -27,7 +27,7 @@ public class BehavioralPatternAnalysisController {
 	private final SafetyScoreService safetyScoreService;
 
 	@ApiOperation(value = "차량 브레 이크 패드 자료에 대한 조회 요청을 처리")
-	@PostMapping(value="/itl/breakpad") //itlCarBreakpadDrvScore
+	@PostMapping(value="/breakpad") //itlCarBreakpadDrvScore
 	public ResponseEntity<ItlBreakpadResDTO> getItlCarBreakpadDrvScore(
 			@RequestHeader HttpHeaders header,
 			@RequestBody ItlBreakpadReqDTO body
@@ -38,7 +38,7 @@ public class BehavioralPatternAnalysisController {
 	}
 
 	@ApiOperation(value = "UBI 안전 운전 점수 조회")
-	@PostMapping(value="/ubi/score/{vinPath}") //ubiSafetyDrvScoreService
+	@PostMapping(value="/ubiscore/{vinPath}") //ubiSafetyDrvScoreService
 	public ResponseEntity<?> getUbiSafetyDrivingScore (
 			@RequestHeader HttpHeaders headers,
 			@RequestBody DrivingScoreReqDTO body,

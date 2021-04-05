@@ -80,7 +80,7 @@ class BehavioralPatternAnalysisControllerTest {
                 .thenReturn(DrivingScoreResDTO.builder().build());
 
         MvcResult response = this.mockMvc.perform(
-                post(Const.BehavioralPatternAnalysis.VERSION_V1 + "/ubi/score/{vinpath}", this.vinPath)
+                post(Const.BehavioralPatternAnalysis.VERSION_V1 + "/ubiscore/{vinpath}", this.vinPath)
                         .headers(this.httpHeaders)
                         .content(JsonUtil.obj2str(this.drivingScoreReqDTO))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -95,7 +95,7 @@ class BehavioralPatternAnalysisControllerTest {
                 .thenReturn(null);
 
         MvcResult response = this.mockMvc.perform(
-                post(Const.BehavioralPatternAnalysis.VERSION_V1 + "/ubi/score/{vinpath}", this.vinPath)
+                post(Const.BehavioralPatternAnalysis.VERSION_V1 + "/ubiscore/{vinpath}", this.vinPath)
                         .headers(this.httpHeaders)
                         .content(JsonUtil.obj2str(this.drivingScoreReqDTO))
                         .contentType(MediaType.APPLICATION_JSON)
