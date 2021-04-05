@@ -35,4 +35,5 @@ public class SpaRequestDTO {
         String ccid = Optional.of(this.CCID).get();
         return ccid.substring(ccid.length()-3);
     }
+
 }

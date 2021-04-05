@@ -12,7 +12,9 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder
 public class DrivingScoreReqDTO extends SpaRequestDTO {
+
     @JsonProperty("mtsNo")
     @ApiModelProperty(value = "MTS: 단말전화번호 (앱 고정값)", required = true, example = "MTS")
     private String mtsNo;
+
 }
