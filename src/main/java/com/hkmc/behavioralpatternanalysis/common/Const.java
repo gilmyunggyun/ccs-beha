@@ -9,7 +9,7 @@ public class Const {
 
 	public static class Header {
 		public static final String FROM = "from";
-		public static final String Authorization = "Authorization";
+		public static final String Authorization = "authorization";
     }
 
 	public static class System {
