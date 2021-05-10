@@ -54,6 +54,7 @@ public class Const {
 	public static final String APP_TYPE_UVO = "UVO";
 	public static final String APP_TYPE_BLUE_LINK = "BLU";
 	public static final String APP_TYPE_GENESIS_CONNECTED = "GEN";
+	public static final String RESULT_SUCCESS = "S";
 	public static final String RESULT_FAIL = "F";
 }
 

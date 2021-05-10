@@ -7,6 +7,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.Optional;
+
 @Getter@Setter@ToString
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,5 +19,10 @@ public class UbiSafetyReqDTO extends SpaRequestDTO {
     @JsonProperty("mtsNo")
     @ApiModelProperty(value = "MTS: 단말전화번호 (앱 고정값)", required = true, example = "MTS")
     private String mtsNo;
+
+    public String getAppType() {
+        String ccid = Optional.of(super.getCCID()).get();
+        return ccid.substring(ccid.length()-3);
+    }
 
 }

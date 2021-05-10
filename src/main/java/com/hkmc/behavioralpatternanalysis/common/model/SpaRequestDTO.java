@@ -31,9 +31,4 @@ public class SpaRequestDTO {
 
     private String fromHost;
 
-    public String getAppType() {
-        String ccid = Optional.of(this.CCID).get();
-        return ccid.substring(ccid.length()-3);
-    }
-
 }

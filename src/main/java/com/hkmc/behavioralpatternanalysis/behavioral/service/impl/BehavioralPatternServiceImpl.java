@@ -3,6 +3,7 @@ package com.hkmc.behavioralpatternanalysis.behavioral.service.impl;
 import ccs.core.db.repository.postgre.GenericPostgreRepository;
 import ccs.core.db.repository.redis.GenericRedisRepository;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.hkmc.behavioralpatternanalysis.behavioral.model.*;
 import com.hkmc.behavioralpatternanalysis.behavioral.service.BehavioralPatternService;
 import com.hkmc.behavioralpatternanalysis.common.Const;
@@ -14,7 +15,6 @@ import com.hkmc.behavioralpatternanalysis.common.code.SpaResponseCodeEnum;
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalExternalException;
 import com.hkmc.behavioralpatternanalysis.common.exception.RestException;
 import com.hkmc.behavioralpatternanalysis.common.model.SpaResponseDTO;
-import com.hkmc.behavioralpatternanalysis.common.util.JsonUtil;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -70,36 +69,55 @@ public class BehavioralPatternServiceImpl implements BehavioralPatternService {
 
         try {
             requestHeader.put(Const.Header.Authorization, env.getProperty(Const.Key.DSP_HEADER_AUTH));
-            final String vinPath = ubiSafetyVO.getVinPath();
-            String appType = ubiSafetyVO.getUbiSafetyReq().getAppType();
 
             ResponseEntity<Map<String, Object>> feignResponse = ResponseEntity.noContent().build();
-            if (Const.APP_TYPE_BLUE_LINK.equals(appType)) {
-                feignResponse = dspServerBLClient.requestCallGet(requestHeader, uri, vinPath);
-            } else if (Const.APP_TYPE_UVO.equals(appType)) {
-                feignResponse = dspServerUVOClient.requestCallGet(requestHeader, uri, vinPath);
-            } else if (Const.APP_TYPE_GENESIS_CONNECTED.equals(appType)) {
-                feignResponse = dspServerGCClient.requestCallGet(requestHeader, uri, vinPath);
+
+            if (Const.APP_TYPE_BLUE_LINK.equals(ubiSafetyVO.getUbiSafetyReq().getAppType())) {
+                feignResponse = dspServerBLClient.requestCallGet(requestHeader, uri, ubiSafetyVO.getVinPath());
+            } else if (Const.APP_TYPE_UVO.equals(ubiSafetyVO.getUbiSafetyReq().getAppType())) {
+                feignResponse = dspServerUVOClient.requestCallGet(requestHeader, uri, ubiSafetyVO.getVinPath());
+            } else if (Const.APP_TYPE_GENESIS_CONNECTED.equals(ubiSafetyVO.getUbiSafetyReq().getAppType())) {
+                feignResponse = dspServerGCClient.requestCallGet(requestHeader, uri, ubiSafetyVO.getVinPath());
             }
 
-            final Map<String, Object> feignResponseSuccessBody = feignResponse.getBody();
-            return ObjectUtils.isEmpty(feignResponseSuccessBody)
-                    ? UbiSafetyResDTO.builder()
-                            .ServiceNo(serviceNo)
-                            .RetCode(SpaResponseCodeEnum.SUCCESS.getRetCode())
-                            .resCode(SpaResponseCodeEnum.SUCCESS.getResCode())
-                            .build()
-                    : new UbiSafetyResDTO(feignResponseSuccessBody, serviceNo);
+            UbiSafetyResDTO ubiSafetyRes = UbiSafetyResDTO.builder()
+                    .ServiceNo(serviceNo)
+                    .RetCode(SpaResponseCodeEnum.SUCCESS.getRetCode())
+                    .resCode(SpaResponseCodeEnum.SUCCESS.getResCode())
+                    .build();
+
+            if (ObjectUtils.isNotEmpty(feignResponse.getBody())) {
+                ubiSafetyRes.setSafetyDrivingScore(
+                        Integer.parseInt(StringUtils.defaultString(String.valueOf(feignResponse.getBody().get(Const.Key.SAFETY_DRV_SCORE)), "0")));
+                ubiSafetyRes.setInsuranceDiscountYN(
+                        StringUtils.defaultString(String.valueOf(feignResponse.getBody().get(Const.Key.INS_DISCOUNT_YN))));
+                ubiSafetyRes.setUpdateAt(
+                        StringUtils.defaultString(String.valueOf(feignResponse.getBody().get(Const.Key.SCORE_DATE))));
+                ubiSafetyRes.setDrvDistance(
+                        Integer.parseInt(StringUtils.defaultString(String.valueOf(feignResponse.getBody().get(Const.Key.RANGE_DRV_DIST)), "0")));
+                ubiSafetyRes.setAccelGrade(
+                        StringUtils.defaultString(String.valueOf(feignResponse.getBody().get(Const.Key.BRST_ACC_GRADE))));
+                ubiSafetyRes.setDecelGrade(
+                        StringUtils.defaultString(String.valueOf(feignResponse.getBody().get(Const.Key.BRST_DEC_GRADE))));
+                ubiSafetyRes.setNightDrivingGrade(
+                        StringUtils.defaultString(String.valueOf(feignResponse.getBody().get(Const.Key.NIGHT_DRV_GRADE))));
+            }
+
+            return ubiSafetyRes;
 
         } catch (FeignException e) {
             log.error("\n++++++++++[FeignException] [itlCarBreakpadDrvScoreSearch] | CALL : {} | STATUS : {} | VIN : {} | AUTH : {} | {}",
                     uri, e.status(), ubiSafetyVO.getVinPath(), requestHeader.get(Const.Header.Authorization), e.getMessage());
 
-            final Map<String, Object> feignResponseExceptionBody = Optional.ofNullable(JsonUtil.str2map(e.contentUTF8())).orElse(new HashMap<>());
-            final SpaResponseCodeEnum errResponse =
-                    Optional.ofNullable(feignResponseExceptionBody.get(Const.Key.ERR_CODE_MAP))
-                            .orElse(StringUtils.EMPTY).equals(Const.ErrMsg.CANNOT_FOUND_VIN)
-                    ? SpaResponseCodeEnum.ERROR_E110 : SpaResponseCodeEnum.ERROR_EX01;
+            SpaResponseCodeEnum errResponse = SpaResponseCodeEnum.ERROR_EX01;
+
+            if (StringUtils.isNotEmpty(e.contentUTF8())) {
+                Map<String, Object> exceptionBody = new Gson().fromJson(e.contentUTF8(), new TypeToken<Map<String, Object>>() {}.getType());
+
+                if (StringUtils.equals(Const.ErrMsg.CANNOT_FOUND_VIN, String.valueOf(exceptionBody.get(Const.Key.ERR_CODE_MAP)))) {
+                    errResponse = SpaResponseCodeEnum.ERROR_E110;
+                }
+            }
 
             throw new GlobalExternalException(HttpStatus.OK.value(),
                     new Gson().toJson(SpaResponseDTO.builder()
@@ -133,8 +151,8 @@ public class BehavioralPatternServiceImpl implements BehavioralPatternService {
             final CarTmuBasicInfo carTmuBasicInfo =
                     carTmuBasicRepo.findByIdHash(CarTmuBasicInfo.builder().vin(vinPath).build());
 
-            if(ObjectUtils.isEmpty(carTmuBasicInfo) || ObjectUtils.isEmpty(carTmuBasicInfo.getCarOid())){
-                return ItlBreakpadResDTO.builder().errCd(Const.RESULT_FAIL).vin(vinPath).build();
+            if(ObjectUtils.isEmpty(carTmuBasicInfo) || StringUtils.isEmpty(carTmuBasicInfo.getCarOid())){
+                return ItlBreakpadResDTO.builder().resultStatus(Const.RESULT_FAIL).vin(vinPath).build();
             }
 
             BehaSvdvHist behaSvdvHist = behaSvdvHistRepo.reactiveFindByCriteria(
@@ -142,7 +160,7 @@ public class BehavioralPatternServiceImpl implements BehavioralPatternService {
                             .and(Const.Key.CAR_OID).is(carTmuBasicInfo.getCarOid())).block();
 
             if(ObjectUtils.isEmpty(behaSvdvHist) || StringUtils.isEmpty(behaSvdvHist.getIfDate())){
-                return ItlBreakpadResDTO.builder().errCd(Const.RESULT_FAIL).vin(vinPath).build();
+                return ItlBreakpadResDTO.builder().resultStatus(Const.RESULT_FAIL).vin(vinPath).build();
             }
 
             return ItlBreakpadResDTO.builder()
@@ -153,6 +171,7 @@ public class BehavioralPatternServiceImpl implements BehavioralPatternService {
                     .cntCaution(behaSvdvHist.getCntCaution())
                     .cntSevere(behaSvdvHist.getCntSevere())
                     .acumTrvgDist(getAcumTrvgDist(vinPath))
+                    .resultStatus(Const.RESULT_SUCCESS)
                     .build();
 
         } catch (Exception e) {
@@ -180,8 +199,6 @@ public class BehavioralPatternServiceImpl implements BehavioralPatternService {
             }
         } catch (FeignException e) {
             log.error("\n++++++++++[FeignException] [itlBreakpadDrvScore] ({}) - {} | {}(vin) | {}", e.status(), path, vin, e.toString());
-        } catch (Exception e) {
-            log.error("\n++++++++++[Exception] [itlBreakpadDrvScore] | {}(vin) | {}", vin, e.toString());
         }
 
         return 0;

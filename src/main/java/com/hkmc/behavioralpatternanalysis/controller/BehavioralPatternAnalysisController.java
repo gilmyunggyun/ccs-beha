@@ -27,8 +27,7 @@ public class BehavioralPatternAnalysisController {
 	@ApiOperation(value = "차량 브레 이크 패드 자료에 대한 조회 요청을 처리")
 	@GetMapping(value="/breakpad/{vinPath}")
 	public ResponseEntity<ItlBreakpadResDTO> itlCarBreakpadScore(@PathVariable String vinPath) {
-		return ResponseEntity
-				.status(HttpStatus.OK)
+		return ResponseEntity.ok()
 				.body(behavioralPatternService.itlBreakpadDrvScore(vinPath));
 	}
 
@@ -37,8 +36,7 @@ public class BehavioralPatternAnalysisController {
 	public ResponseEntity<UbiSafetyResDTO> ubiSafetyDrivingScore (@RequestHeader HttpHeaders headers,
 																  @PathVariable("vinPath") String vinPath,
 																  @RequestBody UbiSafetyReqDTO body) {
-		return ResponseEntity
-				.status(HttpStatus.OK.value())
+		return ResponseEntity.ok()
 				.body(behavioralPatternService.ubiSafetyDrivingScore(
 						UbiSafetyVO.builder()
 								.vinPath(vinPath)

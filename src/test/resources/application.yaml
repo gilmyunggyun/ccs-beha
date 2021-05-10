@@ -25,7 +25,7 @@ spring:
     base-url: http://10.11.53.1:9411
     httptag: true
   kafka:
-    bootstrap-servers: 10.7.159.122:9092, 10.7.159.123:9092, 10.7.159.124:9092, 10.7.159.125:9092, 10.7.159.126:9092
+    bootstrap-servers: ${spring.embedded.kafka.brokers}
   redis:
     host: 10.11.39.67
     port: 38913
@@ -71,8 +71,7 @@ dsp:
   server:
     common.uri: /api/v1/dsp/ubi
     bluelink:
-#      url: http://10.11.60.218:6101
-      url: http://localhost:9001
+      url: http://10.11.60.218:6101
       name: BlueLink
     uvo:
       url: http://10.11.60.218:6101
