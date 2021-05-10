@@ -86,6 +86,9 @@ service-domain:
 service-path:
   odometer: /retrieve/{vin}/odometer
 
+validation:
+  check: true
+
 ---
 #spring actuator config
 management:
