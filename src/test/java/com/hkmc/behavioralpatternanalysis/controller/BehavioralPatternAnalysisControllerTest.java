@@ -1,53 +1,25 @@
 package com.hkmc.behavioralpatternanalysis.controller;
 
-import ccs.core.db.repository.postgre.GenericPostgreRepository;
-import ccs.core.db.repository.redis.GenericRedisRepository;
 import com.google.gson.Gson;
-import com.hkmc.behavioralpatternanalysis.behavioral.model.BehaSvdvHist;
-import com.hkmc.behavioralpatternanalysis.behavioral.model.CarTmuBasicInfo;
 import com.hkmc.behavioralpatternanalysis.behavioral.model.UbiSafetyReqDTO;
-import com.hkmc.behavioralpatternanalysis.behavioral.service.BehavioralPatternService;
 import com.hkmc.behavioralpatternanalysis.behavioral.service.impl.BehavioralPatternServiceImpl;
-import com.hkmc.behavioralpatternanalysis.common.Const;
-import com.hkmc.behavioralpatternanalysis.common.client.DspServerBLClient;
-import com.hkmc.behavioralpatternanalysis.common.client.DspServerGCClient;
-import com.hkmc.behavioralpatternanalysis.common.client.DspServerUVOClient;
-import com.hkmc.behavioralpatternanalysis.common.client.MSAServiceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
-import org.springframework.boot.autoconfigure.r2dbc.R2dbcAutoConfiguration;
 
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import reactor.core.publisher.Mono;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

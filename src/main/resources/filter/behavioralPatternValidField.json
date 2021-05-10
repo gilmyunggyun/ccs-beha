@@ -1,0 +1,8 @@
+{
+	"ubiscore/*":[
+		{"type": "value", "name": "ServiceNo","mendantory": "true"},
+		{"type": "value", "name": "CCID","mendantory": "true"},
+		{"type": "value", "name": "carID","mendantory": "true"},
+		{"type": "value", "name": "mtsNo","mendantory": "true"}
+	]
+}
