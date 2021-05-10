@@ -10,6 +10,7 @@ public class Const {
 	public static class Header {
 		public static final String FROM = "from";
 		public static final String Authorization = "authorization";
+		public static final String HOST = "host";
     }
 
 	public static class System {
@@ -20,8 +21,9 @@ public class Const {
 		// key of env
 		public static final String DSP_COMMON_URI = "dsp.server.common.uri";
 		public static final String DSP_HEADER_AUTH = "dsp.header.auth";
+		public static final String SERVICE_DOMAIN_DRIVE_INFO = "service-domain.driveinfo";
+		public static final String SERVICE_PATH_ODOMETER = "service-path.odometer";
 		// key of error body
-
 		public static final String ERR_CODE_MAP = "errCode";
 		// key of consumedMap
 		public static final String SAFETY_DRV_SCORE = "safety_drv_score";
@@ -34,6 +36,7 @@ public class Const {
 		// column of behaSvdvHist
 		public static final String CAR_OID = "carOid";
 		public static final String CRTN_YMD = "ifDate";
+		public static final String ODOMETER_VALUE = "value";
 	}
 
 	public static class ErrMsg {

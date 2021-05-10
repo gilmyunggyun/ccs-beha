@@ -6,9 +6,10 @@ import com.google.gson.Gson;
 import com.hkmc.behavioralpatternanalysis.behavioral.model.*;
 import com.hkmc.behavioralpatternanalysis.behavioral.service.BehavioralPatternService;
 import com.hkmc.behavioralpatternanalysis.common.Const;
-import com.hkmc.behavioralpatternanalysis.common.client.InterfaceBluelinkDspClient;
-import com.hkmc.behavioralpatternanalysis.common.client.InterfaceGenesisConnectedDspClient;
-import com.hkmc.behavioralpatternanalysis.common.client.InterfaceUvoDspClient;
+import com.hkmc.behavioralpatternanalysis.common.client.DspServerBLClient;
+import com.hkmc.behavioralpatternanalysis.common.client.DspServerGCClient;
+import com.hkmc.behavioralpatternanalysis.common.client.DspServerUVOClient;
+import com.hkmc.behavioralpatternanalysis.common.client.MSAServiceClient;
 import com.hkmc.behavioralpatternanalysis.common.code.SpaResponseCodeEnum;
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalExternalException;
 import com.hkmc.behavioralpatternanalysis.common.exception.RestException;
@@ -41,9 +42,10 @@ import java.util.Optional;
 @RefreshScope
 public class BehavioralPatternServiceImpl implements BehavioralPatternService {
 
-    private final InterfaceUvoDspClient interfaceUvoDspClient;
-    private final InterfaceGenesisConnectedDspClient interfaceGenesisConnectedDspClient;
-    private final InterfaceBluelinkDspClient interfaceBluelinkDspClient;
+    private final DspServerUVOClient dspServerUVOClient;
+    private final DspServerGCClient dspServerGCClient;
+    private final DspServerBLClient dspServerBLClient;
+    private final MSAServiceClient msaServiceClient;
     private final Environment env;
     private final R2dbcEntityOperations postgresqlEntityOperations;
     private final R2dbcRepositoryFactory postgresqlRepositoryFactory;
@@ -73,11 +75,11 @@ public class BehavioralPatternServiceImpl implements BehavioralPatternService {
 
             ResponseEntity<Map<String, Object>> feignResponse = ResponseEntity.noContent().build();
             if (Const.APP_TYPE_BLUE_LINK.equals(appType)) {
-                feignResponse = interfaceBluelinkDspClient.requestCallGet(requestHeader, uri, vinPath);
+                feignResponse = dspServerBLClient.requestCallGet(requestHeader, uri, vinPath);
             } else if (Const.APP_TYPE_UVO.equals(appType)) {
-                feignResponse = interfaceUvoDspClient.requestCallGet(requestHeader, uri, vinPath);
+                feignResponse = dspServerUVOClient.requestCallGet(requestHeader, uri, vinPath);
             } else if (Const.APP_TYPE_GENESIS_CONNECTED.equals(appType)) {
-                feignResponse = interfaceGenesisConnectedDspClient.requestCallGet(requestHeader, uri, vinPath);
+                feignResponse = dspServerGCClient.requestCallGet(requestHeader, uri, vinPath);
             }
 
             final Map<String, Object> feignResponseSuccessBody = feignResponse.getBody();
@@ -150,13 +152,39 @@ public class BehavioralPatternServiceImpl implements BehavioralPatternService {
                     .cntNormal(behaSvdvHist.getCntNormal())
                     .cntCaution(behaSvdvHist.getCntCaution())
                     .cntSevere(behaSvdvHist.getCntSevere())
-//                    .acumTrvgDist() // TODO 어디서 ?
+                    .acumTrvgDist(getAcumTrvgDist(vinPath))
                     .build();
 
         } catch (Exception e) {
-            log.error("\n++++++++++[Exception] [itlCarBreakpadDrvScore] | {}(vin) | {}", vinPath, e.getMessage());
+            log.error("\n++++++++++[Exception] [itlBreakpadDrvScore] | {}(vin) | {}", vinPath, e.toString());
             throw new RestException(Const.ErrMsg.TYPE_595);
         }
+    }
+
+    private int getAcumTrvgDist(String vin) {
+        Map<String, String> header = new HashMap<>() {
+            {
+                put(Const.Header.HOST, env.getProperty(Const.Key.SERVICE_DOMAIN_DRIVE_INFO));
+            }
+        };
+        String path = StringUtils.defaultString(env.getProperty(Const.Key.SERVICE_PATH_ODOMETER));
+        path = path.replace("{vin}", vin);
+
+        try {
+            ResponseEntity<Map<String, Object>> response = msaServiceClient.requestCallGet(header, path);
+
+            if (ObjectUtils.isNotEmpty(response.getBody())) {
+                if (ObjectUtils.isNotEmpty(response.getBody().get(Const.Key.ODOMETER_VALUE))) {
+                    return Long.valueOf(String.valueOf(response.getBody().get(Const.Key.ODOMETER_VALUE))).intValue();
+                }
+            }
+        } catch (FeignException e) {
+            log.error("\n++++++++++[FeignException] [itlBreakpadDrvScore] ({}) - {} | {}(vin) | {}", e.status(), path, vin, e.toString());
+        } catch (Exception e) {
+            log.error("\n++++++++++[Exception] [itlBreakpadDrvScore] | {}(vin) | {}", vin, e.toString());
+        }
+
+        return 0;
     }
 
 }

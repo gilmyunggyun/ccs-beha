@@ -80,6 +80,12 @@ dsp:
       url: http://10.11.60.218:6101
       name: GenesisConnected
 
+#MSA service
+service-domain:
+  driveinfo: ccsp20-drive-info-mngr.apps.dev.hkccs.kr
+service-path:
+  odometer: /retrieve/{vin}/odometer
+
 ---
 #spring actuator config
 management:

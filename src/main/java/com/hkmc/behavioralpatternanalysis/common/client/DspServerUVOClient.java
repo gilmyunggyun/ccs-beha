@@ -12,9 +12,11 @@ import java.util.Map;
 
 @RefreshScope
 @FeignClient(url = "${dsp.server.uvo.url:dspUvoUrl}", name = "${dsp.server.uvo.name:dspUvo}")
-public interface InterfaceUvoDspClient {
+public interface DspServerUVOClient {
+
      @GetMapping(value = "{uriPath}")
      ResponseEntity<Map<String, Object>> requestCallGet(@RequestHeader Map<String, String> header,
                                                         @PathVariable("uriPath") String uriPath,
                                                         @RequestParam("vin") String vinPath);
+
 }
