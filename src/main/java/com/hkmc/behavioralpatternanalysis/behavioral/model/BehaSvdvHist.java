@@ -1,22 +1,19 @@
-package com.hkmc.behavioralpatternanalysis.intelligence.model;
+package com.hkmc.behavioralpatternanalysis.behavioral.model;
 
-import java.io.Serializable;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-import lombok.Data;
+import java.io.Serializable;
 
-@Data
+@Getter@Setter@ToString
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table("BEHA_SVDV_HIST")
-@Builder
 public class BehaSvdvHist implements Serializable {
+
     @Id
     @Column("CRTN_YMD")
     private String ifDate;
@@ -44,4 +41,5 @@ public class BehaSvdvHist implements Serializable {
 
     @Column("CAR_OID")
     private int carOid;
+
 }

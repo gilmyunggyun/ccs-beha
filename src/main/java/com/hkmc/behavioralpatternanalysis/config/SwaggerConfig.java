@@ -36,7 +36,7 @@ public class SwaggerConfig {
 
 	@Bean
 	public Docket serviceApi() {
-		return this.basicConfig("Vehicle Status service", Const.BehavioralPatternAnalysis.BASE_URL);
+		return this.basicConfig("Behavioral Pattern Analysis service", Const.BehavioralPatternAnalysis.BASE_URL);
 	}
 
 	public Docket basicConfig(final String groupName, final String paths) {

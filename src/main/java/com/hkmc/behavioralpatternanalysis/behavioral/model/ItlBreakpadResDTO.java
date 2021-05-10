@@ -1,16 +1,19 @@
-package com.hkmc.behavioralpatternanalysis.intelligence.model;
+package com.hkmc.behavioralpatternanalysis.behavioral.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
-@Getter
-@Setter
+@Getter@Setter@ToString
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @ApiModel(description = "행동패턴 가혹운행이력객체")
+@JsonInclude(Include.NON_NULL)
 public class ItlBreakpadResDTO {
+
     @ApiModelProperty(notes = "차대번호")
     private String vin;
 
@@ -39,14 +42,4 @@ public class ItlBreakpadResDTO {
     @ApiModelProperty(notes = "exception 시 esb error 내용")
     private String errNm;
 
-    public ItlBreakpadResDTO(BehaSvdvHist data, String vin, Integer acumTrvgDist, String status) {
-        this.vin = vin;
-        this.ifDate = data.getIfDate();
-        this.severeNormal = data.getSevereNormal();
-        this.cntNormal = data.getCntNormal();
-        this.cntCaution = data.getCntCaution();
-        this.cntSevere = data.getCntSevere() + data.getCntSeverePlus();
-        this.acumTrvgDist = acumTrvgDist;
-        this.resultStatus = status;
-    }
 }

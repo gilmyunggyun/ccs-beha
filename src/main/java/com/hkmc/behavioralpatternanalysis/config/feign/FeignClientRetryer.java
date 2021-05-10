@@ -5,8 +5,7 @@ import feign.Retryer;
 public class FeignClientRetryer extends Retryer.Default {
 
     public FeignClientRetryer(){
-        super(1000, 2000, 3);
+        super(1000, 3000, 3);
     }
-
 
 }

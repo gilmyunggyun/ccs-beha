@@ -1,17 +1,17 @@
-package com.hkmc.behavioralpatternanalysis.safetyscore.model;
+package com.hkmc.behavioralpatternanalysis.behavioral.model;
 
 import lombok.*;
 
 import java.util.Map;
 
+@Getter@Setter@ToString
 @Builder
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DrivingScoreVO {
+public class UbiSafetyVO {
+
     private String vinPath;
     private Map<String, String> header;
-    private DrivingScoreReqDTO drivingScoreReqDTO;
+    private UbiSafetyReqDTO ubiSafetyReq;
 
 }

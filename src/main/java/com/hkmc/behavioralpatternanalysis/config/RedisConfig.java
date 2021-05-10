@@ -1,7 +1,5 @@
 package com.hkmc.behavioralpatternanalysis.config;
 
-import ccs.core.db.repository.redis.GenericRedisRepository;
-import com.hkmc.behavioralpatternanalysis.intelligence.model.CarTmuBasicInfo;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +21,7 @@ public class RedisConfig {
 
 	@Primary
 	@Bean
-	public RedisConnectionFactory redisConnectionFactoryDB09() {
+	public RedisConnectionFactory redisConnectionFactory() {
 
 		RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
 		redisStandaloneConfiguration.setHostName(redisProperties.getHost());
@@ -38,17 +36,13 @@ public class RedisConfig {
 	}
 	
 	@Bean
-	public RedisTemplate<String, Object> redisTemplateDB09() {
+	public RedisTemplate<String, Object> redisTemplate() {
 		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-		redisTemplate.setConnectionFactory(redisConnectionFactoryDB09());
+		redisTemplate.setConnectionFactory(redisConnectionFactory());
 		redisTemplate.setKeySerializer(new StringRedisSerializer());
 		redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
 	
 		return redisTemplate;
 	}
 
-	@Bean
-	public GenericRedisRepository<CarTmuBasicInfo, String> carTmuBasicRepository() {
-		return new GenericRedisRepository<CarTmuBasicInfo, String>(CarTmuBasicInfo.class, redisTemplateDB09());
-	}
 }

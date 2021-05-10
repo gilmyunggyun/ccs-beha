@@ -24,10 +24,8 @@ spring:
   zipkin:
     base-url: http://10.11.53.1:9411
     httptag: true
-  mtgateway:
-    server:
-      url: http://localhost:9001
-      name: mtgateway
+  kafka:
+    bootstrap-servers: 10.7.159.122:9092, 10.7.159.123:9092, 10.7.159.124:9092, 10.7.159.125:9092, 10.7.159.126:9092
   redis:
     host: 10.11.39.67
     port: 38913

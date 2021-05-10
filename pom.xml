@@ -6,7 +6,7 @@
     <parent>
         <groupId>ccsp20-sp-kr</groupId>
         <artifactId>ccsp20-sp-parent</artifactId>
-        <version>1.3.11</version>
+        <version>1.4.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 

@@ -21,8 +21,7 @@ public class Const {
 		public static final String DSP_COMMON_URI = "dsp.server.common.uri";
 		public static final String DSP_HEADER_AUTH = "dsp.header.auth";
 		// key of error body
-		public static final String RET_CODE_MAP = "RetCode";
-		public static final String RES_CODE_MAP = "resCode";
+
 		public static final String ERR_CODE_MAP = "errCode";
 		// key of consumedMap
 		public static final String SAFETY_DRV_SCORE = "safety_drv_score";
@@ -39,16 +38,9 @@ public class Const {
 
 	public static class ErrMsg {
 		public static final String CANNOT_FOUND_VIN = "5003";
+		public static final String TYPE_450 = "450";
+		public static final String TYPE_595 = "595";
 	}
-
-	public static class ResponseCode {
-		public static final String SUCCESS_STATUS = "S";
-	}
-
-	public static class ResponseMessage {
-		public static final String SUCCESS = "Success";
-	}
-
 
 	/** etc */
 	public static final String TRUE = "true";
@@ -59,5 +51,6 @@ public class Const {
 	public static final String APP_TYPE_UVO = "UVO";
 	public static final String APP_TYPE_BLUE_LINK = "BLU";
 	public static final String APP_TYPE_GENESIS_CONNECTED = "GEN";
+	public static final String RESULT_FAIL = "F";
 }
 
