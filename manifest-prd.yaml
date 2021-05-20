@@ -11,6 +11,6 @@ applications:
     - psyslog
   env:
     TZ: Asia/Seoul
-    SPRING_PROFILES_ACTIVE: prod,redis
+    SPRING_PROFILES_ACTIVE: prd,redis
     JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 13.0.+ } }'
     SPRING_CLOUD_CONFIG_NAME: ccsp20-common,ccsp20-behavioralpatternanalysis
