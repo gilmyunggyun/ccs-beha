@@ -140,7 +140,7 @@ public class BehavioralPatternServiceImpl implements BehavioralPatternService {
 
     @Override
     public ItlBreakpadResDTO itlBreakpadDrvScore(String vinPath) {
-        if(org.springframework.util.ObjectUtils.isEmpty(vinPath) || vinPath.length() > 17){
+        if(StringUtils.isEmpty(vinPath) || vinPath.length() > 17){
             throw new RestException(Const.ErrMsg.TYPE_450);
         }
 

@@ -2,7 +2,7 @@ package com.hkmc.behavioralpatternanalysis.controller;
 
 import com.google.gson.Gson;
 import com.hkmc.behavioralpatternanalysis.behavioral.model.UbiSafetyReqDTO;
-import com.hkmc.behavioralpatternanalysis.behavioral.service.impl.BehavioralPatternServiceImpl;
+import com.hkmc.behavioralpatternanalysis.behavioral.service.BehavioralPatternService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +36,7 @@ class BehavioralPatternAnalysisControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private BehavioralPatternServiceImpl behavioralPatternService;
+    private BehavioralPatternService behavioralPatternService;
 
     private String vin;
     private HttpHeaders httpHeaders;
