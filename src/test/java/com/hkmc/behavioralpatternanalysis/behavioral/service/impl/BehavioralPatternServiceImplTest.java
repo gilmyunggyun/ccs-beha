@@ -11,10 +11,10 @@ import com.hkmc.behavioralpatternanalysis.common.Const;
 import com.hkmc.behavioralpatternanalysis.common.client.DspServerBLClient;
 import com.hkmc.behavioralpatternanalysis.common.client.DspServerGCClient;
 import com.hkmc.behavioralpatternanalysis.common.client.DspServerUVOClient;
-import com.hkmc.behavioralpatternanalysis.common.client.MSAServiceClient;
+//import com.hkmc.behavioralpatternanalysis.common.client.MSAServiceClient;
 import com.hkmc.behavioralpatternanalysis.common.code.SpaResponseCodeEnum;
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalExternalException;
-import com.hkmc.behavioralpatternanalysis.common.exception.RestException;
+//import com.hkmc.behavioralpatternanalysis.common.exception.RestException;
 import feign.FeignException;
 import feign.Request;
 import feign.RequestTemplate;
@@ -68,12 +68,12 @@ class BehavioralPatternServiceImplTest {
     private DspServerGCClient dspServerGCClient;
     @Mock
     private DspServerBLClient dspServerBLClient;
-    @Mock
-    private MSAServiceClient msaServiceClient;
-    @Mock
-    private GenericPostgreRepository<BehaSvdvHist, Integer> behaSvdvHistRepo;
-    @Mock
-    private GenericRedisRepository<CarTmuBasicInfo, String> carTmuBasicRepo;
+//    @Mock
+//    private MSAServiceClient msaServiceClient;
+//    @Mock
+//    private GenericPostgreRepository<BehaSvdvHist, Integer> behaSvdvHistRepo;
+//    @Mock
+//    private GenericRedisRepository<CarTmuBasicInfo, String> carTmuBasicRepo;
 
     private Map<String, String> header;
     private String vin;
@@ -183,101 +183,101 @@ class BehavioralPatternServiceImplTest {
 
     }
 
-    @ParameterizedTest
-    @MethodSource("itlBreakpadDrvScoreArgs")
-    @DisplayName("지능형 가혹운전 점수 조회")
-    void testItlBreakpadDrvScore(CarTmuBasicInfo carTmuBasicInfo, BehaSvdvHist behaSvdvHist) {
-        boolean isNotEmptyCarTmuBasicInfo =
-                ObjectUtils.isNotEmpty(carTmuBasicInfo) && StringUtils.isNotEmpty(carTmuBasicInfo.getCarOid());
-        boolean isNotEmptyBehaSvdvHist =
-                ObjectUtils.isNotEmpty(behaSvdvHist) && StringUtils.isNotEmpty(behaSvdvHist.getIfDate());
+//    @ParameterizedTest
+//    @MethodSource("itlBreakpadDrvScoreArgs")
+//    @DisplayName("지능형 가혹운전 점수 조회")
+//    void testItlBreakpadDrvScore(CarTmuBasicInfo carTmuBasicInfo, BehaSvdvHist behaSvdvHist) {
+//        boolean isNotEmptyCarTmuBasicInfo =
+//                ObjectUtils.isNotEmpty(carTmuBasicInfo) && StringUtils.isNotEmpty(carTmuBasicInfo.getCarOid());
+//        boolean isNotEmptyBehaSvdvHist =
+//                ObjectUtils.isNotEmpty(behaSvdvHist) && StringUtils.isNotEmpty(behaSvdvHist.getIfDate());
+//
+//        doReturn(behaSvdvHistRepo).when(behavioralPatternService).behaSvdvHistRepository();
+//        doReturn(carTmuBasicRepo).when(behavioralPatternService).carTmuBasicRepository();
+//
+//        when(carTmuBasicRepo.findByIdHash(any())).thenReturn(carTmuBasicInfo);
+//        if (isNotEmptyCarTmuBasicInfo && ObjectUtils.isNotEmpty(behaSvdvHist)) {
+//            when(behaSvdvHistRepo.reactiveFindByCriteria(any())).thenReturn(Mono.just(behaSvdvHist));
+//        }
+//        if(isNotEmptyCarTmuBasicInfo && isNotEmptyBehaSvdvHist) {
+//           when(msaServiceClient.requestCallGet(anyMap(), anyString()))
+//                    .thenReturn(ResponseEntity.ok().body(new HashMap<>() {
+//                        {
+//                            put("value", 10);
+//                        }
+//                    }));
+//        }
+//
+//        ItlBreakpadResDTO itlBreakpadResDTO = behavioralPatternService.itlBreakpadDrvScore(vin);
+//
+//        if (isNotEmptyCarTmuBasicInfo && isNotEmptyBehaSvdvHist) {
+//            assertEquals(itlBreakpadResDTO.getResultStatus(), Const.RESULT_SUCCESS);
+//        } else {
+//            assertEquals(itlBreakpadResDTO.getResultStatus(), Const.RESULT_FAIL);
+//        }
+//    }
+//
+//    private static Stream<Arguments> itlBreakpadDrvScoreArgs() {
+//        return Stream.of(
+//                // CarTmuBasicInfo
+//                Arguments.of(CarTmuBasicInfo.builder().carOid("992006581").build(), new Gson().fromJson(getBehaSvdvHistData(), BehaSvdvHist.class))
+//                ,Arguments.of(CarTmuBasicInfo.builder().build(), null)
+//                ,Arguments.of(null, null)
+//                ,Arguments.of(CarTmuBasicInfo.builder().carOid("992006581").build(), new Gson().fromJson(getBehaSvdvHistData(), BehaSvdvHist.class))
+//                ,Arguments.of(CarTmuBasicInfo.builder().carOid("992006581").build(), BehaSvdvHist.builder().build())
+//        );
+//    }
+//
+//    @Test
+//    @DisplayName("지능형 가혹운전 점수 조회 예외 케이스")
+//    void testItlBreakpadDrvScoreCase() {
+//        doReturn(behaSvdvHistRepo).when(behavioralPatternService).behaSvdvHistRepository();
+//        doReturn(carTmuBasicRepo).when(behavioralPatternService).carTmuBasicRepository();
+//
+//        when(carTmuBasicRepo.findByIdHash(any()))
+//                .thenReturn(CarTmuBasicInfo.builder().carOid("992006581").build());
+//        when(behaSvdvHistRepo.reactiveFindByCriteria(any()))
+//                .thenReturn(Mono.just(new Gson().fromJson(getBehaSvdvHistData(), BehaSvdvHist.class)));
+//        when(msaServiceClient.requestCallGet(anyMap(), anyString()))
+//                .thenThrow(FeignException.class);
+//
+//        ItlBreakpadResDTO itlBreakpadResDTO = behavioralPatternService.itlBreakpadDrvScore(vin);
+//
+//        assertEquals(itlBreakpadResDTO.getResultStatus(), Const.RESULT_SUCCESS);
+//    }
+//
+//    @Test
+//    @DisplayName("지능형 가혹운전 점수 조회 오류")
+//    void testItlBreakpadDrvScoreException() {
+//        doReturn(behaSvdvHistRepo).when(behavioralPatternService).behaSvdvHistRepository();
+//        doReturn(carTmuBasicRepo).when(behavioralPatternService).carTmuBasicRepository();
+//
+//        when(carTmuBasicRepo.findByIdHash(any()))
+//                .thenReturn(CarTmuBasicInfo.builder().carOid("992006581").build());
+//        when(behaSvdvHistRepo.reactiveFindByCriteria(any()))
+//                .thenReturn(Mono.just(new Gson().fromJson(getBehaSvdvHistData(), BehaSvdvHist.class)));
+//
+//        RestException exception = assertThrows(RestException.class, () -> behavioralPatternService.itlBreakpadDrvScore(vin));
+//
+//        assertEquals(exception.getRestError().getResultStatus(),Const.RESULT_FAIL);
+//        assertEquals(exception.getRestError().getErrCd(), Const.ErrMsg.TYPE_595);
+//
+//        // vin = empty
+//        exception = assertThrows(RestException.class, () -> behavioralPatternService.itlBreakpadDrvScore(StringUtils.EMPTY));
+//
+//        assertEquals(exception.getRestError().getResultStatus(),Const.RESULT_FAIL);
+//        assertEquals(exception.getRestError().getErrCd(), Const.ErrMsg.TYPE_450);
+//
+//        // vin.length > 17
+//        exception = assertThrows(RestException.class, () -> behavioralPatternService.itlBreakpadDrvScore(vin + "test"));
+//
+//        assertEquals(exception.getRestError().getResultStatus(),Const.RESULT_FAIL);
+//        assertEquals(exception.getRestError().getErrCd(), Const.ErrMsg.TYPE_450);
+//    }
 
-        doReturn(behaSvdvHistRepo).when(behavioralPatternService).behaSvdvHistRepository();
-        doReturn(carTmuBasicRepo).when(behavioralPatternService).carTmuBasicRepository();
-
-        when(carTmuBasicRepo.findByIdHash(any())).thenReturn(carTmuBasicInfo);
-        if (isNotEmptyCarTmuBasicInfo && ObjectUtils.isNotEmpty(behaSvdvHist)) {
-            when(behaSvdvHistRepo.reactiveFindByCriteria(any())).thenReturn(Mono.just(behaSvdvHist));
-        }
-        if(isNotEmptyCarTmuBasicInfo && isNotEmptyBehaSvdvHist) {
-           when(msaServiceClient.requestCallGet(anyMap(), anyString()))
-                    .thenReturn(ResponseEntity.ok().body(new HashMap<>() {
-                        {
-                            put("value", 10);
-                        }
-                    }));
-        }
-
-        ItlBreakpadResDTO itlBreakpadResDTO = behavioralPatternService.itlBreakpadDrvScore(vin);
-
-        if (isNotEmptyCarTmuBasicInfo && isNotEmptyBehaSvdvHist) {
-            assertEquals(itlBreakpadResDTO.getResultStatus(), Const.RESULT_SUCCESS);
-        } else {
-            assertEquals(itlBreakpadResDTO.getResultStatus(), Const.RESULT_FAIL);
-        }
-    }
-
-    private static Stream<Arguments> itlBreakpadDrvScoreArgs() {
-        return Stream.of(
-                // CarTmuBasicInfo
-                Arguments.of(CarTmuBasicInfo.builder().carOid("992006581").build(), new Gson().fromJson(getBehaSvdvHistData(), BehaSvdvHist.class))
-                ,Arguments.of(CarTmuBasicInfo.builder().build(), null)
-                ,Arguments.of(null, null)
-                ,Arguments.of(CarTmuBasicInfo.builder().carOid("992006581").build(), new Gson().fromJson(getBehaSvdvHistData(), BehaSvdvHist.class))
-                ,Arguments.of(CarTmuBasicInfo.builder().carOid("992006581").build(), BehaSvdvHist.builder().build())
-        );
-    }
-
-    @Test
-    @DisplayName("지능형 가혹운전 점수 조회 예외 케이스")
-    void testItlBreakpadDrvScoreCase() {
-        doReturn(behaSvdvHistRepo).when(behavioralPatternService).behaSvdvHistRepository();
-        doReturn(carTmuBasicRepo).when(behavioralPatternService).carTmuBasicRepository();
-
-        when(carTmuBasicRepo.findByIdHash(any()))
-                .thenReturn(CarTmuBasicInfo.builder().carOid("992006581").build());
-        when(behaSvdvHistRepo.reactiveFindByCriteria(any()))
-                .thenReturn(Mono.just(new Gson().fromJson(getBehaSvdvHistData(), BehaSvdvHist.class)));
-        when(msaServiceClient.requestCallGet(anyMap(), anyString()))
-                .thenThrow(FeignException.class);
-
-        ItlBreakpadResDTO itlBreakpadResDTO = behavioralPatternService.itlBreakpadDrvScore(vin);
-
-        assertEquals(itlBreakpadResDTO.getResultStatus(), Const.RESULT_SUCCESS);
-    }
-
-    @Test
-    @DisplayName("지능형 가혹운전 점수 조회 오류")
-    void testItlBreakpadDrvScoreException() {
-        doReturn(behaSvdvHistRepo).when(behavioralPatternService).behaSvdvHistRepository();
-        doReturn(carTmuBasicRepo).when(behavioralPatternService).carTmuBasicRepository();
-
-        when(carTmuBasicRepo.findByIdHash(any()))
-                .thenReturn(CarTmuBasicInfo.builder().carOid("992006581").build());
-        when(behaSvdvHistRepo.reactiveFindByCriteria(any()))
-                .thenReturn(Mono.just(new Gson().fromJson(getBehaSvdvHistData(), BehaSvdvHist.class)));
-
-        RestException exception = assertThrows(RestException.class, () -> behavioralPatternService.itlBreakpadDrvScore(vin));
-
-        assertEquals(exception.getRestError().getResultStatus(),Const.RESULT_FAIL);
-        assertEquals(exception.getRestError().getErrCd(), Const.ErrMsg.TYPE_595);
-
-        // vin = empty
-        exception = assertThrows(RestException.class, () -> behavioralPatternService.itlBreakpadDrvScore(StringUtils.EMPTY));
-
-        assertEquals(exception.getRestError().getResultStatus(),Const.RESULT_FAIL);
-        assertEquals(exception.getRestError().getErrCd(), Const.ErrMsg.TYPE_450);
-
-        // vin.length > 17
-        exception = assertThrows(RestException.class, () -> behavioralPatternService.itlBreakpadDrvScore(vin + "test"));
-
-        assertEquals(exception.getRestError().getResultStatus(),Const.RESULT_FAIL);
-        assertEquals(exception.getRestError().getErrCd(), Const.ErrMsg.TYPE_450);
-    }
-
-    @Test
-    @DisplayName("지능형 가혹운전 점수 조회 exception coverage 체크")
-    void testItlBreakpadDrvScoreCoverage() throws JsonProcessingException {
+//    @Test
+//    @DisplayName("지능형 가혹운전 점수 조회 exception coverage 체크")
+//    void testItlBreakpadDrvScoreCoverage() throws JsonProcessingException {
 //        doReturn(behaSvdvHistRepo).when(behavioralPatternService).behaSvdvHistRepository();
 //        doReturn(carTmuBasicRepo).when(behavioralPatternService).carTmuBasicRepository();
 //        when(carTmuBasicRepo.findByIdHash(any())).thenReturn(CarTmuBasicInfo.builder().vin(vin).carOid("carOid").build());
@@ -286,7 +286,7 @@ class BehavioralPatternServiceImplTest {
 //        when(msaServiceClient.requestCallGet(anyMap(), anyString())).thenThrow(FeignException.class);
 //
 //        behavioralPatternService.itlBreakpadDrvScore(vin);
-    }
+//    }
 
     private Map<String, Object> getDspResData() throws JsonProcessingException {
 
@@ -296,12 +296,12 @@ class BehavioralPatternServiceImplTest {
         return new ObjectMapper().readValue(data, new TypeReference<>() {});
     }
 
-    private static String getBehaSvdvHistData() {
-        String date = LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern(Const.YYYYMMDD));
-
-        return "{\"ifDate\":\""+date+"\",\"nnidVin\":\"KMHF241DBLA_TEST3b20d1b5994\",\"prjVehlCd\":\"HI\"," +
-                "\"severeNormal\":\"NORMAL\",\"cntNormal\":50,\"cntCaution\":20,\"cntSevere\":0," +
-                "\"cntSeverePlus\":0,\"carOid\" : 992006581}";
-    }
+//    private static String getBehaSvdvHistData() {
+//        String date = LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern(Const.YYYYMMDD));
+//
+//        return "{\"ifDate\":\""+date+"\",\"nnidVin\":\"KMHF241DBLA_TEST3b20d1b5994\",\"prjVehlCd\":\"HI\"," +
+//                "\"severeNormal\":\"NORMAL\",\"cntNormal\":50,\"cntCaution\":20,\"cntSevere\":0," +
+//                "\"cntSeverePlus\":0,\"carOid\" : 992006581}";
+//    }
 
 }

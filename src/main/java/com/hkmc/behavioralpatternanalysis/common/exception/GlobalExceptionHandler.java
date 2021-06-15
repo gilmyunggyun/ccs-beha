@@ -1,6 +1,5 @@
 package com.hkmc.behavioralpatternanalysis.common.exception;
 
-import com.hkmc.behavioralpatternanalysis.common.model.RestErrorDTO;
 import feign.FeignException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -52,12 +51,6 @@ public class GlobalExceptionHandler {
 	public static ResponseEntity<String> globalExternalException(GlobalExternalException e){
 		log.debug(EXCEPTION, e.toString());
 		return ResponseEntity.status(e.getStatusCode()).body(e.getBody());
-	}
-
-	@ExceptionHandler(value = RestException.class)
-	public static ResponseEntity<RestErrorDTO> restException(RestException e){
-		log.debug(EXCEPTION, e.toString());
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getRestError());
 	}
 
 	@ExceptionHandler(value = Exception.class)

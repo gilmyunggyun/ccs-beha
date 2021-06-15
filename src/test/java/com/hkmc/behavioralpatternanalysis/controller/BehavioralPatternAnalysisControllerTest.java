@@ -9,6 +9,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
+import org.springframework.boot.autoconfigure.r2dbc.R2dbcAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,11 +26,15 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @SpringBootTest
 @EmbeddedKafka
 @DirtiesContext
+@EnableAutoConfiguration(exclude = {
+        DataSourceAutoConfiguration.class,
+        R2dbcAutoConfiguration.class,
+        MongoAutoConfiguration.class
+})
 @ActiveProfiles("local")
 @AutoConfigureMockMvc
 @Slf4j
@@ -50,16 +58,6 @@ class BehavioralPatternAnalysisControllerTest {
                 add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
             }
         };
-    }
-
-    @Test
-    @DisplayName("지능형 가혹운전 점수 조회")
-    void testItlCarBreakpadScore() throws Exception {
-        mockMvc.perform(get("/behavioralpatternanalysis/v1/breakpad/{vinPath}", vin)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .headers(httpHeaders))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk());
     }
 
     @Test

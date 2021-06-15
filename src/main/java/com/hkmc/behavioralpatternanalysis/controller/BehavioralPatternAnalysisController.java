@@ -1,6 +1,5 @@
 package com.hkmc.behavioralpatternanalysis.controller;
 
-import com.hkmc.behavioralpatternanalysis.behavioral.model.ItlBreakpadResDTO;
 import com.hkmc.behavioralpatternanalysis.behavioral.model.UbiSafetyReqDTO;
 import com.hkmc.behavioralpatternanalysis.behavioral.model.UbiSafetyResDTO;
 import com.hkmc.behavioralpatternanalysis.behavioral.model.UbiSafetyVO;
@@ -22,13 +21,6 @@ import io.swagger.annotations.ApiOperation;
 public class BehavioralPatternAnalysisController {
 
 	private final BehavioralPatternService behavioralPatternService;
-
-	@ApiOperation(value = "차량 브레 이크 패드 자료에 대한 조회 요청을 처리")
-	@GetMapping(value="/breakpad/{vinPath}")
-	public ResponseEntity<ItlBreakpadResDTO> itlCarBreakpadScore(@PathVariable String vinPath) {
-		return ResponseEntity.ok()
-				.body(behavioralPatternService.itlBreakpadDrvScore(vinPath));
-	}
 
 	@ApiOperation(value = "UBI 안전 운전 점수 조회")
 	@PostMapping(value="/ubiscore/{vinPath}")

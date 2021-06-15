@@ -26,23 +26,6 @@ spring:
     httptag: true
   kafka:
     bootstrap-servers: 10.7.159.122:9092, 10.7.159.123:9092, 10.7.159.124:9092, 10.7.159.125:9092, 10.7.159.126:9092
-  redis:
-    host: 10.11.39.67
-    port: 38913
-    password: a206339c-2eef-4bb1-bdfb-019a7df9c443
-  postgres:
-    uri: 10.11.53.85
-    port: 5432
-    database: behadb
-    username: behawas
-    password: ENC(olrf9mCKQJNcETlhtoCH1beB9gcqLoI2vn2V3nBa/JpmYp4tr5jHfUXO4OlCH+B9)
-    pool:
-      name: customPool
-      maxidletime: 100
-      maxlifetime: 100
-      initalsize: 10
-      max-size: 100
-      maxcreateconnectiontime: 10000
 
 #feign client config
 feign:
@@ -64,6 +47,13 @@ logging:
     root: INFO
     com.hkmc: DEBUG
     org.springframework.data.r2dbc: DEBUG
+    org.apache.kafka: ERROR
+    io.micrometer.core.instrument.binder.kafka.KafkaMetrics: ERROR
+
+transaction:
+  logger:
+    exclude:
+      url: cloudfoundryapplication, swagger
 
 #DSP server info
 dsp:
@@ -79,12 +69,6 @@ dsp:
     genesis:
       url: http://10.11.60.218:6101
       name: GenesisConnected
-
-#MSA service
-service-domain:
-  driveinfo: ccsp20-drive-info-mngr.apps.dev.hkccs.kr
-service-path:
-  odometer: /retrieve/{vin}/odometer
 
 validation:
   check: true

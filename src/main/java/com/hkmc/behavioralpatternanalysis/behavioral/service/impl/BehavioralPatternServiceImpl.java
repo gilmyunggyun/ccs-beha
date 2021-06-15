@@ -1,7 +1,5 @@
 package com.hkmc.behavioralpatternanalysis.behavioral.service.impl;
 
-import ccs.core.db.repository.postgre.GenericPostgreRepository;
-import ccs.core.db.repository.redis.GenericRedisRepository;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hkmc.behavioralpatternanalysis.behavioral.model.*;
@@ -10,10 +8,8 @@ import com.hkmc.behavioralpatternanalysis.common.Const;
 import com.hkmc.behavioralpatternanalysis.common.client.DspServerBLClient;
 import com.hkmc.behavioralpatternanalysis.common.client.DspServerGCClient;
 import com.hkmc.behavioralpatternanalysis.common.client.DspServerUVOClient;
-import com.hkmc.behavioralpatternanalysis.common.client.MSAServiceClient;
 import com.hkmc.behavioralpatternanalysis.common.code.SpaResponseCodeEnum;
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalExternalException;
-import com.hkmc.behavioralpatternanalysis.common.exception.RestException;
 import com.hkmc.behavioralpatternanalysis.common.model.SpaResponseDTO;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -22,17 +18,10 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
-import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
-import org.springframework.data.r2dbc.repository.support.R2dbcRepositoryFactory;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.relational.core.query.Criteria;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -44,22 +33,7 @@ public class BehavioralPatternServiceImpl implements BehavioralPatternService {
     private final DspServerUVOClient dspServerUVOClient;
     private final DspServerGCClient dspServerGCClient;
     private final DspServerBLClient dspServerBLClient;
-    private final MSAServiceClient msaServiceClient;
     private final Environment env;
-    private final R2dbcEntityOperations postgresqlEntityOperations;
-    private final R2dbcRepositoryFactory postgresqlRepositoryFactory;
-    private final RedisTemplate<String, Object> redisTemplate;
-
-    private GenericPostgreRepository<BehaSvdvHist, Integer> behaSvdvHistRepo;
-    private GenericRedisRepository<CarTmuBasicInfo, String> carTmuBasicRepo;
-
-    protected GenericPostgreRepository<BehaSvdvHist, Integer> behaSvdvHistRepository() {
-        return new GenericPostgreRepository<>(BehaSvdvHist.class, postgresqlRepositoryFactory, postgresqlEntityOperations);
-    }
-
-    protected GenericRedisRepository<CarTmuBasicInfo, String> carTmuBasicRepository() {
-        return new GenericRedisRepository<>(CarTmuBasicInfo.class, redisTemplate);
-    }
 
     @Override
     public UbiSafetyResDTO ubiSafetyDrivingScore(UbiSafetyVO ubiSafetyVO) {
@@ -136,72 +110,6 @@ public class BehavioralPatternServiceImpl implements BehavioralPatternService {
                             .build())
             );
         }
-    }
-
-    @Override
-    public ItlBreakpadResDTO itlBreakpadDrvScore(String vinPath) {
-        if(StringUtils.isEmpty(vinPath) || vinPath.length() > 17){
-            throw new RestException(Const.ErrMsg.TYPE_450);
-        }
-
-        behaSvdvHistRepo = behaSvdvHistRepository();
-        carTmuBasicRepo = carTmuBasicRepository();
-
-        try {
-            final CarTmuBasicInfo carTmuBasicInfo =
-                    carTmuBasicRepo.findByIdHash(CarTmuBasicInfo.builder().vin(vinPath).build());
-
-            if(ObjectUtils.isEmpty(carTmuBasicInfo) || StringUtils.isEmpty(carTmuBasicInfo.getCarOid())){
-                return ItlBreakpadResDTO.builder().resultStatus(Const.RESULT_FAIL).vin(vinPath).build();
-            }
-
-            BehaSvdvHist behaSvdvHist = behaSvdvHistRepo.reactiveFindByCriteria(
-                    Criteria.where(Const.Key.CRTN_YMD).is(LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern(Const.YYYYMMDD)))
-                            .and(Const.Key.CAR_OID).is(carTmuBasicInfo.getCarOid())).block();
-
-            if(ObjectUtils.isEmpty(behaSvdvHist) || StringUtils.isEmpty(behaSvdvHist.getIfDate())){
-                return ItlBreakpadResDTO.builder().resultStatus(Const.RESULT_FAIL).vin(vinPath).build();
-            }
-
-            return ItlBreakpadResDTO.builder()
-                    .vin(vinPath)
-                    .ifDate(behaSvdvHist.getIfDate())
-                    .severeNormal(behaSvdvHist.getSevereNormal())
-                    .cntNormal(behaSvdvHist.getCntNormal())
-                    .cntCaution(behaSvdvHist.getCntCaution())
-                    .cntSevere(behaSvdvHist.getCntSevere())
-                    .acumTrvgDist(getAcumTrvgDist(vinPath))
-                    .resultStatus(Const.RESULT_SUCCESS)
-                    .build();
-
-        } catch (Exception e) {
-            log.error("\n++++++++++[Exception] [itlBreakpadDrvScore] | {}(vin) | {}", vinPath, e.toString());
-            throw new RestException(Const.ErrMsg.TYPE_595);
-        }
-    }
-
-    private int getAcumTrvgDist(String vin) {
-        Map<String, String> header = new HashMap<>() {
-            {
-                put(Const.Header.HOST, env.getProperty(Const.Key.SERVICE_DOMAIN_DRIVE_INFO));
-            }
-        };
-        String path = StringUtils.defaultString(env.getProperty(Const.Key.SERVICE_PATH_ODOMETER));
-        path = path.replace("{vin}", vin);
-
-        try {
-            ResponseEntity<Map<String, Object>> response = msaServiceClient.requestCallGet(header, path);
-
-            if (ObjectUtils.isNotEmpty(response.getBody())) {
-                if (ObjectUtils.isNotEmpty(response.getBody().get(Const.Key.ODOMETER_VALUE))) {
-                    return Long.valueOf(String.valueOf(response.getBody().get(Const.Key.ODOMETER_VALUE))).intValue();
-                }
-            }
-        } catch (FeignException e) {
-            log.error("\n++++++++++[FeignException] [itlBreakpadDrvScore] ({}) - {} | {}(vin) | {}", e.status(), path, vin, e.toString());
-        }
-
-        return 0;
     }
 
 }
