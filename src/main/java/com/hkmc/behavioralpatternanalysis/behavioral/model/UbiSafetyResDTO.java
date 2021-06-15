@@ -29,10 +29,10 @@ public class UbiSafetyResDTO extends SpaResponseDTO {
     @Builder.Default
     private String insuranceDiscountYN = StringUtils.EMPTY;
 
-    @JsonProperty("updateAt")
+    @JsonProperty("updatedAt")
     @ApiModelProperty(value = "", required = false, example = "")
     @Builder.Default
-    private String updateAt = StringUtils.EMPTY;
+    private String updatedAt = StringUtils.EMPTY;
 
     @JsonProperty("drvDistance")
     @ApiModelProperty(value = "", required = false, example = "")

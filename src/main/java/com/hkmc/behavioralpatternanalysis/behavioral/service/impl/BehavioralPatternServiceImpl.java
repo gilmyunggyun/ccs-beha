@@ -65,7 +65,7 @@ public class BehavioralPatternServiceImpl implements BehavioralPatternService {
                         Integer.parseInt(StringUtils.defaultString(String.valueOf(feignResponse.getBody().get(Const.Key.SAFETY_DRV_SCORE)), "0")));
                 ubiSafetyRes.setInsuranceDiscountYN(
                         StringUtils.defaultString(String.valueOf(feignResponse.getBody().get(Const.Key.INS_DISCOUNT_YN))));
-                ubiSafetyRes.setUpdateAt(
+                ubiSafetyRes.setUpdatedAt(
                         StringUtils.defaultString(String.valueOf(feignResponse.getBody().get(Const.Key.SCORE_DATE))));
                 ubiSafetyRes.setDrvDistance(
                         Integer.parseInt(StringUtils.defaultString(String.valueOf(feignResponse.getBody().get(Const.Key.RANGE_DRV_DIST)), "0")));
