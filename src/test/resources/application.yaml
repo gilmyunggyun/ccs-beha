@@ -15,7 +15,9 @@ spring:
 ---
 #default config
 spring:
-  profiles: local
+  config:
+    activate:
+      on-profile: local
   async:
     core-pool-size: 200
     max-pool-size: 3200

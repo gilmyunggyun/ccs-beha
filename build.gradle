@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "com.hkmc.ccs"
-version = "1.0.2"
+version = "1.0.3"
 
 cloudnative {
   core {
