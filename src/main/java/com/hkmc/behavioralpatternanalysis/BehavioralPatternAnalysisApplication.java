@@ -10,7 +10,7 @@ import ccs.core.db.SpringApplicationContextInitializer;
 
 @SpringBootApplication
 @EnableFeignClients
-//@EnableCcsp20TransactionLogger
+@EnableCcsp20TransactionLogger
 @EnablePropertyEncrypt
 public class BehavioralPatternAnalysisApplication {
 
