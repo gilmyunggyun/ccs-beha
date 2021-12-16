@@ -15,7 +15,7 @@ podTemplate(label: label,
             [key: 'user_name', value: '$.user_name'], [key: 'checkout_sha', value: '$.checkout_sha'],
             [key: 'ref', value: '$.ref'], [key: 'tag', value: '$.ref', regexpFilter: 'refs/tags/'],
             [key: 'event', value: '$.event_name']
-          ], causeString: '$ref-$user_name:$checkout_sha', token: "ccsp20-behavioralpatternanalysis",
+          ], causeString: '$ref-$user_name:$checkout_sha', token: "ccsp20-behavioral",
           printContributedVariables:false, printPostContent: false, silentResponse: true,
           regexpFilterText: '$ref', regexpFilterExpression: 'refs/heads/' + BRANCH_NAME
         ]
