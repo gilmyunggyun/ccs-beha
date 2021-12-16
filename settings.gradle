@@ -6,4 +6,4 @@ pluginManagement {
     }
   }
 }
-rootProject.name = 'ccsp20-behavioralpatternanalysis'
+rootProject.name = 'ccsp20-behavioral'
