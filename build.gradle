@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "com.hkmc.ccs"
-version = "1.0.3"
+version = "1.0.5"
 
 cloudnative {
   core {
@@ -14,11 +14,7 @@ cloudnative {
   microservice {
     reactive = true
     swagger = true
-    undertow = true
     security = true
-    metric = true
-    trace = true
-    config = true
     circuitbreaker = true
     kubernetes = false
     openfeign = true
@@ -58,10 +54,5 @@ cloudnative {
     tag = ["${project.version}", 'latest']
   }
 }
-
-//dependencies {
-//  implementation 'org.springframework.boot:spring-boot-configuration-processor:2.6.1'
-//}
-
 
 
