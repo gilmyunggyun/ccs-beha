@@ -10,7 +10,7 @@ server:
 
 spring:
   application:
-    name: ccsp20-behavioralpatternanalysis
+    name: ccsp20-behavioral
 
 ---
 #default config
@@ -18,6 +18,9 @@ spring:
   config:
     activate:
       on-profile: local
+#  cloud:
+#    config:
+#      enabled: false
   async:
     core-pool-size: 200
     max-pool-size: 3200

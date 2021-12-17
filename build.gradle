@@ -30,7 +30,6 @@ cloudnative {
     jpa = true
     postgresql = true
     r2dbc = true
-    redis = true
   }
 
   quality {
