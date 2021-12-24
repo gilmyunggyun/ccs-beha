@@ -4,7 +4,7 @@ applications:
   path: target/ccsp20-behavioralpatternanalysis-0.0.1-SNAPSHOT.jar
   memory: 1G
   instances: 1
-  buildpack: java_buildpack_offline_v200907dev
+  buildpack: java_buildpack_offline_211222
   services:
     - stgregistry
     - stgconfig
@@ -12,5 +12,5 @@ applications:
   env:
     TZ: Asia/Seoul
     SPRING_PROFILES_ACTIVE: dev
-    JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 13.0.+ } }'
+    JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 17.0.+ } }'
     SPRING_CLOUD_CONFIG_NAME: ccsp20-common,ccsp20-behavioralpatternanalysis
