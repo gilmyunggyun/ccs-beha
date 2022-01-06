@@ -18,9 +18,9 @@ spring:
   config:
     activate:
       on-profile: local
-#  cloud:
-#    config:
-#      enabled: false
+  cloud:
+    config:
+      enabled: false
   async:
     core-pool-size: 200
     max-pool-size: 3200
@@ -59,6 +59,12 @@ transaction:
   logger:
     exclude:
       url: cloudfoundryapplication, swagger
+
+core:
+  filter:
+    exclude:
+      - /actuator/**
+      - /swagger/**
 
 #DSP server info
 dsp:

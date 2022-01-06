@@ -1,22 +1,20 @@
 package com.hkmc.behavioralpatternanalysis;
 
-import ccs.core.data.encrypt.EnablePropertyEncrypt;
-import com.hkmc.transactionlogger.EnableCcsp20TransactionLogger;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.openfeign.EnableFeignClients;
-
-import ccs.core.db.SpringApplicationContextInitializer;
+import com.hkmc.filter.EnableTransactionLogger;
+import ccs.core.data.encrypt.EnablePropertyEncrypt;
 
 @SpringBootApplication
 @EnableFeignClients
-//@EnableCcsp20TransactionLogger
+@EnableTransactionLogger
 @EnablePropertyEncrypt
 public class BehavioralPatternAnalysisApplication {
 
 	public static void main(String[] args) {
 		new SpringApplicationBuilder(BehavioralPatternAnalysisApplication.class)
-        .initializers(new SpringApplicationContextInitializer())
+        //.initializers(new SpringApplicationContextInitializer())
         .application()
         .run(args);
 	}
