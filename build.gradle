@@ -1,9 +1,9 @@
 plugins {
-  id "com.hkmc.cloudnative" version "1.5.8"
+  id "com.hkmc.cloudnative" version "1.6.6"
 }
 
 group = "com.hkmc.ccs"
-version = "1.0.8"
+version = "1.0.9"
 
 cloudnative {
 
@@ -34,6 +34,7 @@ cloudnative {
     jasypt = true
     jacksonAfterburner = true
     jmapper = true
+    prometheusRSocket = true
   }
 
   cicd{
@@ -44,6 +45,15 @@ cloudnative {
     cluster = "ccs-stg"
     namespace = "behavioral"
     branch = "hcloud"
+
+    serviceType= "NodePort"
+    servicePort= 8080
+    nodePort= 30041
+
+    readinessInitialDelaySeconds=30
+    readinessPeriodSeconds=30
+    livenessInitialDelaySeconds=30
+    livenessPeriodSeconds=30
 
     jib = true
     to = "registry.hcloud.hmc.co.kr/ccs/${project.name}"

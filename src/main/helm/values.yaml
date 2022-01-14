@@ -1,43 +1,48 @@
-replicaCount: 1
+replicaCount: 2
 image:
   repository: registry.hcloud.hmc.co.kr/ccs/ccsp20-behavioral
   pullPolicy: IfNotPresent
-  tag: "1.0.8"
+  tag: "1.0.9"
 
-service:
-  type: ClusterIP
-  port: 8080
-
+# Resource quota
 resources:
   limits:
-    cpu: 1000m
+    cpu: 500m
     memory: 1024Mi
   requests:
-    cpu: 300m
+    cpu: 100m
     memory: 512Mi
 
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
-podAnnotations: {}
-podSecurityContext: {}
-securityContext: {}
-nodeSelector: {}
-tolerations: []
-affinity: {}
+# Readiness 
+readinessInitialDelaySeconds: 30
+readinessPeriodSeconds: 30
 
-autoscaling:
+# Liveness
+livenessInitialDelaySeconds: 30
+livenessPeriodSeconds: 30
+
+# JVM Option
+jvm:
   enabled: false
-  minReplicas: 2
-  maxReplicas: 10
-  targetCPUUtilizationPercentage: 80
+  option: ""
 
-autoPromotionEnabled: true
-
+# Service 
+service:
+  type: NodePort
+  port: 8080
+  nodePort: 30041
+# Ingress 
 ingress:
   enabled: false
   host: 
 
-jvm:
-  enabled: false
-  option: ""
+# AutoScaling
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+
+# Delievery Policy
+autoPromotionEnabled: true
+
