@@ -40,10 +40,10 @@ cloudnative {
   cicd{
     helm = true
     gitlabPath = "ccs/domain/ccsp20-behavioralpatternanalysis"
-    chartName = "behavioral"
+    chartName = "behavior"
 
     cluster = "ccs-stg"
-    namespace = "behavioral"
+    namespace = "behavior"
     branch = "hcloud"
 
     serviceType= "NodePort"

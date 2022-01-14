@@ -2,10 +2,10 @@
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "behavioral.fullname" . }}
+  name: {{ include "behavior.fullname" . }}
   labels:
-    app: {{ template "behavioral.name" . }}
-    app.kubernetes.io/name: {{ template "behavioral.name" . }}
+    app: {{ template "behavior.name" . }}
+    app.kubernetes.io/name: {{ template "behavior.name" . }}
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -15,7 +15,7 @@ spec:
   scaleTargetRef:
     apiVersion: argoproj.io/v1alpha1
     kind: Rollout
-    name: {{ include "behavioral.fullname" . }}
+    name: {{ include "behavior.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   targetCPUUtilizationPercentage: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}

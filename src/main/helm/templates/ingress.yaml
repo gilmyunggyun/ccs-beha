@@ -2,10 +2,10 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: behavioral
+  name: behavior
   labels:
-    app: {{ template "behavioral.name" . }}
-    app.kubernetes.io/name: {{ template "behavioral.name" . }}
+    app: {{ template "behavior.name" . }}
+    app.kubernetes.io/name: {{ template "behavior.name" . }}
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -23,7 +23,7 @@ metadata:
 spec:
   defaultBackend:
     service:
-      name: behavioral
+      name: behavior
       port:
         number: {{ .Values.service.port }}
   rules:
@@ -34,7 +34,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: behavioral
+                name: behavior
                 port:
                   number: {{ .Values.service.port }}
   tls:

@@ -1,11 +1,11 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  name: {{ template "behavioral.fullname" . }}
+  name: {{ template "behavior.fullname" . }}
   labels:
-    app: {{ template "behavioral.name" . }}
+    app: {{ template "behavior.name" . }}
     release: {{ .Release.Name }}
-    app.kubernetes.io/name: {{ template "behavioral.name" . }}
+    app.kubernetes.io/name: {{ template "behavior.name" . }}
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -16,14 +16,14 @@ spec:
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app: {{ template "behavioral.name" . }}
+      app: {{ template "behavior.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "behavioral.name" . }}
+        app: {{ template "behavior.name" . }}
         release: {{ .Release.Name }}
-        app.kubernetes.io/name: {{ template "behavioral.name" . }}
+        app.kubernetes.io/name: {{ template "behavior.name" . }}
         helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
         app.kubernetes.io/managed-by: {{ .Release.Service }}
         app.kubernetes.io/instance: {{ .Release.Name }}
@@ -71,6 +71,6 @@ spec:
             periodSeconds: {{ .Values.readinessPeriodSeconds }}
   strategy:
     blueGreen:
-      activeService: behavioral
-      previewService: behavioral-blue
+      activeService: behavior
+      previewService: behavior-blue
       autoPromotionEnabled: {{ .Values.autoPromotionEnabled }}

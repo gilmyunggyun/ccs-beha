@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: behavioral
+  name: behavior
   labels:
-    app: {{ template "behavioral.name" . }}
-    app.kubernetes.io/name: {{ template "behavioral.name" . }}
+    app: {{ template "behavior.name" . }}
+    app.kubernetes.io/name: {{ template "behavior.name" . }}
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -21,16 +21,16 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: {{ template "behavioral.name" . }}
+    app: {{ template "behavior.name" . }}
     release: {{ .Release.Name }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: behavioral-blue
+  name: behavior-blue
   labels:
-    app: {{ template "behavioral.name" . }}
-    app.kubernetes.io/name: {{ template "behavioral.name" . }}
+    app: {{ template "behavior.name" . }}
+    app.kubernetes.io/name: {{ template "behavior.name" . }}
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -44,5 +44,5 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: {{ template "behavioral.name" . }}
+    app: {{ template "behavior.name" . }}
     release: {{ .Release.Name }}
