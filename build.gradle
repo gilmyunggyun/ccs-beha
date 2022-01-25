@@ -1,30 +1,21 @@
 plugins {
-  id "com.hkmc.cloudnative" version "1.6.6"
+  id "com.hkmc.cloudnative" version "1.8.0"
 }
 
 group = "com.hkmc.ccs"
-version = "1.0.9"
+version = "1.0.10"
 
 cloudnative {
 
   microservice {
-    core = true
     reactive = true
-    swagger = true
-    security = true
-    circuitbreaker = true
-    kubernetes = false
     openfeign = true
     kafka = true
     validate = true
   }
 
   quality {
-    checkerframework = true
-    checkstyleIgnoreFailure = true
-    pmdIgnoreFailures = true
-    sonarqubeIgnoreFailure = true
-    skipCheckerFramework = true
+    skipAll = true
   }
 
   thirdparty{
@@ -38,26 +29,25 @@ cloudnative {
   }
 
   cicd{
-    helm = true
-    gitlabPath = "ccs/domain/ccsp20-behavioralpatternanalysis"
-    chartName = "behavior"
+    container {
+      to = "registry.hcloud.hmc.co.kr/ccs/${project.name}"
+      tag = ["${project.version}", 'latest']
+    }
 
-    cluster = "ccs-stg"
-    namespace = "behavior"
-    branch = "hcloud"
+    helm {
+      name = "behavior"
 
-    serviceType= "NodePort"
-    servicePort= 8080
-    nodePort= 30041
+      service {
+        serviceType = "NodePort"
+        servicePort = 8080
+        nodePort = 30041
+      }
+    }
 
-    readinessInitialDelaySeconds=30
-    readinessPeriodSeconds=30
-    livenessInitialDelaySeconds=30
-    livenessPeriodSeconds=30
-
-    jib = true
-    to = "registry.hcloud.hmc.co.kr/ccs/${project.name}"
-    tag = ["${project.version}", 'latest']
+    deploy {
+      namespace = "audit"
+      target = ["hcloud:ap-northeast-1:stg", "hcloud:ap-northeast-2:stg"]
+    }
   }
 }
 
