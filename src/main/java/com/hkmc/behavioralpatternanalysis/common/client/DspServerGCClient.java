@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Map;
 
 @RefreshScope
-@FeignClient(url = "${dsp.server.genesis.url:dspGenesisConnectedUrl}", name = "${dsp.server.genesis.name:dspGenesisConnected}")
+@FeignClient(url = "${dsp.server.genesis.url:dspGenesisConnectedUrl}", name = "${dsp.server.genesis.name:dspGenesisConnected}", configuration = FeignClientInterceptor.class)
 public interface DspServerGCClient {
 
      @GetMapping(value = "{uriPath}")

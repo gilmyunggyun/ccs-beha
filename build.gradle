@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "com.hkmc.ccs"
-version = "1.0.11"
+version = "1.0.12"
 
 cloudnative {
 
@@ -12,6 +12,7 @@ cloudnative {
     openfeign = true
     kafka = true
     validate = true
+    trace = false
   }
 
   quality {

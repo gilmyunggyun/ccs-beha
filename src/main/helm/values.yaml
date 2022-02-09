@@ -2,7 +2,7 @@ replicaCount: 1
 image:
   repository: registry.hcloud.hmc.co.kr/ccs/ccsp20-behavioral
   pullPolicy: IfNotPresent
-  tag: "1.0.11"
+  tag: "1.0.12"
 
 # Resource quota
 resources:
