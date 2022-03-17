@@ -1,7 +1,7 @@
 server:
   tomcat:
     threads:
-      max: 500000
+      max: 1000
   servlet:
     encoding:
       enabled: true

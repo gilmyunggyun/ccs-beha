@@ -10,7 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 public class SecurityConfig{
 
 	private static String ENV_PATH = "/actuator/env";
-	private static String SERVICE_PATH = "/vehiclestatus/**";
+	private static String SERVICE_PATH = "/behavioralpatternanalysis/**";
 
 	@Configuration
 	public static class ApplicationConfiguration extends WebSecurityConfigurerAdapter {

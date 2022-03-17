@@ -13,9 +13,10 @@ import java.util.Arrays;
 @Configuration
 public class WebApplicationFilterConfig {
 
-	@Value("${validation.check}")
+
+	@Value("${validation.check:false}")
 	public String validationCheck;
-	
+
 	@Bean
 	public FilterRegistrationBean<Filter> validationFilter(){
 		FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
@@ -24,5 +25,4 @@ public class WebApplicationFilterConfig {
 		filterRegistrationBean.setOrder(1);
 		return filterRegistrationBean;
 	}
-
 }

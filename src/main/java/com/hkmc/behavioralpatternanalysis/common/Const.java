@@ -13,9 +13,7 @@ public class Const {
 		public static final String HOST = "host";
     }
 
-	public static class System {
-		public static final String PHONE = "PHONE";
-	}
+	public static final String PHONE = "PHONE";
 
 	public static class Key {
 		// key of env
