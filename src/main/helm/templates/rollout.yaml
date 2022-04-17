@@ -28,6 +28,10 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/version: {{ .Chart.AppVersion }}
         app.kubernetes.io/component: "backend"
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/path: "/actuator/prometheus"
+        prometheus.io/port: '{{ .Values.service.port }}'
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -38,7 +42,7 @@ spec:
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{ - toYaml .Values.resources | nindent 12 }}
           env:
             - name: TZ
               value: {{ .Values.timezone }}
@@ -49,7 +53,7 @@ spec:
                 configMapKeyRef:
                   name: environment
                   key: environment
-            {{- if .Values.configServer.enabled }}
+            {{ - if .Values.configServer.enabled }}
             - name: spring.config.import
               valueFrom:
                 configMapKeyRef:
@@ -57,16 +61,16 @@ spec:
                   key: configserver
             - name: spring.cloud.config.name
               value: ccsp20-common,ccsp20-behavioral
-            {{- end }}
-            {{- if .Values.jvm.enabled }}
+            {{ - end }}
+            {{ - if .Values.jvm.enabled }}
             - name: JAVA_TOOL_OPTIONS
               value: {{ .Values.jvm.option }}
-            {{- end }}
+            {{ - end }}
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
               port: http
-            initialDelaySeconds: {{ .Values.livenessInitialDelaySeconds}}
+            initialDelaySeconds: {{ .Values.livenessInitialDelaySeconds }}
             periodSeconds: {{ .Values.livenessPeriodSeconds }}
             failureThreshold: 3
             successThreshold: 1

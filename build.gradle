@@ -1,5 +1,5 @@
 plugins {
-  id "com.hkmc.h2" version "1.0.29"
+  id "com.hkmc.h2" version "1.0.34"
 }
 
 group = "com.hkmc.ccs"
@@ -30,25 +30,21 @@ cloudnative {
 
   cicd{
     container {
+      enabled = true
       to = "registry.hcloud.hmc.co.kr/ccs/${project.name}"
-      tag = ["${project.version}", 'latest']
-
       jvmOption = "-XX:+UnlockExperimentalVMOptions -XX:+UseZGC"
     }
 
     helm {
       name = "behavior"
-
-      service {
-        serviceType = "NodePort"
-        servicePort = 8080
-        nodePort = 30041
-      }
+      namespace = "behavior"
+      serviceType = "NodePort"
+      servicePort = 8080
+      nodePort = 30041
     }
 
     deploy {
-      namespace = "behavior"
-      target = ["hcloud:ap-northeast-1:stg", "hcloud:ap-northeast-2:stg", "hcloud:ap-northeast-2:prd"]
+      target = ["hcloud:ap-northeast-2:stg", "hcloud:ap-northeast-2:prd"]
     }
   }
 }
