@@ -15,7 +15,12 @@ spring:
 ---
 #default config
 spring:
-  profiles: local
+  config:
+    activate:
+      on-profile: local
+  cloud:
+    config:
+      enabled: false
   async:
     core-pool-size: 200
     max-pool-size: 3200
@@ -47,6 +52,12 @@ logging:
     root: INFO
     com.hkmc: DEBUG
     org.springframework.data.r2dbc: DEBUG
+
+core:
+  filter:
+    exclude:
+      - /actuator/**
+      - /swagger/**
 
 #DSP server info
 dsp:

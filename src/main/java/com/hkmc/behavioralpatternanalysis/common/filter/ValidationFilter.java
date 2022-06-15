@@ -4,7 +4,10 @@ import com.google.gson.*;
 import com.hkmc.behavioralpatternanalysis.common.Const;
 import com.hkmc.behavioralpatternanalysis.common.code.SpaResponseCodeEnum;
 import com.hkmc.behavioralpatternanalysis.common.model.SpaResponseDTO;
+import com.hkmc.common.dto.SpaResponseVO;
+import com.hkmc.filter.wrapper.MultiReadHttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
@@ -12,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -45,59 +49,48 @@ public class ValidationFilter extends GenericFilterBean {
 	}
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException {
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
 		HttpServletRequest httpRequest = ((HttpServletRequest) request);
 		HttpServletResponse httpResponse = ((HttpServletResponse) response);
-		ValidationFilterWrapper wrapper = new ValidationFilterWrapper(request);
+		MultiReadHttpServletRequest wrapper  = new MultiReadHttpServletRequest(httpRequest);
 		String serviceNo = null;
-		try {
-			JsonObject bodyJson = new JsonObject();
-			String contentType = Optional.ofNullable(httpRequest.getHeader("Content-Type")).orElse("");
-			if (contentType.startsWith("application/json")) {
-				bodyJson = new Gson().fromJson(wrapper.getBody(), JsonObject.class);
-			}
-			JsonArray checkJsonFileArray = getValidCheckObject(httpRequest.getRequestURI());
+		String from = httpRequest.getHeader(Const.Header.FROM);
 
-			if(Const.TRUE.equals(validationCheck)
-					&& Const.System.PHONE.equals(httpRequest.getHeader(Const.Header.FROM))){
-				if( (bodyJson == null || StringUtils.EMPTY.equals(bodyJson.toString()))
-						|| !isValidationCheck(bodyJson, checkJsonFileArray)
-				) {
-					serviceNo = (bodyJson != null)?bodyJson.get(SERVICENO).getAsString(): null;
+		String body = StringUtils.EMPTY;
+		try{
+			body = StringUtils.defaultString(new String(IOUtils.toByteArray(wrapper.getInputStream())));
+		}catch (Exception inputE){
+			log.debug("MultiReadHttpServletRequest inputstream Exception : {}", inputE.getMessage());
+		}
 
-					httpResponse.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-					httpResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
-					httpResponse.setStatus(HttpStatus.OK.value());
-					httpResponse.getWriter().write(
-							new Gson().toJson(SpaResponseDTO.builder()
-									.ServiceNo(serviceNo)
-									.svcTime(BigInteger.ZERO.intValue())
-									.FncCnt(BigInteger.ZERO.intValue())
-									.RetCode(SpaResponseCodeEnum.ERROR_S999.getRetCode())
-									.resCode(SpaResponseCodeEnum.ERROR_S999.getResCode())
-									.build())
-					);
-				}else {
+		if (StringUtils.equals(Const.PHONE, from) && StringUtils.isNotEmpty(body)) {
+
+			try {
+				JsonArray checkJsonFileArray = getValidCheckObject(httpRequest.getRequestURI());
+
+				if (Const.TRUE.equals(validationCheck) && StringUtils.equals(Const.PHONE, from)) {
+					JsonObject bodyJson = new Gson().fromJson(body, JsonObject.class);
+
+					if ((bodyJson == null || StringUtils.EMPTY.equals(bodyJson.toString()))
+							|| !isValidationCheck(bodyJson, checkJsonFileArray)
+					) {
+						if ((bodyJson != null)) {
+							serviceNo = (bodyJson.get(SERVICENO) != null) ? bodyJson.get(SERVICENO).getAsString() : null;
+						}
+						responseErrorWrite(httpResponse, serviceNo, SpaResponseCodeEnum.ERROR_S999);
+					} else {
+						chain.doFilter(wrapper, response);
+					}
+				} else {
 					chain.doFilter(wrapper, response);
 				}
-			}else {
-				chain.doFilter(wrapper, response);
+			} catch (Exception ex) {
+				log.debug("doFilter Exception : {}", ex.getMessage());
+				responseErrorWrite(httpResponse, serviceNo, SpaResponseCodeEnum.ERROR_EX01);
 			}
-		}catch(Exception ex) {
-			log.debug("doFilter Exception : {}", ex.getMessage());
-			httpResponse.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-			httpResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
-			httpResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			httpResponse.getWriter().write(
-					new Gson().toJson(SpaResponseDTO.builder()
-							.ServiceNo(serviceNo)
-							.svcTime(BigInteger.ZERO.intValue())
-							.FncCnt(BigInteger.ZERO.intValue())
-							.RetCode(SpaResponseCodeEnum.ERROR_EX01.getRetCode())
-							.resCode(SpaResponseCodeEnum.ERROR_EX01.getResCode())
-							.build()
-					)
-			);
+		} else {
+			chain.doFilter(wrapper, response);
 		}
 	}
 
@@ -163,6 +156,21 @@ public class ValidationFilter extends GenericFilterBean {
 		}
 
 		return true;
+	}
+
+	private void responseErrorWrite(HttpServletResponse httpResponse, String serviceNo, SpaResponseCodeEnum spcCodeEnum)
+			throws IOException {
+		httpResponse.setCharacterEncoding(StandardCharsets.UTF_8.toString());
+		httpResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
+		httpResponse.setStatus(HttpStatus.OK.value());
+		httpResponse.getWriter().write(
+				new Gson().toJson(SpaResponseVO.builder()
+						.ServiceNo(serviceNo)
+						.RetCode(spcCodeEnum.getRetCode())
+						.resCode(spcCodeEnum.getResCode())
+						.build()
+				)
+		);
 	}
 
 	/**

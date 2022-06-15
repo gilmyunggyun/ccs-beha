@@ -1,0 +1,51 @@
+plugins {
+  id "com.hkmc.h2" version "1.0.34"
+}
+
+group = "com.hkmc.ccs"
+version = "1.0.16"
+
+cloudnative {
+
+  microservice {
+    reactive = true
+    openfeign = true
+    validate = true
+    trace = false
+  }
+
+  quality {
+    skipAll = true
+  }
+
+  thirdparty{
+    commonsLang = true
+    commonsCollections = true
+    gson = true
+    jasypt = true
+    jacksonAfterburner = true
+    jmapper = true
+    prometheusRSocket = true
+  }
+
+  cicd{
+    container {
+      enabled = true
+      to = "registry.hcloud.hmc.co.kr/ccs/${project.name}"
+      jvmOption = "-XX:+UnlockExperimentalVMOptions -XX:+UseZGC"
+    }
+
+    helm {
+      name = "behavior"
+      namespace = "behavior"
+      serviceType = "NodePort"
+      servicePort = 8080
+      nodePort = 30041
+    }
+
+    deploy {
+      target = ["hcloud:ap-northeast-2:stg", "hcloud:ap-northeast-2:prd"]
+    }
+  }
+}
+

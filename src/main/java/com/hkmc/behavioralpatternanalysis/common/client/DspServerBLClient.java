@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RefreshScope
-@FeignClient(url = "${dsp.server.bluelink.url:dspBluelinkUrl}", name = "${dsp.server.bluelink.name:dspBlueLink}")
+@FeignClient(url = "${dsp.server.bluelink.url:dspBluelinkUrl}", name = "${dsp.server.bluelink.name:dspBlueLink}", configuration = FeignClientInterceptor.class)
 public interface DspServerBLClient {
 
      @GetMapping(value = "{uriPath}")
