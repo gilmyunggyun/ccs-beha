@@ -75,6 +75,18 @@ public class BehavioralPatternServiceImpl implements BehavioralPatternService {
                         StringUtils.defaultString(String.valueOf(feignResponse.getBody().get(Const.Key.BRST_DEC_GRADE))));
                 ubiSafetyRes.setNightDrivingGrade(
                         StringUtils.defaultString(String.valueOf(feignResponse.getBody().get(Const.Key.NIGHT_DRV_GRADE))));
+
+                //20220620 UBI 안전 운전습관 보험할인가능 여부기준변경 임시조치(류민우 책임 요청_09월 원복필요)
+                // drvDistance >=500 km, safetyDrivingScore >= 70 or drvDistance >=1000km,safetyDrivingScore >= 60
+                if(ubiSafetyRes.getSafetyDrivingScore() >= 70 && ubiSafetyRes.getDrvDistance() >= 500){
+                    ubiSafetyRes.setInsuranceDiscountYN("Y");
+                }else if(ubiSafetyRes.getSafetyDrivingScore() >= 60 && ubiSafetyRes.getDrvDistance() >= 1000){
+                    ubiSafetyRes.setInsuranceDiscountYN("Y");
+                }else{
+                    ubiSafetyRes.setInsuranceDiscountYN("N");
+                }
+
+
             }
 
             return ubiSafetyRes;

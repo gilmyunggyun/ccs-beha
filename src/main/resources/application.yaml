@@ -72,13 +72,13 @@ dsp:
   server:
     common.uri: /api/v1/dsp/ubi
     bluelink:
-      url: http://10.11.60.218:6101
+      url: http://10.11.54.134:6101
       name: BlueLink
     uvo:
-      url: http://10.11.60.218:6101
+      url: http://10.11.54.134:6201
       name: UVO
     genesis:
-      url: http://10.11.60.218:6101
+      url: http://10.11.54.134:6301
       name: GenesisConnected
 
 validation:
