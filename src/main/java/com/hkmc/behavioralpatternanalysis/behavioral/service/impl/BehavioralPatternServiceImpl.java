@@ -10,6 +10,7 @@ import com.hkmc.behavioralpatternanalysis.common.client.DspServerGCClient;
 import com.hkmc.behavioralpatternanalysis.common.client.DspServerUVOClient;
 import com.hkmc.behavioralpatternanalysis.common.code.SpaResponseCodeEnum;
 import com.hkmc.behavioralpatternanalysis.common.exception.GlobalExternalException;
+import com.hkmc.behavioralpatternanalysis.common.model.InsuranceEnum;
 import com.hkmc.behavioralpatternanalysis.common.model.SpaResponseDTO;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -87,6 +90,19 @@ public class BehavioralPatternServiceImpl implements BehavioralPatternService {
                 }
 
 
+                // 보험사별 할인 여부 정보 추가
+                List<Map<String, String>> insurancesYNList = new ArrayList<>();
+
+                for (InsuranceEnum insuranceEnum : InsuranceEnum.values()) {
+                    if (ubiSafetyRes.getSafetyDrivingScore() >= insuranceEnum.getDrivingScore()
+                            && ubiSafetyRes.getDrvDistance() >= insuranceEnum.getDrvDistance()) {
+                        insurancesYNList.add(Map.of(insuranceEnum.getCName(), "Y"));
+                    } else {
+                        insurancesYNList.add(Map.of(insuranceEnum.getCName(), "N"));
+                    }
+                }
+
+                ubiSafetyRes.setInsuranceDiscountYNmap(insurancesYNList);
             }
 
             return ubiSafetyRes;

@@ -10,6 +10,8 @@ import lombok.experimental.SuperBuilder;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigInteger;
+import java.util.List;
+import java.util.Map;
 
 @Getter@Setter@ToString
 @AllArgsConstructor
@@ -38,6 +40,11 @@ public class UbiSafetyResDTO extends SpaResponseDTO {
     @ApiModelProperty(value = "", required = false, example = "")
     @Builder.Default
     private Integer drvDistance = BigInteger.ZERO.intValue();
+
+    @JsonProperty("insuranceDiscountYNmap")
+    @ApiModelProperty(value = "", required = false, example = "")
+    @Builder.Default
+    private List<Map<String, String>> insuranceDiscountYNmap = null;
 
     @JsonProperty("accelGrade")
     @ApiModelProperty(value = "", required = false, example = "")
