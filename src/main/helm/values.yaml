@@ -1,15 +1,15 @@
 image:
   repository: registry.hcloud.hmc.co.kr/ccs/ccsp20-behavioral
   pullPolicy: IfNotPresent
-  tag: "1.0.18"
+  tag: "1.0.19"
 
 # Resource quota
 resources:
   requests:
     cpu: 1000m
-    memory: 1Gi
+    memory: 2Gi
   limits:
-    memory: 1Gi
+    memory: 2Gi
 
 # Readiness 
 readinessInitialDelaySeconds: 30
@@ -22,7 +22,7 @@ livenessPeriodSeconds: 30
 # JVM Option
 jvm:
   enabled: true
-  option: "-XX:+UnlockExperimentalVMOptions -XX:+UseZGC"
+  option: "-XX:+UnlockExperimentalVMOptions -XX:+UseZGC -XX:InitialRAMPercentage=50 -XX:MinRAMPercentage=50 -XX:MaxRAMPercentage=75"
 
 # Service 
 service:
@@ -35,8 +35,8 @@ service:
 # AutoScaling
 autoscaling:
   enabled: true
-  minReplicas: 3
-  maxReplicas: 10
+  minReplicas: 2
+  maxReplicas: 4
   targetCPUUtilizationPercentage: 90
 
 # TimeZone

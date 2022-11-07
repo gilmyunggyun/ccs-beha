@@ -54,6 +54,7 @@ logging:
     org.springframework.data.r2dbc: DEBUG
     org.apache.kafka: ERROR
     io.micrometer.core.instrument.binder.kafka.KafkaMetrics: ERROR
+    io.micrometer.shaded.reactor.netty.channel.FluxReceive: ERROR
 
 transaction:
   logger:
