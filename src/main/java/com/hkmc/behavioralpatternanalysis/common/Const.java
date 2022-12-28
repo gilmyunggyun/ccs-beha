@@ -41,6 +41,11 @@ public class Const {
 		public static final String CANNOT_FOUND_VIN = "5003";
 		public static final String TYPE_450 = "450";
 		public static final String TYPE_595 = "595";
+		public static final String TYPE_4002 = "4002";
+		public static final String TYPE_4010 = "4010";
+		public static final String TYPE_4122 = "4122";
+		public static final String TYPE_4123 = "4123";
+		public static final String TYPE_5001 = "5001";
 	}
 
 	/** etc */

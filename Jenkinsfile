@@ -42,10 +42,10 @@ podTemplate(label: label,
       }
     }
 
-    stage("Upload Artifact"){
-      container('gradle') {
-        sh "gradle publish -x test"
-      }
-    }
+//     stage("Upload Artifact"){
+//       container('gradle') {
+//         sh "gradle publish -x test"
+//       }
+//     }
   }
 }

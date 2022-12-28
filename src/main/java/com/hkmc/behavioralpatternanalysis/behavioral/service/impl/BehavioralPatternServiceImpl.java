@@ -1,7 +1,6 @@
 package com.hkmc.behavioralpatternanalysis.behavioral.service.impl;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.hkmc.behavioralpatternanalysis.behavioral.model.*;
 import com.hkmc.behavioralpatternanalysis.behavioral.service.BehavioralPatternService;
 import com.hkmc.behavioralpatternanalysis.common.Const;
@@ -23,9 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -103,6 +100,10 @@ public class BehavioralPatternServiceImpl implements BehavioralPatternService {
                 }
 
                 ubiSafetyRes.setInsuranceDiscountYNmap(insurancesYNList);
+            } else {
+                // 값 없을 시 정상 출력, 단 로그에 남기기
+                log.info("\n++++++++++[itlCarBreakpadDrvScoreSearch] | CALL : {} | STATUS : {} | VIN : {} | AUTH : {} | {}",
+                        uri, HttpStatus.OK, ubiSafetyVO.getVinPath(), requestHeader.get(Const.Header.Authorization), SpaResponseCodeEnum.ERROR_DS01.getMessage());
             }
 
             return ubiSafetyRes;
@@ -113,13 +114,21 @@ public class BehavioralPatternServiceImpl implements BehavioralPatternService {
 
             SpaResponseCodeEnum errResponse = SpaResponseCodeEnum.ERROR_EX01;
 
+            /*
+            // 추후 추가 예정, Exception 상세화
             if (StringUtils.isNotEmpty(e.contentUTF8())) {
                 Map<String, Object> exceptionBody = new Gson().fromJson(e.contentUTF8(), new TypeToken<Map<String, Object>>() {}.getType());
 
-                if (StringUtils.equals(Const.ErrMsg.CANNOT_FOUND_VIN, String.valueOf(exceptionBody.get(Const.Key.ERR_CODE_MAP)))) {
-                    errResponse = SpaResponseCodeEnum.ERROR_E110;
+                if (exceptionBody.containsKey(Const.Key.ERR_CODE_MAP)) {
+                    if (StringUtils.equals(Const.ErrMsg.TYPE_4002, String.valueOf(exceptionBody.get(Const.Key.ERR_CODE_MAP))) ||
+                            StringUtils.equals(Const.ErrMsg.TYPE_4010, String.valueOf(exceptionBody.get(Const.Key.ERR_CODE_MAP))) ||
+                            StringUtils.equals(Const.ErrMsg.TYPE_5001, String.valueOf(exceptionBody.get(Const.Key.ERR_CODE_MAP))) ||
+                            StringUtils.equals(Const.ErrMsg.TYPE_4122, String.valueOf(exceptionBody.get(Const.Key.ERR_CODE_MAP)))) {
+                        log.error("\n++++++++++[FeignException] [itlCarBreakpadDrvScoreSearch] | CALL : {} | STATUS : {} | VIN : {} | AUTH : {} | {}",
+                                uri, e.status(), ubiSafetyVO.getVinPath(), requestHeader.get(Const.Header.Authorization), SpaResponseCodeEnum.ERROR_DS02.getMessage());
+                    }
                 }
-            }
+            }*/
 
             throw new GlobalExternalException(HttpStatus.OK.value(),
                     new Gson().toJson(SpaResponseDTO.builder()
