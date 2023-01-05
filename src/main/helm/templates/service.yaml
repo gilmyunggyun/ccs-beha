@@ -35,6 +35,7 @@ spec:
   selector:
     app: {{ template "behavior.name" . }}
     release: {{ .Release.Name }}
+
 ---
 apiVersion: v1
 kind: Service

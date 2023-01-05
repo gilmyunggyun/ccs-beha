@@ -149,7 +149,7 @@ class BehavioralPatternServiceImplTest {
                         .build())
         );
 
-        assertTrue(StringUtils.contains(exception.getBody(), SpaResponseCodeEnum.ERROR_E110.getResCode()));
+        assertTrue(StringUtils.contains(exception.getBody(), SpaResponseCodeEnum.ERROR_EX01.getResCode()));
 
         ubiSafetyReq.setCCID("");
         exception = assertThrows(GlobalExternalException.class, () ->

@@ -1,21 +1,20 @@
 plugins {
-  id "com.hkmc.h2" version "1.0.35"
+  id "com.hkmc.h2" version "1.0.103"
 }
 
 group = "com.hkmc.ccs"
-version = "1.0.20"
+version = "1.0.21"
 
 cloudnative {
 
   microservice {
-    reactive = true
+    webflux = true
     openfeign = true
     validate = true
     trace = false
   }
 
   quality {
-    skipAll = true
   }
 
   thirdparty{
@@ -32,27 +31,33 @@ cloudnative {
     container {
       enabled = true
       to = "registry.hcloud.hmc.co.kr/ccs/${project.name}"
-      jvmOption = "-XX:+UnlockExperimentalVMOptions -XX:+UseZGC -XX:InitialRAMPercentage=50 -XX:MinRAMPercentage=50 -XX:MaxRAMPercentage=75"
     }
 
     helm {
       name = "behavior"
       namespace = "behavior"
-      serviceType = "NodePort"
       servicePort = 8080
-      nodePort = 30041
-      cpu = "1000m"
-      memory = "2Gi"
-      minReplicas = 2
-      maxReplicas = 4
+      serviceType = "ClusterIP"
+
+      requestsMem = "2Gi"   // k8s request resource memory 설정
+      requestsCpu = "1000m"  // k8s request resource cpu 설정 1 core
+
+      limitsMem = "2Gi"  // requestMem 와 같게 설정
+      limitsCpu = "1000m" // requests 기반 1.5 ~ 2배
     }
 
     deploy {
-      target = ["hcloud:ap-northeast-2:stg", "hcloud:ap-northeast-2:prd"]
+      oldStyleNaming = true
+      strategy = "BLUE-GREEN"
+
+      targets = [
+              [region: "ap-northeast", target: "dev", min: 2, max: 4]
+      ]
     }
   }
 }
 
 dependencies{
   implementation 'io.micrometer:micrometer-registry-statsd:1.9.2'
+  implementation group: 'co.elastic.apm', name: 'elastic-apm-agent', version: '1.34.1'
 }

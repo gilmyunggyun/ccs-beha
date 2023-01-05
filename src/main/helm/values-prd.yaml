@@ -1,7 +1,7 @@
 image:
   repository: registry.hcloud.hmc.co.kr/ccs/ccsp20-behavioral
   pullPolicy: IfNotPresent
-  tag: "1.0.20"
+  tag: "1.0.21"
 
 # Resource quota
 resources:
@@ -11,6 +11,7 @@ resources:
   limits:
     cpu: 1000m
     memory: 2Gi
+
 
 # Readiness 
 readinessInitialDelaySeconds: 30
@@ -27,9 +28,8 @@ jvm:
 
 # Service 
 service:
-  type: NodePort
+  type: ClusterIP
   port: 8080
-  nodePort: 30041
   ipamRange: 
   loadbalancerIP: 
 
@@ -38,7 +38,7 @@ autoscaling:
   enabled: true
   minReplicas: 2
   maxReplicas: 4
-  targetCPUUtilizationPercentage: 90
+  targetCPUUtilizationPercentage: 70
 
 # TimeZone
 timezone: Asia/Seoul
@@ -49,3 +49,5 @@ autoPromotionEnabled: true
 # Injetct Config server
 configServer:
   enabled: true
+
+rolloutName: behavior-az2-prd

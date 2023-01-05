@@ -2,8 +2,8 @@ apiVersion: v2
 name: "behavior"
 description: "ccsp20-behavioral"
 type: application
-version: "1.0.20"
-appVersion: "1.0.20"
-icon: https://code.hcloud.hmc.co.kr/uploads/-/system/group/avatar/145/icon.png?width=64
+version: "1.0.21"
+appVersion: "1.0.21"
+icon: https://package-int.hcloud.hmc.co.kr/repository/raw/icon.png
 sources:
   - "https://code.hcloud.hmc.co.kr/ccs/domain/behavior/ccsp20-behavioralpatternanalysis.git"
