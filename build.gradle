@@ -1,9 +1,9 @@
 plugins {
-  id "com.hkmc.h2" version "1.0.103"
+  id "com.hkmc.h2" version "1.0.105"
 }
 
 group = "com.hkmc.ccs"
-version = "1.0.21"
+version = "1.0.22"
 
 cloudnative {
 
