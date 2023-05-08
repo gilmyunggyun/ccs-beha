@@ -5,6 +5,7 @@ import com.hkmc.behavioralpatternanalysis.common.Const;
 import com.hkmc.behavioralpatternanalysis.common.code.SpaResponseCodeEnum;
 import com.hkmc.behavioralpatternanalysis.common.model.SpaResponseDTO;
 import com.hkmc.common.dto.SpaResponseVO;
+import com.hkmc.filter.wrapper.BufferedResponseWrapper;
 import com.hkmc.filter.wrapper.MultiReadHttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -54,6 +55,7 @@ public class ValidationFilter extends GenericFilterBean {
 		HttpServletRequest httpRequest = ((HttpServletRequest) request);
 		HttpServletResponse httpResponse = ((HttpServletResponse) response);
 		MultiReadHttpServletRequest wrapper  = new MultiReadHttpServletRequest(httpRequest);
+		BufferedResponseWrapper resWrapper = new BufferedResponseWrapper(httpResponse);
 		String serviceNo = null;
 		String from = httpRequest.getHeader(Const.Header.FROM);
 
@@ -80,17 +82,17 @@ public class ValidationFilter extends GenericFilterBean {
 						}
 						responseErrorWrite(httpResponse, serviceNo, SpaResponseCodeEnum.ERROR_S999);
 					} else {
-						chain.doFilter(wrapper, response);
+						chain.doFilter(wrapper, resWrapper);
 					}
 				} else {
-					chain.doFilter(wrapper, response);
+					chain.doFilter(wrapper, resWrapper);
 				}
 			} catch (Exception ex) {
 				log.debug("doFilter Exception : {}", ex.getMessage());
 				responseErrorWrite(httpResponse, serviceNo, SpaResponseCodeEnum.ERROR_EX01);
 			}
 		} else {
-			chain.doFilter(wrapper, response);
+			chain.doFilter(wrapper, resWrapper);
 		}
 	}
 
