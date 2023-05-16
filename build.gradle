@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "com.hkmc.ccs"
-version = "1.0.24-M1"
+version = "1.0.24-M3"
 
 repositories {
   maven {

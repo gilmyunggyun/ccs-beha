@@ -110,7 +110,7 @@ public class BehavioralPatternServiceImpl implements BehavioralPatternService {
 
         } catch (FeignException e) {
             log.error("\n++++++++++[FeignException] [itlCarBreakpadDrvScoreSearch] | CALL : {} | STATUS : {} | VIN : {} | AUTH : {} | {}",
-                    uri, e.status(), ubiSafetyVO.getVinPath(), requestHeader.get(Const.Header.Authorization), e.getMessage());
+                    uri, e.status(), ubiSafetyVO.getVinPath(), requestHeader.get(Const.Header.Authorization), SpaResponseCodeEnum.ERROR_DS01.getMessage());
 
             SpaResponseCodeEnum errResponse = SpaResponseCodeEnum.ERROR_EX01;
 
@@ -138,7 +138,7 @@ public class BehavioralPatternServiceImpl implements BehavioralPatternService {
                             .build())
             );
         } catch (Exception e) {
-            log.error("\n++++++++++[Exception] [itlCarBreakpadDrvScoreSearch] | VIN : {} | {}", ubiSafetyVO.getVinPath(), e.getMessage());
+            log.error("\n++++++++++[Exception] [itlCarBreakpadDrvScoreSearch] | VIN : {} | {}", ubiSafetyVO.getVinPath(),"한글");
             throw new GlobalExternalException(HttpStatus.OK.value(),
                     new Gson().toJson(SpaResponseDTO.builder()
                             .ServiceNo(serviceNo)
