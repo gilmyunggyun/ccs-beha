@@ -1,0 +1,379 @@
+
+dependencyManagement {
+    imports {
+        mavenBom "com.ccs-sre-team:parent:$parentVersion"
+    }
+}
+
+dependencies {
+
+
+    //-------- default : true
+//    implementation (platform("com.ccs-sre-team:parent:1.0.17")){
+
+
+
+//        if(!project.hasProperty("jpa") || !jpa) {
+//            exclude module: "commons-jpa"
+//        }
+//
+//        if(!project.hasProperty("r2dbc") || !r2dbc) {
+//            exclude module: "commons-r2dbc"
+//
+//        }
+//
+//        if(!project.hasProperty("mongodb") || !mongodb) {
+//            exclude module: "commons-mongodb"
+//        }
+//
+//        if(!project.hasProperty("redis") || !redis) {
+//            exclude module: "commons-redis"
+//        }
+//
+//        if(project.hasProperty("core") && !core) {
+////            exclude module: "commons-core"
+//        }
+
+//    }
+
+    testImplementation ("org.springframework.boot:spring-boot-starter-test"){
+        exclude module: 'org.junit.vintage'
+    }
+
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    annotationProcessor "org.springframework:spring-context-indexer"
+
+
+
+    if(!project.hasProperty("rest") || rest) {
+        implementation ("org.springframework.boot:spring-boot-starter-web"){
+
+            if(project.hasProperty("undertow") && undertow){
+                exclude module: "spring-boot-starter-tomcat"
+            }
+
+        }
+    }
+
+    if(!project.hasProperty("actuator") || actuator) {
+        implementation "org.springframework.boot:spring-boot-starter-actuator"
+    }
+
+    if(!project.hasProperty("validation") || validation) {
+        implementation "org.springframework.boot:spring-boot-starter-validation"
+        implementation "javax.validation:validation-api"
+    }
+
+
+    if(!project.hasProperty("core") || core) {
+        implementation "com.ccs-sre-team.commons:commons-core"
+    }
+
+
+    if(!project.hasProperty("logging") || logging) {
+        implementation "org.springframework.boot:spring-boot-starter-logging"
+    }
+
+    if(!project.hasProperty("swagger") || swagger) {
+        implementation "io.springfox:springfox-boot-starter"
+    }
+
+    if(!project.hasProperty("circuitbreaker") || circuitbreaker) {
+        implementation "org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j"
+    }
+
+    if(!project.hasProperty("trace") || trace) {
+        implementation "org.springframework.cloud:spring-cloud-starter-sleuth"
+        implementation "org.springframework.cloud:spring-cloud-sleuth-zipkin"
+    }
+
+    if(!project.hasProperty("security") || security) {
+        implementation "org.springframework.boot:spring-boot-starter-security"
+        testImplementation 'org.springframework.security:spring-security-test'
+    }
+
+    if(!project.hasProperty("admin") || admin) {
+        implementation ("de.codecentric:spring-boot-admin-starter-client")
+
+    }
+
+    if(!project.hasProperty("metric") || metric) {
+        implementation "io.micrometer:micrometer-registry-prometheus"
+        implementation "io.micrometer.prometheus:prometheus-rsocket-spring"
+        implementation "io.micrometer:micrometer-registry-statsd"
+        implementation "co.elastic.apm:elastic-apm-agent"
+    }
+
+    if(!project.hasProperty("config") || config) {
+        implementation "org.springframework.cloud:spring-cloud-starter-config"
+    }
+
+
+    //-------- default : false
+
+    if(project.hasProperty("undertow") && undertow) {
+        implementation "org.springframework.boot:spring-boot-starter-undertow"
+    }
+
+
+
+    if(project.hasProperty("batch") && batch) {
+        implementation "org.springframework.boot:spring-boot-starter-batch"
+        implementation "org.springframework.cloud:spring-cloud-starter-task"
+        implementation "org.springframework.batch:spring-batch-test"
+        implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.4'
+
+        testImplementation 'org.springframework.batch:spring-batch-test'
+    }
+
+    if(project.hasProperty("devtools") && devtools) {
+        implementation "org.springframework.boot:spring-boot-devtools"
+    }
+
+
+
+    if(project.hasProperty("rsocket") && rsocket) {
+        implementation "org.springframework.boot:spring-boot-starter-rsocket"
+    }
+
+    if(project.hasProperty("websocket") && websocket) {
+        implementation "org.springframework.boot:spring-boot-starter-websocket"
+    }
+
+    if(project.hasProperty("webflux") && webflux) {
+        implementation "org.springframework.boot:spring-boot-starter-webflux"
+        testImplementation 'io.projectreactor:reactor-test'
+    }
+
+    if(project.hasProperty("reactor") && reactor) {
+        implementation "io.projectreactor:reactor-core"
+    }
+
+    if(project.hasProperty("json") && json) {
+        implementation "org.springframework.boot:spring-boot-starter-json"
+    }
+
+    if(project.hasProperty("cqrs") && cqrs) {
+        implementation "org.axonframework:axon-spring-boot-starter"
+    }
+
+    if(project.hasProperty("graphql") && graphql) {
+        implementation "com.graphql-java:graphql-spring-boot-starter"
+        implementation "com.graphql-java:graphql-java-spring-boot-starter-webmvc"
+    }
+
+    if(project.hasProperty("kubernetes") && kubernetes) {
+        implementation "org.springframework.cloud:spring-cloud-starter-kubernetes-client-all"
+    }
+
+    if(project.hasProperty("server_admin") && server_admin) {
+        implementation "de.codecentric:spring-boot-admin-starter-server"
+        implementation "de.codecentric:spring-boot-admin-server-ui"
+    }
+
+    if(project.hasProperty("kafka") && kafka) {
+        implementation "org.springframework.kafka:spring-kafka"
+        implementation "io.projectreactor.kafka:reactor-kafka"
+        testImplementation 'org.springframework.kafka:spring-kafka-test'
+        testImplementation 'io.github.embeddedkafka:embedded-kafka_2.13'
+    }
+
+    if(project.hasProperty("kafkastream") && kafkastream) {
+        implementation "org.apache.kafka:kafka-streams"
+        implementation "org.springframework.cloud:spring-cloud-stream"
+        implementation "org.springframework.cloud:spring-cloud-stream-binder-kafka"
+        implementation "org.springframework.cloud:spring-cloud-stream-binder-kafka-streams"
+        testImplementation 'io.github.embeddedkafka:embedded-kafka-streams_2.13'
+    }
+
+    if(project.hasProperty("openfeign") && openfeign) {
+        implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
+    }
+
+    if(project.hasProperty("thymeleaf") && thymeleaf) {
+        implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
+    }
+
+    if(project.hasProperty("mail") && mail) {
+        implementation "org.springframework.boot:spring-boot-starter-mail"
+    }
+
+    if(project.hasProperty("jpa") && jpa) {
+        implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+        implementation "com.ccs-sre-team.commons:commons-jpa"
+    }
+
+    if(project.hasProperty("postgresql") && postgresql) {
+        implementation "org.postgresql:postgresql"
+    }
+
+    if(project.hasProperty("oracle") && oracle) {
+        implementation "com.oracle.database.jdbc:ojdbc11"
+        implementation "com.oracle.ojdbc:orai18n"
+    }
+
+    if(project.hasProperty("r2dbc") && r2dbc) {
+        implementation "org.springframework.boot:spring-boot-starter-data-r2dbc"
+        implementation "com.oracle.database.r2dbc:oracle-r2dbc"
+        implementation "io.r2dbc:r2dbc-postgresql"
+        implementation "com.ccs-sre-team.commons:commons-r2dbc"
+    }
+
+    if(project.hasProperty("mongodb") && mongodb) {
+        implementation "org.springframework.boot:spring-boot-starter-data-mongodb"
+        implementation "com.ccs-sre-team.commons:commons-mongodb"
+        testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
+    }
+
+    if(project.hasProperty("redis") && redis) {
+        implementation "org.springframework.boot:spring-boot-starter-data-redis"
+        implementation "com.ccs-sre-team.commons:commons-redis"
+        testImplementation 'it.ozimov:embedded-redis:0.7.2'
+    }
+
+
+    if(project.hasProperty("cache") && cache) {
+        implementation "org.springframework.boot:spring-boot-starter-cache"
+    }
+
+    if(project.hasProperty("caffeine") && caffeine) {
+        implementation "com.github.ben-manes.caffeine:caffeine"
+    }
+
+    if(project.hasProperty("h2db") && h2db) {
+        testImplementation 'com.h2database:h2'
+    }
+
+    if(project.hasProperty("hazelcast") && hazelcast) {
+        implementation "com.hazelcast.jet.contrib:hazelcast-jet-spring-boot-starter"
+    }
+
+    if(project.hasProperty("server_config") && server_config) {
+        implementation "org.springframework.cloud:spring-cloud-config-server"
+    }
+
+    if(project.hasProperty("gateway") && gateway) {
+        implementation "org.springframework.cloud:spring-cloud-starter-gateway"
+        implementation "org.springframework.cloud:spring-cloud-starter-loadbalancer"
+    }
+
+    if(project.hasProperty("commonsLang") && commonsLang) {
+        implementation "org.apache.commons:commons-lang3"
+    }
+
+    if(project.hasProperty("commonsCollections") && commonsCollections) {
+        implementation "org.apache.commons:commons-collections4"
+    }
+
+    if(project.hasProperty("commonsCodec") && commonsCodec) {
+        implementation "commons-codec:commons-codec"
+    }
+
+    if(project.hasProperty("commonsIO") && commonsIO) {
+        implementation "commons-io:commons-io"
+    }
+
+    if(project.hasProperty("commonsMath") && commonsMath) {
+        implementation "org.apache.commons:commons-math3"
+    }
+
+    if(project.hasProperty("gson") && gson) {
+        implementation "com.google.code.gson:gson"
+    }
+
+    if(project.hasProperty("jackson") && jackson) {
+        implementation "com.fasterxml.jackson.core:jackson-core"
+        implementation "com.fasterxml.jackson.core:jackson-databind"
+        implementation "com.fasterxml.jackson.core:jackson-annotations"
+    }
+
+    if(project.hasProperty("jasypt") && jasypt) {
+        implementation "com.github.ulisesbocchio:jasypt-spring-boot-starter"
+    }
+
+    if(project.hasProperty("mapstruct") && mapstruct) {
+        implementation "org.mapstruct:mapstruct"
+        annotationProcessor 'org.mapstruct:mapstruct-processor'
+    }
+
+    if(project.hasProperty("jmapper") && jmapper) {
+        implementation "com.googlecode.jmapper-framework:jmapper-core"
+    }
+
+    if(project.hasProperty("modelmapper") && modelmapper) {
+        implementation "org.modelmapper:modelmapper"
+    }
+
+    if(project.hasProperty("guava") && guava) {
+        implementation "com.google.guava:guava"
+    }
+
+    if(project.hasProperty("jsonpath") && jsonpath) {
+        implementation "com.jayway.jsonpath:json-path"
+    }
+
+    if(project.hasProperty("jacksonAfterburner") && jacksonAfterburner) {
+        implementation "com.fasterxml.jackson.module:jackson-module-afterburner"
+    }
+
+    if(project.hasProperty("uuid") && uuid) {
+        implementation "com.fasterxml.uuid:java-uuid-generator"
+    }
+
+    if(project.hasProperty("paho") && paho) {
+        implementation "org.eclipse.paho:org.eclipse.paho.mqttv5.client"
+    }
+
+    if(project.hasProperty("spock") && spock) {
+        testImplementations "org.spockframework:spock-core"
+        testImplementations "org.spockframework:spock-spring"
+    }
+
+    if(project.hasProperty("mockito") && mockito) {
+        testImplementations "org.mockito:mockito-core"
+    }
+
+    if(project.hasProperty("blockhound") && blockhound) {
+        implementation "io.projectreactor.tools:blockhound:1.0.6.RELEASE"
+        testImplementations "io.projectreactor.tools:blockhound:1.0.6.RELEASE"
+    }
+
+    if(project.hasProperty("wiremock") && wiremock) {
+        testImplementations "com.github.tomakehurst:wiremock"{
+            exclude module:"handlebars-helpers"
+            exclude module:"handlebars"
+        }
+    }
+
+  //lombok
+  implementation('org.projectlombok:lombok')
+  testImplementation('org.projectlombok:lombok')
+  annotationProcessor('org.projectlombok:lombok')
+  testAnnotationProcessor('org.projectlombok:lombok')
+
+
+
+}
+//---------------
+//
+jib {
+  from {
+    image = "registry.hcloud.hmc.co.kr/ccs/graalvm-ce:ol9-java17-22.3.0"
+  }
+  to {
+    allowInsecureRegistries = true
+    image = "registry.hcloud.hmc.co.kr/ccs/${project.name}"
+    auth {
+      username = "$harborUser"
+      password = "$harborToken"
+    }
+    tags = ["${project.version}"]
+  }
+
+  container {
+  }
+}
+
+
+
+

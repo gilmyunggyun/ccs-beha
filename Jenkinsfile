@@ -37,10 +37,10 @@ podTemplate(label: label,
       }
     }
 
-    stage("Publish Helm Chart"){
-      container('gradle') {
-        sh "gradle publishChart"
-      }
-    }
+//     stage("Publish Helm Chart"){
+//       container('gradle') {
+//         sh "gradle publishChart"
+//       }
+//     }
   }
 }
