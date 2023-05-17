@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "com.hkmc.ccs"
-version = "1.0.24-M3"
+version = "1.0.24-M8"
 
 repositories {
   maven {
@@ -15,60 +15,6 @@ repositories {
   }
   mavenCentral()
 }
-//
-//cloudnative {
-//
-//  microservice {
-//    webflux = true
-//    openfeign = true
-//    validate = true
-//    trace = false
-//  }
-//
-//  quality {
-//  }
-//
-//  thirdparty{
-//    commonsLang = true
-//    commonsCollections = true
-//    gson = true
-//    jasypt = true
-//    jacksonAfterburner = true
-//    jmapper = true
-//    prometheusRSocket = true
-//  }
-//
-//  cicd{
-//    container {
-//      enabled = true
-//      to = "registry.hcloud.hmc.co.kr/ccs/${project.name}"
-//    }
-//
-//    helm {
-//      name = "behavior"
-//      namespace = "behavior"
-//      servicePort = 8080
-//      serviceType = "ClusterIP"
-//
-//      requestsMem = "2Gi"   // k8s request resource memory 설정
-//      requestsCpu = "1000m"  // k8s request resource cpu 설정 1 core
-//
-//      limitsMem = "2Gi"  // requestMem 와 같게 설정
-//      limitsCpu = "1000m" // requests 기반 1.5 ~ 2배
-//    }
-//
-//    deploy {
-//      oldStyleNaming = true
-//      strategy = "BLUE-GREEN"
-//
-//      targets = [
-//              [region: "ap-northeast", target: "dev", min: 2, max: 4]
-//      ]
-//    }
-//  }
-//}
-
-
 
 ext {
   parentVersion = '1.1.0-M2'

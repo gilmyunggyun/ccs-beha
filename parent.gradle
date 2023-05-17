@@ -358,7 +358,7 @@ dependencies {
 //
 jib {
   from {
-    image = "registry.hcloud.hmc.co.kr/ccs/graalvm-ce:ol9-java17-22.3.0"
+    image = "registry.hcloud.hmc.co.kr/ccs/graalvm-ce:ol9-java17-22.3.1-3"
   }
   to {
     allowInsecureRegistries = true
@@ -371,7 +371,7 @@ jib {
   }
 
   container {
-      jvmFlags =['-Dfile.encoding=UTF-8']
+//      jvmFlags =['-Dfile.encoding=UTF-8']
   }
 }
 
