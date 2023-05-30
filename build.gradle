@@ -14,10 +14,7 @@ group = "com.hkmc.ccs"
 version = "1.0.24-M9"
 
 repositories {
-  gradlePluginPortal()
-//
-  maven { url 'https://repo.spring.io/release' }
-  maven { url = uri("https://package-int.hcloud.hmc.co.kr/repository/maven-public") }
+  maven { url "https://package-int.hcloud.hmc.co.kr/repository/maven-public" }
 //
 
   mavenLocal()
