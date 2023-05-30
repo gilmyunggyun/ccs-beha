@@ -25,15 +25,16 @@ podTemplate(label: label,
     def branch = repo.GIT_BRANCH
     def short_commit = "${commit[0..10]}"
 
-    stage("Upload Artifact"){
-      container('gradle') {
-        sh "gradle publish -x test"
-      }
-    }
+//     stage("Upload Artifact"){
+//       container('gradle') {
+//         sh "gradle publish -x test"
+//       }
+//     }
 
+//
     stage("Baking Docker"){
       container('gradle') {
-        sh "gradle jib -x test"
+        sh "gradle bootBuildImage "
       }
     }
 

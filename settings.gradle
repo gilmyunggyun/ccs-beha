@@ -1,5 +1,8 @@
 pluginManagement {
   repositories {
+    gradlePluginPortal()
+
+    maven { url = uri("https://repo.spring.io/release") }
     maven {
       url "https://package-int.hcloud.hmc.co.kr/repository/maven-public/"
     }

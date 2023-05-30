@@ -8,34 +8,6 @@ dependencyManagement {
 dependencies {
 
 
-    //-------- default : true
-//    implementation (platform("com.ccs-sre-team:parent:1.0.17")){
-
-
-
-//        if(!project.hasProperty("jpa") || !jpa) {
-//            exclude module: "commons-jpa"
-//        }
-//
-//        if(!project.hasProperty("r2dbc") || !r2dbc) {
-//            exclude module: "commons-r2dbc"
-//
-//        }
-//
-//        if(!project.hasProperty("mongodb") || !mongodb) {
-//            exclude module: "commons-mongodb"
-//        }
-//
-//        if(!project.hasProperty("redis") || !redis) {
-//            exclude module: "commons-redis"
-//        }
-//
-//        if(project.hasProperty("core") && !core) {
-////            exclude module: "commons-core"
-//        }
-
-//    }
-
     testImplementation ("org.springframework.boot:spring-boot-starter-test"){
         exclude module: 'org.junit.vintage'
     }
@@ -100,7 +72,7 @@ dependencies {
     if(!project.hasProperty("metric") || metric) {
         implementation "io.micrometer:micrometer-registry-prometheus"
         implementation "io.micrometer.prometheus:prometheus-rsocket-spring"
-        implementation "io.micrometer:micrometer-registry-statsd"
+//        implementation "io.micrometer:micrometer-registry-statsd"
         implementation "co.elastic.apm:elastic-apm-agent"
     }
 
@@ -214,9 +186,17 @@ dependencies {
 
     if(project.hasProperty("r2dbc") && r2dbc) {
         implementation "org.springframework.boot:spring-boot-starter-data-r2dbc"
-        implementation "com.oracle.database.r2dbc:oracle-r2dbc"
-        implementation "io.r2dbc:r2dbc-postgresql"
         implementation "com.ccs-sre-team.commons:commons-r2dbc"
+    }
+
+    if(project.hasProperty("postgresql") && postgresql
+        && project.hasProperty("r2dbc") && r2dbc) {
+        implementation "io.r2dbc:r2dbc-postgresql"
+    }
+
+    if(project.hasProperty("oracle") && oracle
+            && project.hasProperty("r2dbc") && r2dbc) {
+        implementation "com.oracle.database.r2dbc:oracle-r2dbc"
     }
 
     if(project.hasProperty("mongodb") && mongodb) {
@@ -325,21 +305,21 @@ dependencies {
     }
 
     if(project.hasProperty("spock") && spock) {
-        testImplementations "org.spockframework:spock-core"
-        testImplementations "org.spockframework:spock-spring"
+        testImplementation "org.spockframework:spock-core"
+        testImplementation "org.spockframework:spock-spring"
     }
 
     if(project.hasProperty("mockito") && mockito) {
-        testImplementations "org.mockito:mockito-core"
+        testImplementation "org.mockito:mockito-core"
     }
 
     if(project.hasProperty("blockhound") && blockhound) {
         implementation "io.projectreactor.tools:blockhound:1.0.6.RELEASE"
-        testImplementations "io.projectreactor.tools:blockhound:1.0.6.RELEASE"
+        testImplementation "io.projectreactor.tools:blockhound:1.0.6.RELEASE"
     }
 
     if(project.hasProperty("wiremock") && wiremock) {
-        testImplementations "com.github.tomakehurst:wiremock"{
+        testImplementation("com.github.tomakehurst:wiremock"){
             exclude module:"handlebars-helpers"
             exclude module:"handlebars"
         }
